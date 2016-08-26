@@ -1,0 +1,54 @@
+<html>
+<head>
+<style>
+div.background {
+    background: url(hp12cp.png);
+    opacity:1;
+    color: green;
+    border: 2px solid black;
+    z-index: 0;
+}
+
+div.transbox {
+    position: absolute;
+    opacity: 0.9;
+}
+
+div.transbox p {
+    font-weight: bold;
+    color: red; 
+    /*#000000;*/
+}
+span.hpkey {
+    padding: 0;
+    margin: 0;
+    color: black;
+    opacity: 1; 
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    font-size: 30px;
+}
+</style>
+<script type="text/javascript">
+
+    function myfunc() {
+        alert( "heloooooooooo" );
+    }
+
+
+    function calcfunc() {
+        alert( "naheeeeeeee" );
+    }
+
+
+</script>
+</head>
+<body>
+
+<div class="background" tabindex="1" onclick="calcfunc()" style="background-color:gray; position: relative; height: 370px; width: 600px; margin: auto">
+    <div class="transbox" id="N" onclick="myfunc()" style="background-color:lightblue; left: 42px; top:136px; height: 32px; width: 34px; z-index: 1;"> </div>
+    <div class="transbox" id="I"                    style="background-color:green;     left: 97px; top:136px; height: 32px; width: 34px; z-index: 1;"> </div>
+</div>
+
+</body>
+</html>
