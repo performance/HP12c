@@ -82,6 +82,16 @@ type InputModes
   | Orange
   | Blue
 
+type PrefixMode
+  = Orange_PrefixMode
+  | Blue_PrefixMode
+  | STO_Mode
+
+type CalculatorOperationalState
+  = AcceptingNumericalInput
+  | InPrefixMode PrefixMode
+  | RunningProgram
+
 type alias Model =
   { inputMode                     : InputModes
   , automaticMemoryStackRegisters : AutomaticMemoryStackRegisters
@@ -90,6 +100,7 @@ type alias Model =
   , statisticalRegisters          : StatisticalRegisters
   , programMemory                 : ProgramMemory
   , keyCode                       : Keyboard.KeyCode
+  , message                       : String
   }
 
 initializeAutomaticMemoryStackRegisters : AutomaticMemoryStackRegisters
@@ -140,6 +151,7 @@ initialModel =
   , statisticalRegisters          = initializeStatisticalRegisters
   , programMemory                 = initializeProgramMemory
   , keyCode                       = 0
+  , message                       = "Initialized to all zeros"
   }
 
 -- Operations
@@ -225,201 +237,214 @@ update msg model =
       ( { model | keyCode = code }  , Cmd.none )
 -------------------------------- First Row of Keys
     N_Key                 ->
-      ( model, Cmd.none )
+      ( { model | message = " N_Key pressed "                 }, Cmd.none )
     Times_12_Key          ->
-      ( model, Cmd.none )
+      ( { model | message = " Times_12_Key pressed "          }, Cmd.none )
     AMORT_Key             ->
-      ( model, Cmd.none )
+      ( { model | message = " AMORT_Key pressed "             }, Cmd.none )
     I_Key                 ->
-      ( model, Cmd.none )
+      ( { model | message = " I_Key pressed "                 }, Cmd.none )
     DIVIDE_BY_12_Key      ->
-      ( model, Cmd.none )
+      ( { model | message = " DIVIDE_BY_12_Key pressed "      }, Cmd.none )
     INT_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " INT_Key pressed "               }, Cmd.none )
     PV_Key                ->
-      ( model, Cmd.none )
+      ( { model | message = " PV_Key pressed "                }, Cmd.none )
     CF_0_Key              ->
-      ( model, Cmd.none )
+      ( { model | message = " CF_0_Key pressed "              }, Cmd.none )
     NPV_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " NPV_Key pressed "               }, Cmd.none )
     PMT_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " PMT_Key pressed "               }, Cmd.none )
     CF_j_Key              ->
-      ( model, Cmd.none )
+      ( { model | message = " CF_j_Key pressed "              }, Cmd.none )
     RND_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " RND_Key pressed "               }, Cmd.none )
     FV_Key                ->
-      ( model, Cmd.none )
+      ( { model | message = " FV_Key pressed "                }, Cmd.none )
     N_j_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " N_j_Key pressed "               }, Cmd.none )
     IRR_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " IRR_Key pressed "               }, Cmd.none )
     CHS_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " CHS_Key pressed "               }, Cmd.none )
     DATE_Key              ->
-      ( model, Cmd.none )
+      ( { model | message = " DATE_Key pressed "              }, Cmd.none )
     RPN_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " RPN_Key pressed "               }, Cmd.none )
     Number_7_Key          ->
-      ( model, Cmd.none )
+      ( { model | message = " Number_7_Key pressed "          }, Cmd.none )
     BEG_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " BEG_Key pressed "               }, Cmd.none )
     Number_8_Key          ->
-      ( model, Cmd.none )
+      ( { model | message = " Number_8_Key pressed "          }, Cmd.none )
     END_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " END_Key pressed "               }, Cmd.none )
     Number_9_Key          ->
-      ( model, Cmd.none )
+      ( { model | message = " Number_9_Key pressed "          }, Cmd.none )
     MEM_Key               ->
-      ( model, Cmd.none )
+      ( { model | message = " MEM_Key pressed "               }, Cmd.none )
     Divide_Key            ->
-      ( model, Cmd.none )
+      ( { model | message = " Divide_Key pressed "            }, Cmd.none )
     Undo_Key              ->
-      ( model, Cmd.none )
+      ( { model | message = " Undo_Key pressed "              }, Cmd.none )
 -------------------------------- Second Row of Keys
     Y_toThe_X_Key         ->
-      ( model, Cmd.none )     
+      ( { model | message = " Y_toThe_X_Key pressed "         }, Cmd.none )
     Square_Root_Key       ->
-      ( model, Cmd.none )     
+      ( { model | message = " Square_Root_Key pressed "       }, Cmd.none )
     PRICE_Key             ->
-      ( model, Cmd.none )     
+      ( { model | message = " PRICE_Key pressed "             }, Cmd.none )
     Reciprocal_Key        ->
-      ( model, Cmd.none )     
+      ( { model | message = " Reciprocal_Key pressed "        }, Cmd.none )
     E_to_the_x_Key        ->
-      ( model, Cmd.none )     
+      ( { model | message = " E_to_the_x_Key pressed "        }, Cmd.none )
     YTM_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " YTM_Key pressed "               }, Cmd.none )
     Percentage_T_Key      ->
-      ( model, Cmd.none )    
+      ( { model | message = " Percentage_T_Key pressed "      }, Cmd.none )
     LN_Key                ->
-      ( model, Cmd.none )     
+      ( { model | message = " LN_Key pressed "                }, Cmd.none )
     SL_Key                ->
-      ( model, Cmd.none )
+      ( { model | message = " SL_Key pressed "                }, Cmd.none )
     Delta_Percentage_Key  ->
-      ( model, Cmd.none )     
+      ( { model | message = " Delta_Percentage_Key pressed "  }, Cmd.none )
     FRAC_Key              ->
-      ( model, Cmd.none )     
+      ( { model | message = " FRAC_Key pressed "              }, Cmd.none )
     SOYD_Key              ->
-      ( model, Cmd.none )     
+      ( { model | message = " SOYD_Key pressed "              }, Cmd.none )
     Percent_Key           ->
-      ( model, Cmd.none )     
+      ( { model | message = " Percent_Key pressed "           }, Cmd.none )
     INTG_Key              ->
-      ( model, Cmd.none )     
+      ( { model | message = " INTG_Key pressed "              }, Cmd.none )
     DB_Key                ->
-      ( model, Cmd.none )     
+      ( { model | message = " DB_Key pressed "                }, Cmd.none )
     EEX_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " EEX_Key pressed "               }, Cmd.none )
     Delta_Days_Key        ->
-      ( model, Cmd.none )     
+      ( { model | message = " Delta_Days_Key pressed "        }, Cmd.none )
     ALG_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " ALG_Key pressed "               }, Cmd.none )
     Number_4_Key          ->
-      ( model, Cmd.none )     
+      ( { model | message = " Number_4_Key pressed "          }, Cmd.none )
     D_MY_Key              ->
-      ( model, Cmd.none )
+      ( { model | message = " D_MY_Key pressed "              }, Cmd.none )
     Number_5_Key          ->
-      ( model, Cmd.none )     
+      ( { model | message = " Number_5_Key pressed "          }, Cmd.none )
     M_DY_Key              ->
-      ( model, Cmd.none )
+      ( { model | message = " M_DY_Key pressed "              }, Cmd.none )
     Number_6_Key          ->
-      ( model, Cmd.none )     
+      ( { model | message = " Number_6_Key pressed "          }, Cmd.none )
     Weighted_Mean_Key     ->
-      ( model, Cmd.none )
+      ( { model | message = " Weighted_Mean_Key pressed "     }, Cmd.none )
     Multiply_Key          ->
-      ( model, Cmd.none )
+      ( { model | message = " Multiply_Key pressed "          }, Cmd.none )
     X_Squared_Key         ->
-      ( model, Cmd.none )
+      ( { model | message = " X_Squared_Key pressed "         }, Cmd.none )
 -------------------------------- Third Row of Keys
     RunMode_Key           ->
-      ( model, Cmd.none )     
+      ( { model | message = " RunMode_Key pressed "           }, Cmd.none )
     PSE_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " PSE_Key pressed "               }, Cmd.none )
     Program_Mode_Key      ->
-      ( model, Cmd.none )
+      ( { model | message = " Program_Mode_Key pressed "      }, Cmd.none )
     SST_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " SST_Key pressed "               }, Cmd.none )
     BST_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " BST_Key pressed "               }, Cmd.none )
     CLEAR_Σ_Key           ->
-      ( model, Cmd.none )
+      ( { model | message = " CLEAR_Σ_Key pressed "           }, Cmd.none )
     Roll_Down_Key         ->
-      ( model, Cmd.none )     
+      ( { model | message = " Roll_Down_Key pressed "         }, Cmd.none )
     GTO_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " GTO_Key pressed "               }, Cmd.none )
     CLEAR_PRGM_Key        ->
-      ( model, Cmd.none )     
+      ( { model | message = " CLEAR_PRGM_Key pressed "        }, Cmd.none )
     Exchange_X_Y_Key      ->
-      ( model, Cmd.none )     
+      ( { model | message = " Exchange_X_Y_Key pressed "      }, Cmd.none )
     X_lte_Y_Key           ->
-      ( model, Cmd.none )     
+      ( { model | message = " X_lte_Y_Key pressed "           }, Cmd.none )
     CLEAR_FIN_Key         ->
-      ( model, Cmd.none )     
+      ( { model | message = " CLEAR_FIN_Key pressed "         }, Cmd.none )
     CL_x_Key              ->
-      ( model, Cmd.none )     
+      ( { model | message = " CL_x_Key pressed "              }, Cmd.none )
     X_eq_0_Key            ->
-      ( model, Cmd.none )     
+      ( { model | message = " X_eq_0_Key pressed "            }, Cmd.none )
     CLEAR_REG_Key         ->
-      ( model, Cmd.none )     
+      ( { model | message = " CLEAR_REG_Key pressed "         }, Cmd.none )
     Enter_Key             ->
-      ( model, Cmd.none )     
+      ( { model | message = " Enter_Key pressed "             }, Cmd.none )
     Equals_Key            ->
-      ( model, Cmd.none )     
+      ( { model | message = " Equals_Key pressed "            }, Cmd.none )
     CLEAR_PREFIX_Key      ->
-      ( model, Cmd.none )     
+      ( { model | message = " CLEAR_PREFIX_Key pressed ",
+            inputMode = White
+        }, Cmd.none 
+      )
     Number_1_Key          ->
-      ( model, Cmd.none )     
+      ( { model | message = " Number_1_Key pressed "          }, Cmd.none )
     Linear_Estimate_X_Key ->
-      ( model, Cmd.none )     
+      ( { model | message = " Linear_Estimate_X_Key pressed " }, Cmd.none )
     Number_2_Key          ->
-      ( model, Cmd.none )     
+      ( { model | message = " Number_2_Key pressed "          }, Cmd.none )
     Linear_Estimate_Y_Key ->
-      ( model, Cmd.none )     
+      ( { model | message = " Linear_Estimate_Y_Key pressed " }, Cmd.none )
     Number_3_Key          ->
-      ( model, Cmd.none )     
+      ( { model | message = " Number_3_Key pressed "          }, Cmd.none )
     N_Factorial_Key       ->
-      ( model, Cmd.none )     
+      ( { model | message = " N_Factorial_Key pressed "       }, Cmd.none )
     Subtract_Key          ->
-      ( model, Cmd.none )     
+      ( { model | message = " Subtract_Key pressed "          }, Cmd.none )
     BackSpace_Key         ->
-      ( model, Cmd.none )     
+      ( { model | message = " BackSpace_Key pressed "         }, Cmd.none )
 -------------------------------- Fourth Row of Keys
     ON_Key                ->
-      ( initialModel, Cmd.none )     
+      ( { initialModel | message = " ON_Key pressed "         }, Cmd.none )
     OFF_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " OFF_Key pressed "               }, Cmd.none )
     Orange_F_Key          ->
-      ( model, Cmd.none )     
+      ( { model | 
+            message   = " Orange_F_Key pressed ",
+            inputMode = Orange
+        }, Cmd.none 
+      )
     Blue_G_Key            ->
-      ( model, Cmd.none )     
+      ( { model | 
+            message   = " Blue_G_Key pressed ",
+            inputMode = Blue
+        }, Cmd.none 
+      )
     STO_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " STO_Key pressed "               }, Cmd.none )
     Left_Paren_Key        ->
-      ( model, Cmd.none )     
+      ( { model | message = " Left_Paren_Key pressed "        }, Cmd.none )
     RCL_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " RCL_Key pressed "               }, Cmd.none )
     Right_Paren_Key       ->
-      ( model, Cmd.none )     
+      ( { model | message = " Right_Paren_Key pressed "       }, Cmd.none )
     Number_0_Key          ->
-      ( model, Cmd.none )     
+      ( { model | message = " Number_0_Key pressed "          }, Cmd.none )
     Mean_of_X_Key         ->
-      ( model, Cmd.none )     
+      ( { model | message = " Mean_of_X_Key pressed "         }, Cmd.none )
     Decimal_Point_Key     ->
-      ( model, Cmd.none )     
+      ( { model | message = " Decimal_Point_Key pressed "     }, Cmd.none )
     Std_Dev_Key           ->
-      ( model, Cmd.none )     
+      ( { model | message = " Std_Dev_Key pressed "           }, Cmd.none )
     Sigma_Plus_Key        ->
-      ( model, Cmd.none )     
+      ( { model | message = " Sigma_Plus_Key pressed "        }, Cmd.none )
     Sigma_Minus_Key       ->
-      ( model, Cmd.none )     
+      ( { model | message = " Sigma_Minus_Key pressed "       }, Cmd.none )
     Sum_Key               ->
-      ( model, Cmd.none )     
+      ( { model | message = " Sum_Key pressed "               }, Cmd.none )
     Last_X_Key            ->
-      ( model, Cmd.none )     
-    _ ->
-          ( model, Cmd.none )
+      ( { model | message = " Last_X_Key pressed "            }, Cmd.none )
+    --_ ->
+    --      ( model, Cmd.none )
 
 
 -- SUBSCRIPTIONS
+
+-- TODO: read manual to figure out what to do with STO etc keys in orange mode
 
 keyCodeToMsg : InputModes -> Keyboard.KeyCode -> Msg
 keyCodeToMsg inputMode code =
@@ -638,21 +663,21 @@ keyCodeToMsg inputMode code =
 
     70  -> case inputMode of
               White  -> Orange_F_Key -- "F"
-              Blue   -> KeyMsg code
-              Orange -> KeyMsg code
+              Blue   -> Orange_F_Key
+              Orange -> Orange_F_Key
     102 -> case inputMode of
               White  -> Orange_F_Key -- "f" -- orange f key
-              Blue   -> KeyMsg code
-              Orange -> KeyMsg code
+              Blue   -> Orange_F_Key
+              Orange -> Orange_F_Key
 
     71  -> case inputMode of
               White  -> Blue_G_Key -- "G"
-              Blue   -> KeyMsg code
-              Orange -> KeyMsg code
+              Blue   -> Blue_G_Key
+              Orange -> Blue_G_Key
     103 -> case inputMode of
               White  -> Blue_G_Key -- "g" -- blue g key
-              Blue   -> KeyMsg code
-              Orange -> KeyMsg code
+              Blue   -> Blue_G_Key
+              Orange -> Blue_G_Key
 
     83  -> case inputMode of
               White  -> STO_Key -- "S"
@@ -708,32 +733,126 @@ subscriptions model =
 
 -- View
 
+stylesheet =
+  let
+    tag = "link"
+    attrs =
+        [ attribute "rel"       "stylesheet"
+        , attribute "property"  "stylesheet"
+        , attribute "href"      "HP12c.css"
+        ]
+    children = []
+  in
+    node tag attrs children
+
+transparent_box left top msg =
+  div
+    [ onClick msg, classNames [ "transparent_box"], Html.Attributes.style [ ( "left", ( toString left ) ++ "px"),( "top", ( toString top ) ++ "px") ] ]
+    [  ]
+
+enter_button_div model =
+  let
+    msg = ( keyCodeToMsg model.inputMode ( 13 ) )
+    enter_style =
+      Html.Attributes.style
+        [ ( "left", "305px")
+        , ( "top", "250px")
+        , ( "height", "64" )
+        , ("position",  "absolute" )
+        , ("opacity",  "0.9" )
+        , ("height",  "92px" )
+        , ("width",  "34px" )
+        , ("background-color", "lightBlue" )
+        , ("z-index" , "1" )
+        ]
+
+  in
+    div
+      [ onClick msg,  enter_style ]
+      [  ]
+
+mktdiv inputMode y_loc (keyChar ,  x_loc ) =
+  transparent_box x_loc y_loc  ( keyCodeToMsg inputMode ( Char.toCode keyChar ) )
+
+first_row_divs model =
+  let
+    x_locs = [ ('N', 40 ), ('I', 95 ), ('P', 145 ), ('M', 200 ), ('V', 252 ), ('H', 305 ), ('7', 358 ), ('8', 410 ), ('9', 464 ),('/', 515 ) ]
+    y_loc  = 134
+  in
+    List.map ( \kxlpair -> mktdiv model.inputMode y_loc kxlpair ) x_locs
+
+second_row_divs model =
+  let
+    x_locs = [ ('!', 40 ), ('\\', 95 ), ('T', 145 ), ('$', 200 ), ('%', 252 ), ('E', 305 ), ('4', 358 ), ('5', 410 ), ('6', 464 ),('*', 515 ) ]
+    y_loc  = 192
+  in
+    List.map ( \kxlpair -> mktdiv model.inputMode y_loc kxlpair ) x_locs
+
+third_row_divs model =
+  let
+    x_locs = [ ('[', 40 ), (']', 95 ), ('R', 145 ), ('Y', 200 ), ('C', 252 ),               ('1', 358 ), ('2', 410 ), ('3', 464 ),('-', 515 ) ]
+    y_loc  = 250
+  in
+    List.map ( \kxlpair -> mktdiv model.inputMode y_loc kxlpair ) x_locs
+
+fourth_row_divs model =
+  let
+    x_locs = [ ('O', 40 ), ('F', 95 ), ('G', 145 ), ('S', 200 ), ('L', 252 ),               ('0', 358 ), ('.', 410 ), ('W', 464 ),('+', 515 ) ]
+    y_loc  = 310
+  in
+    List.map ( \kxlpair -> mktdiv model.inputMode y_loc kxlpair ) x_locs
+
+
+button_divs model =
+  ( first_row_divs model ) ++ ( second_row_divs model ) ++ ( third_row_divs model ) ++ ( fourth_row_divs model ) ++ [ enter_button_div model ]
+
+
+empty_br_node = br [] []
+
+-- upgrade to show a beautifully labeled tzyx stack and last_x
+stack_registers_div model =
+    div
+    [
+       classNames [ "calc_model" ], Html.Attributes.style [ ( "left", "0px"),( "top", "574px"), ("position", "absolute")  ]
+    ]
+    
+   ( List.intersperse  empty_br_node ( List.map text ( String.split "," ( toString model.automaticMemoryStackRegisters ) )  ) 
+
+   )
+
+-- upgrade this to show detailed computation state info
+modelinfodiv model =
+  div
+    [
+      classNames [ "calc_model" ], Html.Attributes.style [ ( "left", "0px"),( "top", "434px"), ("position", "absolute") ]
+    ]
+    [
+        text ( toString model.inputMode ++ "[ code = " ++ String.fromChar ( Char.fromCode model.keyCode ) ++ "  ] " ++ model.message )
+    ]
+
+
+divs_to_show model =
+  [ stylesheet ] ++ ( button_divs model ) ++ [ modelinfodiv model ] ++ [stack_registers_div model ]
+
 view : Model -> Html Msg
 view model =
   div
     [
-      classNames ["calculator"]
+      classNames [ "calculator" ]
     ]
-    [
-      div [ classNames [ "model" ] ] [ text (toString model) ]
-    , div
-          []
-          [
-            text ( String.fromChar ( Char.fromCode model.keyCode ) )
-          ]
-    ]
+    ( divs_to_show model )
 
 
 -- Main
 
 
-init : Maybe Model -> ( Model, Cmd Msg )
-init savedModel =
-  ( Maybe.withDefault initialModel savedModel, Cmd.none )
+init : ( Model, Cmd Msg )
+init  =
+  ( initialModel, Cmd.none )
 
 
 main =
-  Html.programWithFlags
+  Html.program -- WithFlags
     { init = init
     , view = view
     , update = update

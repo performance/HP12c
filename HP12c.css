@@ -1,9 +1,23 @@
-div.calculator {
-    background: url(hp12cp.png);
+div.calc_model {
+    background-color: lightgray
     opacity:1;
-    color: green;
+    color: red;
     border: 2px solid black;
-    z-index: 0;
+    z-index: 1;
+    font-family: "Courier New", Courier, monospace;
+    font-weight: bold;
+    font-size: 30px;    
+}
+
+div.calculator {
+    position: absolute;
+    width:590px;
+    height:370px; 
+    background-repeat:no-repeat;
+    background-size: cover;
+    background-image: url( DSR_HP12cp.png );
+    opacity: 0.995;
+    z-index: 0; 
 }
 
 div.transparent_box {
@@ -11,7 +25,7 @@ div.transparent_box {
     opacity: 0.9;
     height: 32px;
     width: 34px;
-    background-color:green;
+    /*background-color:green;*/
     z-index: 1;
 }
 
