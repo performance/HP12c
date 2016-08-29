@@ -20,21 +20,59 @@ n_factorial x =
 -- in the hp12c platinum, the round function rounds the number to 
 -- the number of decimals sepcified in the display precision
 round_function x n =
-  Basics.floor( x * ( 10 ^ n ) ) / ( 10 ^ n )
+  Basics.toFloat ( Basics.floor( x * ( 10 ^ n ) ) ) / ( 10 ^ n )
 -- TODO: check if the calc rounds it by adding 0.5
 
+integral_part x = Basics.toFloat ( Basics.floor x )
 
-updateReg_X: Model -> Int -> AutomaticMemoryStackRegisters 
+fractional_part x = x - ( integral_part x )
+
+-----------  Binary operators lhs is reg_y, rhs is reg_x
+
+y_to_the_x     y x = y ^ x
+y_plus_x       y x = y + x
+y_minus_x      y x = y - x
+y_times_x      y x = y * x 
+y_divided_by_x y x = y / x
+
+
+binaryOperator model op =
+  let
+    stackRegs = model.automaticMemoryStackRegisters
+    result = ( op stackRegs.reg_Y stackRegs.reg_X )
+    promotedStack = { stackRegs | 
+      reg_T = stackRegs.reg_T
+    , reg_Z = stackRegs.reg_T
+    , reg_Y = stackRegs.reg_Z
+    , reg_Last_X = stackRegs.reg_X
+    , reg_X = result
+    } 
+    promotedModel = { model 
+                    | automaticMemoryStackRegisters = promotedStack 
+                    , inputMode = White
+                    , calculatorOperationalState = AcceptingOperationsOrNumbers
+                    }
+  in
+    promotedModel
+
+
+updateReg_X: Model -> Int -> Model -- AutomaticMemoryStackRegisters 
 updateReg_X model n = 
   let 
     stackRegs = model.automaticMemoryStackRegisters
+    newStackRegs = if ( model.calculatorOperationalState == AcceptingNumericalInputOnly)
+      then { stackRegs | reg_X = 10 * stackRegs.reg_X + toFloat n } 
+      else { stackRegs | reg_X = toFloat n} 
+    newModel = { model |  calculatorOperationalState = AcceptingNumericalInputOnly, automaticMemoryStackRegisters = newStackRegs }
   in 
-    { stackRegs | reg_X = 10 * stackRegs.reg_X + toFloat n } 
+    newModel
+    
 
 digitEntered model n = 
   let 
+    liftedStack      = liftStack model
     promotedModel    = if   model.calculatorOperationalState == AcceptingOperationsOrNumbers
-                       then { ( promotedStack model ) | , calculatorOperationalState = AcceptingNumericalInputOnly )
+                       then { liftedStack | calculatorOperationalState = AcceptingNumericalInputOnly } 
                        else model
     stackRegs        = promotedModel.automaticMemoryStackRegisters
     updatedStackRegs = { stackRegs | reg_X = 10 * stackRegs.reg_X + toFloat n } 
@@ -43,7 +81,7 @@ digitEntered model n =
 
 numericalInputTerminated model =
   let
-    promotedModel = promotedStack model
+    promotedModel = liftStack model
   in
     { promotedModel | calculatorOperationalState = AcceptingOperationsOrNumbers }
 
@@ -54,7 +92,7 @@ backSpaceReg_X model =
   in 
     { stackRegs | reg_X = toFloat ( floor ( stackRegs.reg_X / 10 ) )} 
 
-promoteStack model =
+liftStack model =
   let
     stackRegs = model.automaticMemoryStackRegisters
     promotedStack = { stackRegs | 
@@ -74,7 +112,7 @@ exchange_X_Y_Regs model =
       reg_Y = stackRegs.reg_X
     , reg_X = tmp_Y
     } 
-    promotedModel = { model | automaticMemoryStackRegisters = promotedStack }
+    promotedModel = { model | automaticMemoryStackRegisters = exchangedStack }
   in
     promotedModel
 
@@ -86,9 +124,9 @@ roll_Down_Stack model =
       reg_X = stackRegs.reg_Y
     , reg_Y = stackRegs.reg_Z
     , reg_Z = stackRegs.reg_T
-      reg_T = tmp_X
+    , reg_T = tmp_X
     } 
-    promotedModel = { model | automaticMemoryStackRegisters = promotedStack }
+    promotedModel = { model | automaticMemoryStackRegisters = rolledStack }
   in
     promotedModel
 
@@ -103,7 +141,11 @@ unaryOperator model op =
     , reg_Last_X = stackRegs.reg_X
     , reg_X = ( op stackRegs.reg_X )
     } 
-    promotedModel = { model | automaticMemoryStackRegisters = promotedStack }
+    promotedModel = { model 
+                    | automaticMemoryStackRegisters = promotedStack 
+                    , inputMode = White
+                    , calculatorOperationalState = AcceptingOperationsOrNumbers
+                    }
   in
     promotedModel
 
@@ -150,36 +192,52 @@ update msg model =
     RPN_Key               ->
       ( { model | message = " RPN_Key pressed "               }, Cmd.none )
     Number_7_Key          ->
-      ( { model | message = " Number_7_Key pressed ",
-                  automaticMemoryStackRegisters = updateReg_X model 7
-        }, Cmd.none )
+      let 
+        newModel = updateReg_X model 7
+      in
+        ( { newModel | message = " Number_7_Key pressed " }, Cmd.none )
+
     BEG_Key               ->
       ( { model | message = " BEG_Key pressed "               }, Cmd.none )
     Number_8_Key          ->
-      ( { model | message = " Number_8_Key pressed ",
-                  automaticMemoryStackRegisters = updateReg_X model 8
-        }, Cmd.none )
+      let 
+        newModel = updateReg_X model 8
+      in
+        ( { newModel | message = " Number_8_Key pressed " }, Cmd.none )
+
+
     END_Key               ->
       ( { model | message = " END_Key pressed "               }, Cmd.none )
     Number_9_Key          ->
-      ( { model | message = " Number_9_Key pressed ",
-                  automaticMemoryStackRegisters = updateReg_X model 9
-        }, Cmd.none )
+      let 
+        newModel = updateReg_X model 9
+      in
+        ( { newModel | message = " Number_9_Key pressed " }, Cmd.none )
+
+
     MEM_Key               ->
       ( { model | message = " MEM_Key pressed "               }, Cmd.none )
     Divide_Key            ->
-      ( { model | message = " Divide_Key pressed "            }, Cmd.none )
+      let 
+        newModel = binaryOperator model y_divided_by_x
+      in
+        ( { newModel | message = " Divide_Key pressed "        }, Cmd.none )
+
     Undo_Key              ->
       ( { model | message = " Undo_Key pressed "              }, Cmd.none )
 -------------------------------- Second Row of Keys
     Y_toThe_X_Key         ->
-      ( { model | message = " Y_toThe_X_Key pressed "         }, Cmd.none )
+      let 
+        newModel = binaryOperator model y_to_the_x
+      in
+        ( { newModel | message = " Y_toThe_X_Key pressed "        }, Cmd.none )
+
     Square_Root_Key       ->
       let 
         newModel = unaryOperator model square_root
       in 
       ( { newModel | message = " Square_Root_Key pressed "
-        ,            inputMode = White
+        --,            inputMode = White
         }, Cmd.none 
       )
     PRICE_Key             ->
@@ -189,7 +247,7 @@ update msg model =
         newModel = unaryOperator model reciprocal
       in 
       ( { newModel | message = " Reciprocal_Key pressed "
-        ,            inputMode = White
+        --,            inputMode = White
         }, Cmd.none 
       )
     E_to_the_x_Key        ->
@@ -208,13 +266,26 @@ update msg model =
     Delta_Percentage_Key  ->
       ( { model | message = " Delta_Percentage_Key pressed "  }, Cmd.none )
     FRAC_Key              ->
-      ( { model | message = " FRAC_Key pressed "              }, Cmd.none )
+      let 
+        newModel = unaryOperator model fractional_part
+      in 
+        ( { newModel | message = " FRAC_Key pressed "
+          ,            inputMode = White  
+          }, Cmd.none 
+        )
+
     SOYD_Key              ->
       ( { model | message = " SOYD_Key pressed "              }, Cmd.none )
     Percent_Key           ->
       ( { model | message = " Percent_Key pressed "           }, Cmd.none )
     INTG_Key              ->
-      ( { model | message = " INTG_Key pressed "              }, Cmd.none )
+      let 
+        newModel = unaryOperator model integral_part
+      in 
+        ( { newModel | message = " INTG_Key pressed "
+          ,            inputMode = White  
+          }, Cmd.none 
+        )
     DB_Key                ->
       ( { model | message = " DB_Key pressed "                }, Cmd.none )
     EEX_Key               ->
@@ -224,27 +295,38 @@ update msg model =
     ALG_Key               ->
       ( { model | message = " ALG_Key pressed "               }, Cmd.none )
     Number_4_Key          ->
-      ( { model | message = " Number_4_Key pressed ",
-                  automaticMemoryStackRegisters = updateReg_X model 4
-        }, 
-        Cmd.none 
-      )
+      let 
+        newModel = updateReg_X model 4
+      in
+        ( { newModel | message = " Number_4_Key pressed " }, Cmd.none )
+
+
     D_MY_Key              ->
       ( { model | message = " D_MY_Key pressed "              }, Cmd.none )
     Number_5_Key          ->
-      ( { model | message = " Number_5_Key pressed ",
-                  automaticMemoryStackRegisters = updateReg_X model 5
-        }, Cmd.none )
+      let 
+        newModel = updateReg_X model 5
+      in
+        ( { newModel | message = " Number_5_Key pressed " }, Cmd.none )
+
+
     M_DY_Key              ->
       ( { model | message = " M_DY_Key pressed "              }, Cmd.none )
     Number_6_Key          ->
-      ( { model | message = " Number_6_Key pressed ",
-                  automaticMemoryStackRegisters = updateReg_X model 6
-        }, Cmd.none )
+      let 
+        newModel = updateReg_X model 6
+      in
+        ( { newModel | message = " Number_6_Key pressed " }, Cmd.none )
+
+
     Weighted_Mean_Key     ->
       ( { model | message = " Weighted_Mean_Key pressed "     }, Cmd.none )
     Multiply_Key          ->
-      ( { model | message = " Multiply_Key pressed "          }, Cmd.none )
+      let 
+        newModel = binaryOperator model y_times_x
+      in
+        ( { newModel | message = " Multiply_Key pressed "        }, Cmd.none )
+
     X_Squared_Key         ->
       ( { model | message = " X_Squared_Key pressed "         }, Cmd.none )
 -------------------------------- Third Row of Keys
@@ -287,7 +369,11 @@ update msg model =
     CLEAR_REG_Key         ->
       ( { model | message = " CLEAR_REG_Key pressed "         }, Cmd.none )
     Enter_Key             ->
-      ( { model | message = " Enter_Key pressed "             }, Cmd.none )
+      let 
+        newModel = numericalInputTerminated model 
+      in
+        ( { newModel | message = " Enter_Key pressed "             }, Cmd.none )
+
     Equals_Key            ->
       ( { model | message = " Equals_Key pressed "            }, Cmd.none )
     CLEAR_PREFIX_Key      ->
@@ -296,25 +382,38 @@ update msg model =
         }, Cmd.none 
       )
     Number_1_Key          ->
-      ( { model | message = " Number_1_Key pressed ",
-                  automaticMemoryStackRegisters = updateReg_X model 1
-        }, Cmd.none )
+      let 
+        newModel = updateReg_X model 1
+      in
+        ( { newModel | message = " Number_1_Key pressed " }, Cmd.none )
+
+
     Linear_Estimate_X_Key ->
       ( { model | message = " Linear_Estimate_X_Key pressed " }, Cmd.none )
     Number_2_Key          ->
-      ( { model | message = " Number_2_Key pressed ",
-                  automaticMemoryStackRegisters = updateReg_X model 2
-        }, Cmd.none )
+      let 
+        newModel = updateReg_X model 2
+      in
+        ( { newModel | message = " Number_2_Key pressed " }, Cmd.none )
+
+
     Linear_Estimate_Y_Key ->
       ( { model | message = " Linear_Estimate_Y_Key pressed " }, Cmd.none )
     Number_3_Key          ->
-      ( { model | message = " Number_3_Key pressed ",
-                  automaticMemoryStackRegisters = updateReg_X model 3
-        }, Cmd.none )
+      let 
+        newModel = updateReg_X model 3
+      in
+        ( { newModel | message = " Number_3_Key pressed " }, Cmd.none )
+
+
     N_Factorial_Key       ->
       ( { model | message = " N_Factorial_Key pressed "       }, Cmd.none )
     Subtract_Key          ->
-      ( { model | message = " Subtract_Key pressed "          }, Cmd.none )
+      let 
+        newModel = binaryOperator model y_minus_x
+      in
+        ( { newModel | message = " Subtract_Key pressed "        }, Cmd.none )
+
     BackSpace_Key         ->
       ( { model | message = " BackSpace_Key pressed ",
                   automaticMemoryStackRegisters = backSpaceReg_X model 
@@ -345,9 +444,11 @@ update msg model =
     Right_Paren_Key       ->
       ( { model | message = " Right_Paren_Key pressed "       }, Cmd.none )
     Number_0_Key          ->
-      ( { model | message = " Number_0_Key pressed ",
-                  automaticMemoryStackRegisters = updateReg_X model 0
-        }, Cmd.none )
+      let 
+        newModel = updateReg_X model 0
+      in
+        ( { newModel | message = " Number_0_Key pressed " }, Cmd.none )
+
     Mean_of_X_Key         ->
       ( { model | message = " Mean_of_X_Key pressed "         }, Cmd.none )
     Decimal_Point_Key     ->
@@ -359,7 +460,11 @@ update msg model =
     Sigma_Minus_Key       ->
       ( { model | message = " Sigma_Minus_Key pressed "       }, Cmd.none )
     Sum_Key               ->
-      ( { model | message = " Sum_Key pressed "               }, Cmd.none )
+      let 
+        newModel = binaryOperator model y_plus_x
+      in
+        ( { newModel | message = " Sum_Key pressed "        }, Cmd.none )
+
     Last_X_Key            ->
       ( { model | message = " Last_X_Key pressed "            }, Cmd.none )
     _ ->
