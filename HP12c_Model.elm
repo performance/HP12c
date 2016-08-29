@@ -53,10 +53,25 @@ type PrefixMode
   | Blue_PrefixMode
   | STO_Mode
 
+type ErrorState
+  = Error_0_Mathematics
+  | Error_1_Storage_Register_Overflow
+  | Error_2_Statistics
+  | Error_3_IRR
+  | Error_4_Memory
+  | Error_5_Compound_Interest
+  | Error_6_Storage_Registers
+  | Error_7_IRR
+  | Error_8_Calendar
+  | Error_9_Service
+  | PrError
+
 type CalculatorOperationalState
-  = AcceptingNumericalInput
+  = AcceptingNumericalInputOnly
+  | AcceptingOperationsOrNumbers
   | InPrefixMode PrefixMode
   | RunningProgram
+  | Error ErrorState
 
 type ComputationMode
   = RPN_Mode
@@ -65,6 +80,7 @@ type ComputationMode
 type alias Model =
   { inputMode                     : InputMode
   , computationMode               : ComputationMode
+  , calculatorOperationalState    : CalculatorOperationalState
   , automaticMemoryStackRegisters : AutomaticMemoryStackRegisters
   , financialRegisters            : FinancialRegisters
   , dataStorageRegisters          : DataStorageRegisters
@@ -117,12 +133,14 @@ initialModel : Model
 initialModel =
   { inputMode                     = White
   , computationMode               = RPN_Mode
+  , calculatorOperationalState    = AcceptingOperationsOrNumbers
   , automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters
   , financialRegisters            = initializeFinancialRegisters
   , dataStorageRegisters          = initializeDataStorageRegisters
   , statisticalRegisters          = initializeStatisticalRegisters
   , programMemory                 = initializeProgramMemory
   , keyCode                       = 0
-  , message                       = "Initialized to all zeros"
+  , message                       = ""
   }
+
 

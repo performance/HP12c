@@ -7,7 +7,21 @@ import HP12c_Model exposing (..)
 
 -- unaryOperators
 reciprocal x = 1/x
-square_root = sqrt
+x_squared x = x * x
+square_root = Basics.sqrt
+natural_log x = Basics.logBase e x
+e_to_the_x x = e ^ x
+n_factorial x = 
+  let 
+    n = Basics.floor x
+  in
+    List.product [1..n]
+
+-- in the hp12c platinum, the round function rounds the number to 
+-- the number of decimals sepcified in the display precision
+round_function x n =
+  Basics.floor( x * ( 10 ^ n ) ) / ( 10 ^ n )
+-- TODO: check if the calc rounds it by adding 0.5
 
 
 updateReg_X: Model -> Int -> AutomaticMemoryStackRegisters 
@@ -16,6 +30,22 @@ updateReg_X model n =
     stackRegs = model.automaticMemoryStackRegisters
   in 
     { stackRegs | reg_X = 10 * stackRegs.reg_X + toFloat n } 
+
+digitEntered model n = 
+  let 
+    promotedModel    = if   model.calculatorOperationalState == AcceptingOperationsOrNumbers
+                       then { ( promotedStack model ) | , calculatorOperationalState = AcceptingNumericalInputOnly )
+                       else model
+    stackRegs        = promotedModel.automaticMemoryStackRegisters
+    updatedStackRegs = { stackRegs | reg_X = 10 * stackRegs.reg_X + toFloat n } 
+  in 
+    { promotedModel | automaticMemoryStackRegisters = updatedStackRegs }
+
+numericalInputTerminated model =
+  let
+    promotedModel = promotedStack model
+  in
+    { promotedModel | calculatorOperationalState = AcceptingOperationsOrNumbers }
 
 
 backSpaceReg_X model =
@@ -35,6 +65,33 @@ promoteStack model =
     promotedModel = { model | automaticMemoryStackRegisters = promotedStack }
   in
     promotedModel
+
+exchange_X_Y_Regs model =
+  let
+    stackRegs = model.automaticMemoryStackRegisters
+    tmp_Y = stackRegs.reg_Y
+    exchangedStack = { stackRegs | 
+      reg_Y = stackRegs.reg_X
+    , reg_X = tmp_Y
+    } 
+    promotedModel = { model | automaticMemoryStackRegisters = promotedStack }
+  in
+    promotedModel
+
+roll_Down_Stack model =
+  let
+    stackRegs = model.automaticMemoryStackRegisters
+    tmp_X = stackRegs.reg_X
+    rolledStack = { stackRegs | 
+      reg_X = stackRegs.reg_Y
+    , reg_Y = stackRegs.reg_Z
+    , reg_Z = stackRegs.reg_T
+      reg_T = tmp_X
+    } 
+    promotedModel = { model | automaticMemoryStackRegisters = promotedStack }
+  in
+    promotedModel
+
 
 unaryOperator model op =
   let
@@ -136,7 +193,10 @@ update msg model =
         }, Cmd.none 
       )
     E_to_the_x_Key        ->
-      ( { model | message = " E_to_the_x_Key pressed "        }, Cmd.none )
+      let 
+        newModel = unaryOperator model e_to_the_x
+      in
+        ( { newModel | message = " E_to_the_x_Key pressed "        }, Cmd.none )
     YTM_Key               ->
       ( { model | message = " YTM_Key pressed "               }, Cmd.none )
     Percentage_T_Key      ->
@@ -201,13 +261,21 @@ update msg model =
     CLEAR_Σ_Key           ->
       ( { model | message = " CLEAR_Σ_Key pressed "           }, Cmd.none )
     Roll_Down_Key         ->
-      ( { model | message = " Roll_Down_Key pressed "         }, Cmd.none )
+      let 
+        rolledStackModel = roll_Down_Stack model
+      in
+        ( { rolledStackModel | message = " Roll_Down_Key pressed "         }, Cmd.none )
+
     GTO_Key               ->
       ( { model | message = " GTO_Key pressed "               }, Cmd.none )
     CLEAR_PRGM_Key        ->
       ( { model | message = " CLEAR_PRGM_Key pressed "        }, Cmd.none )
     Exchange_X_Y_Key      ->
-      ( { model | message = " Exchange_X_Y_Key pressed "      }, Cmd.none )
+      let 
+        newModel =  exchange_X_Y_Regs model
+      in
+        ( { newModel | message = " Exchange_X_Y_Key pressed "      }, Cmd.none )
+
     X_lte_Y_Key           ->
       ( { model | message = " X_lte_Y_Key pressed "           }, Cmd.none )
     CLEAR_FIN_Key         ->

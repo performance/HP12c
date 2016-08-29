@@ -70,17 +70,17 @@ keyCodeToMsg inputMode code =
     55  -> case inputMode of
               White  -> Number_7_Key -- "7"
               Blue   -> BEG_Key
-              Orange -> Number_7_Key -- KeyMsg code
+              Orange -> SetPrecision_7_Key -- KeyMsg code
 
     56  -> case inputMode of
               White  -> Number_8_Key -- "8"
               Blue   -> END_Key
-              Orange -> Number_8_Key -- KeyMsg code
+              Orange -> SetPrecision_8_Key -- KeyMsg code
 
     57  -> case inputMode of
               White  -> Number_9_Key -- "9"
               Blue   -> MEM_Key
-              Orange -> Number_9_Key -- KeyMsg code
+              Orange -> SetPrecision_9_Key -- KeyMsg code
 
     47  -> case inputMode of
               White  -> Divide_Key   -- "/"
@@ -131,17 +131,17 @@ keyCodeToMsg inputMode code =
     52  -> case inputMode of
               White  -> Number_4_Key       -- "4"
               Blue   -> D_MY_Key
-              Orange -> Number_4_Key -- KeyMsg code
+              Orange -> SetPrecision_4_Key -- KeyMsg code
 
     53  -> case inputMode of
               White  -> Number_5_Key       -- "5"
               Blue   -> M_DY_Key
-              Orange -> Number_5_Key -- KeyMsg code
+              Orange -> SetPrecision_5_Key -- KeyMsg code
 
     54  -> case inputMode of
               White  -> Number_6_Key       -- "6"
               Blue   -> Weighted_Mean_Key
-              Orange -> Number_6_Key -- KeyMsg code
+              Orange -> SetPrecision_6_Key -- KeyMsg code
 
     42  -> case inputMode of
               White  -> Multiply_Key       -- "*"
@@ -197,17 +197,17 @@ keyCodeToMsg inputMode code =
     49  -> case inputMode of
               White  -> Number_1_Key -- "1"
               Blue   -> Linear_Estimate_X_Key
-              Orange -> Number_1_Key -- KeyMsg code
+              Orange -> SetPrecision_1_Key -- KeyMsg code
 
     50  -> case inputMode of
               White  -> Number_2_Key -- "2"
               Blue   -> Linear_Estimate_Y_Key
-              Orange -> Number_2_Key -- KeyMsg code
+              Orange -> SetPrecision_2_Key -- KeyMsg code
 
     51  -> case inputMode of
               White  -> Number_3_Key -- "3"
               Blue   -> N_Factorial_Key
-              Orange -> Number_3_Key -- KeyMsg code
+              Orange -> SetPrecision_3_Key -- KeyMsg code
 
     45  -> case inputMode of
               White  -> Subtract_Key -- "-"
