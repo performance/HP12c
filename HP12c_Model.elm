@@ -12,6 +12,17 @@ type alias AutomaticMemoryStackRegisters =
   , reg_Last_X : Float
   }
 
+type AcceptNewDigitInto 
+  = IntegralPart
+  |  FractionalPart
+
+type alias ScratchRegisters =
+  { integral_part_of_X   : Int
+  , fractional_part_of_X : Int
+  , number_of_decimals   : Int
+  , acceptNewDigitInto   : AcceptNewDigitInto
+  }
+
 type alias FinancialRegisters =
   { reg_n   : Float
   , reg_i   : Float
@@ -20,13 +31,13 @@ type alias FinancialRegisters =
   , reg_FV  : Float
   , regs_N  : Array Float
   }
+
 numberOfFinacialRegisters_N = 80
 
 type alias DataStorageRegisters =
   { reg_R   : Array Float -- 10
   , reg_R_Decimal : Array Float -- 10
   }
-
 
 -- in hardware, these are aliases,
 -- so for now, try to mimic hardware behaviour
@@ -80,7 +91,8 @@ type ComputationMode
 type alias Model =
   { inputMode                     : InputMode
   , computationMode               : ComputationMode
-  , calculatorOperationalState    : CalculatorOperationalState
+  --, calculatorOperationalState    : CalculatorOperationalState
+  , scratchRegisters              : ScratchRegisters
   , automaticMemoryStackRegisters : AutomaticMemoryStackRegisters
   , financialRegisters            : FinancialRegisters
   , dataStorageRegisters          : DataStorageRegisters
@@ -91,6 +103,13 @@ type alias Model =
   , message                       : String
   }
 
+initializeScratchRegisters : ScratchRegisters
+initializeScratchRegisters = 
+  { integral_part_of_X   = 0
+  , fractional_part_of_X = 0
+  , number_of_decimals   = 0
+  , acceptNewDigitInto   = IntegralPart
+  }
 initializeAutomaticMemoryStackRegisters : AutomaticMemoryStackRegisters
 initializeAutomaticMemoryStackRegisters =
   { reg_T      = 0
@@ -134,7 +153,8 @@ initialModel : Model
 initialModel =
   { inputMode                     = White
   , computationMode               = RPN_Mode
-  , calculatorOperationalState    = AcceptingOperationsOrNumbers
+  --, calculatorOperationalState    = AcceptingOperationsOrNumbers
+  , scratchRegisters              = initializeScratchRegisters
   , automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters
   , financialRegisters            = initializeFinancialRegisters
   , dataStorageRegisters          = initializeDataStorageRegisters
@@ -142,7 +162,7 @@ initialModel =
   , programMemory                 = initializeProgramMemory
   , keyCode                       = 0
   , shortcutVisible               = False
-  , message                       = ""
+  , message                       = "No Keys"
   }
 
 

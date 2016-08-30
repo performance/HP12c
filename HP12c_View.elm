@@ -103,9 +103,15 @@ fourth_row_divs model =
   in
     List.map ( \kxlpair -> mktdiv model y_loc kxlpair ) x_locs
 
+all_rows_divs model = 
+  ( first_row_divs model ) ++ ( second_row_divs model ) ++ ( third_row_divs model ) ++ ( fourth_row_divs model ) ++ [ enter_button_div model ]
 
 button_divs model =
-  ( first_row_divs model ) ++ ( second_row_divs model ) ++ ( third_row_divs model ) ++ ( fourth_row_divs model ) ++ [ enter_button_div model ]
+    div
+    [
+      classNames [ "calculator" ]
+    ]
+    ( all_rows_divs model )
 
 
 empty_br_node = br [] []
@@ -121,6 +127,22 @@ stack_registers_div model =
 
    )
 
+financial_registers_div model =
+    div
+    [
+       classNames [ "calc_model" ], Html.Attributes.style [ ( "left", "400px"),( "top", "574px"), ("width", "400" ), ("position", "absolute")  ]
+    ]
+    
+   ( 
+    model.financialRegisters 
+    |> Basics.toString
+    |> String.split ","
+    |> List.take 5
+    |> List.map Html.text
+    |> List.intersperse  empty_br_node 
+    -- List.intersperse  empty_br_node ( List.map text ( String.split "," ( toString model.financialRegisters ) )  ) 
+   )
+
 -- upgrade this to show detailed computation state info
 modelinfodiv model =
   div
@@ -128,18 +150,17 @@ modelinfodiv model =
       classNames [ "calc_model" ], Html.Attributes.style [ ( "left", "0px"),( "top", "434px"), ("position", "absolute") ]
     ]
     [
-        text ( " Mode for next key = " ++ toString model.inputMode ++ "; Current Key = " ++ model.message )
+        Html.text ( " Mode for next key = " ++ toString model.inputMode ++ "; Current Key = " ++ model.message ++ " pressed ")
     ]
 
 
 divs_to_show model =
-  [ stylesheet ] ++ ( button_divs model ) ++ [ modelinfodiv model ] ++ [stack_registers_div model ]
+  [ stylesheet ] ++ [ button_divs model ] ++ [ modelinfodiv model ] ++ [stack_registers_div model ] ++ [ financial_registers_div model ]
 
 view : Model -> Html Msg
 view model =
   div
     [
-      classNames [ "calculator" ]
     ]
     ( divs_to_show model )
 
