@@ -33,21 +33,30 @@ stylesheet =
   in
     node tag attrs children
 
-transparent_box left top msg =
-  div
-    [ onClick msg, classNames [ "transparent_box"], Html.Attributes.style [ ( "left", ( toString left ) ++ "px"),( "top", ( toString top ) ++ "px") ] ]
-    [  ]
+transparent_box model left top keyChar  =
+  let 
+    msg = ( keyCodeToMsg model.inputMode ( Char.toCode keyChar ) )
+    opacity = ( "opacity", toString ( if True == model.shortcutVisible then 0.851 else 0 ) )
+  in
+    div
+      [ onClick msg, classNames [ "transparent_box"], Html.Attributes.style [ ( "left", ( toString left ) ++ "px"),( "top", ( toString top ) ++ "px"), opacity, ("background-color", "lightBlue" ) ] ]
+      [ 
+          span 
+              [ classNames ["hint_key"], Html.Attributes.style [ opacity ] ]
+              [ Html.text ( String.fromChar keyChar ) ]
+      ]
 
 enter_button_div model =
   let
     msg = ( keyCodeToMsg model.inputMode ( 13 ) )
+    opacity = ( "opacity", toString ( if True == model.shortcutVisible then 0.851 else 0 ) )
     enter_style =
       Html.Attributes.style
         [ ( "left", "305px")
         , ( "top", "250px")
         , ( "height", "64" )
         , ("position",  "absolute" )
-        , ("opacity",  "0.9" )
+        , opacity -- ("opacity",  "0.9" )
         , ("height",  "92px" )
         , ("width",  "34px" )
         , ("background-color", "lightBlue" )
@@ -57,38 +66,42 @@ enter_button_div model =
   in
     div
       [ onClick msg,  enter_style ]
-      [  ]
+      [ 
+          span 
+              [ classNames ["hint_key"], Html.Attributes.style [ opacity, ("font-size", "10px") ] ]
+              [ Html.text ( toString "Enter" ) ]
+      ]
 
-mktdiv inputMode y_loc (keyChar ,  x_loc ) =
-  transparent_box x_loc y_loc  ( keyCodeToMsg inputMode ( Char.toCode keyChar ) )
+mktdiv model y_loc (keyChar ,  x_loc ) =
+  transparent_box model x_loc y_loc  keyChar 
 
 first_row_divs model =
   let
     x_locs = [ ('N', 40 ), ('I', 95 ), ('P', 145 ), ('M', 200 ), ('V', 252 ), ('H', 305 ), ('7', 358 ), ('8', 410 ), ('9', 464 ),('/', 515 ) ]
     y_loc  = 134
   in
-    List.map ( \kxlpair -> mktdiv model.inputMode y_loc kxlpair ) x_locs
+    List.map ( \kxlpair -> mktdiv model y_loc kxlpair ) x_locs
 
 second_row_divs model =
   let
     x_locs = [ ('!', 40 ), ('\\', 95 ), ('T', 145 ), ('$', 200 ), ('%', 252 ), ('E', 305 ), ('4', 358 ), ('5', 410 ), ('6', 464 ),('*', 515 ) ]
     y_loc  = 192
   in
-    List.map ( \kxlpair -> mktdiv model.inputMode y_loc kxlpair ) x_locs
+    List.map ( \kxlpair -> mktdiv model y_loc kxlpair ) x_locs
 
 third_row_divs model =
   let
     x_locs = [ ('[', 40 ), (']', 95 ), ('R', 145 ), ('Y', 200 ), ('C', 252 ),               ('1', 358 ), ('2', 410 ), ('3', 464 ),('-', 515 ) ]
     y_loc  = 250
   in
-    List.map ( \kxlpair -> mktdiv model.inputMode y_loc kxlpair ) x_locs
+    List.map ( \kxlpair -> mktdiv model y_loc kxlpair ) x_locs
 
 fourth_row_divs model =
   let
     x_locs = [ ('O', 40 ), ('F', 95 ), ('G', 145 ), ('S', 200 ), ('L', 252 ),               ('0', 358 ), ('.', 410 ), ('W', 464 ),('+', 515 ) ]
     y_loc  = 310
   in
-    List.map ( \kxlpair -> mktdiv model.inputMode y_loc kxlpair ) x_locs
+    List.map ( \kxlpair -> mktdiv model y_loc kxlpair ) x_locs
 
 
 button_divs model =

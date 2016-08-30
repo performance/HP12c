@@ -25,7 +25,7 @@ div.transparent_box {
     opacity: 0.9;
     height: 32px;
     width: 34px;
-    /*background-color:green;*/
+    background-color: green;
     z-index: 1;
 }
 

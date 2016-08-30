@@ -87,6 +87,7 @@ type alias Model =
   , statisticalRegisters          : StatisticalRegisters
   , programMemory                 : ProgramMemory
   , keyCode                       : Keyboard.KeyCode
+  , shortcutVisible               : Bool
   , message                       : String
   }
 
@@ -140,6 +141,7 @@ initialModel =
   , statisticalRegisters          = initializeStatisticalRegisters
   , programMemory                 = initializeProgramMemory
   , keyCode                       = 0
+  , shortcutVisible               = False
   , message                       = ""
   }
 

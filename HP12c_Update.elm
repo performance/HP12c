@@ -153,7 +153,14 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
     KeyMsg code ->
-      ( { model | keyCode = code }  , Cmd.none )
+      if code == 32 then -- space bar toggles keyboard shortcuts
+        ( { model | keyCode = code
+                  , shortcutVisible = not model.shortcutVisible 
+                  , message = "Space bar pressed : " ++ Basics.toString ( model.shortcutVisible )
+          }, Cmd.none 
+        )
+      else
+        ( { model | keyCode = code }  , Cmd.none )
 -------------------------------- First Row of Keys
     N_Key                 ->
       ( { model | message = " N_Key pressed "                 }, Cmd.none )
