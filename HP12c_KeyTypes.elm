@@ -13,7 +13,7 @@ type Msg -- Cal_C_Keys                    Blue                         Orange
   | Number_7_Key                      | BEG_Key                 |     SetPrecision_7_Key
   | Number_8_Key                      | END_Key                 |     SetPrecision_8_Key
   | Number_9_Key                      | MEM_Key                 |     SetPrecision_9_Key
-  | Divide_Key                        | Undo_Key                |     Orange_Divide_Unimplemented
+  | Divide_Key                        | Undo_Key                
 -------------------------------- Second Row of Keys
   | Y_toThe_X_Key                     | Square_Root_Key         |     PRICE_Key
   | Reciprocal_Key                    | E_to_the_x_Key          |     YTM_Key
@@ -24,7 +24,7 @@ type Msg -- Cal_C_Keys                    Blue                         Orange
   | Number_4_Key                      | D_MY_Key                |     SetPrecision_4_Key
   | Number_5_Key                      | M_DY_Key                |     SetPrecision_5_Key
   | Number_6_Key                      | Weighted_Mean_Key       |     SetPrecision_6_Key
-  | Multiply_Key                      | X_Squared_Key           |     Orange_Multiply_Unimplemented
+  | Multiply_Key                      | X_Squared_Key           
 -------------------------------- Third Row of Keys
   | RunMode_Key                       | PSE_Key                 |     Program_Mode_Key    -- R/S    |
   | SST_Key                           | BST_Key                 |     CLEAR_Σ_Key         -- Single Step
@@ -35,7 +35,7 @@ type Msg -- Cal_C_Keys                    Blue                         Orange
   | Number_1_Key                      | Linear_Estimate_X_Key   |     SetPrecision_1_Key
   | Number_2_Key                      | Linear_Estimate_Y_Key   |     SetPrecision_2_Key
   | Number_3_Key                      | N_Factorial_Key         |     SetPrecision_3_Key
-  | Subtract_Key                      | BackSpace_Key           |     Orange_Minus_Unimplemented
+  | Subtract_Key                      | BackSpace_Key           
 -------------------------------- Fourth Row of Keys
   | ON_Key                                                      | OFF_Key
   | Orange_F_Key

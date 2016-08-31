@@ -14,6 +14,8 @@ import HP12c_KeyTypes exposing (..)
 import HP12c_Model exposing (..)
 import HP12c_View exposing (..)
 import HP12c_Update exposing (..)
+-- import HP12c_Update_handlers exposing (..)
+
 
 --import Array exposing (..)
 

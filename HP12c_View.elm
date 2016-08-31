@@ -150,7 +150,9 @@ modelinfodiv model =
       classNames [ "calc_model" ], Html.Attributes.style [ ( "left", "0px"),( "top", "434px"), ("position", "absolute") ]
     ]
     [
-        Html.text ( " Mode for next key = " ++ toString model.inputMode ++ "; Current Key = " ++ model.message ++ " pressed ")
+      Html.text ( " Current Key       : " ++ model.message ++ " pressed ")
+    , empty_br_node
+    , Html.text ( " Mode for next key : " ++ toString model.inputMode )
     ]
 
 

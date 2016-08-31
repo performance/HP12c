@@ -212,7 +212,7 @@ keyCodeToMsg inputMode code =
     45  -> case inputMode of
               White  -> Subtract_Key -- "-"
               Blue   -> BackSpace_Key
-              Orange -> KeyMsg code
+              Orange -> Subtract_Key
 
 -------------------------------- Fourth Row of Keys
     79  -> case inputMode of
@@ -276,12 +276,12 @@ keyCodeToMsg inputMode code =
     87  -> case inputMode of
               White  -> Sigma_Plus_Key    -- "W"
               Blue   -> Sigma_Minus_Key
-              Orange -> KeyMsg code
+              Orange -> Sigma_Plus_Key   -- KeyMsg code
 
     119 -> case inputMode of
               White  -> Sigma_Plus_Key    -- "w" -- Sigma+
               Blue   -> Sigma_Minus_Key
-              Orange -> KeyMsg code
+              Orange -> Sigma_Plus_Key   -- KeyMsg code
 
     43  -> case inputMode of
               White  -> Sum_Key -- "+"

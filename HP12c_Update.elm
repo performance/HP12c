@@ -1,677 +1,160 @@
 module HP12c_Update exposing (..)
-
 import HP12c_KeyTypes exposing (..)
+
+
 import HP12c_Model exposing (..)
-
-import Formatting exposing (..)
-import String
-
--- Update
-
--- unaryOperators
-reciprocal x = 1/x
-x_squared x = x * x
-square_root = Basics.sqrt
-natural_log x = Basics.logBase e x
-e_to_the_x x = e ^ x
-n_factorial x = 
-  let 
-    n = Basics.floor x
-  in
-    List.product [1..n]
-
--- in the hp12c platinum, the round function rounds the number to 
--- the number of decimals sepcified in the display precision
-round_function x n =
-  Basics.toFloat ( Basics.floor( x * ( 10 ^ n ) ) ) / ( 10 ^ n )
--- TODO: check if the calc rounds it by adding 0.5
-
-integral_part x = Basics.toFloat ( Basics.floor x )
-
-fractional_part x = x - ( integral_part x )
-
------------  Binary operators lhs is reg_y, rhs is reg_x
-
-y_to_the_x     y x = y ^ x
-y_plus_x       y x = y + x
-y_minus_x      y x = y - x
-y_times_x      y x = y * x 
-y_divided_by_x y x = y / x
-
-
-binaryOperator model op =
-  let
-    stackRegs = model.automaticMemoryStackRegisters
-    result = ( op stackRegs.reg_Y stackRegs.reg_X )
-    promotedStack = { stackRegs | 
-      reg_T = stackRegs.reg_T
-    , reg_Z = stackRegs.reg_T
-    , reg_Y = stackRegs.reg_Z
-    , reg_Last_X = stackRegs.reg_X
-    , reg_X = result
-    } 
-    promotedModel = { model 
-                    | automaticMemoryStackRegisters = promotedStack 
-                    , inputMode = White
-                    --, calculatorOperationalState = AcceptingOperationsOrNumbers
-                    }
-  in
-    promotedModel
-
-updateReg_X: Model -> Int -> Model
-updateReg_X model n = 
-  let 
-    stackRegs = model.automaticMemoryStackRegisters
-    scratchRegs = model.scratchRegisters
-    decimal_place = ( 10 ^ ( scratchRegs.number_of_decimals + 1 ) )
-    
-    newScratchRegs =
-      if scratchRegs.acceptNewDigitInto == FractionalPart 
-        then 
-            { scratchRegs | fractional_part_of_X = ( 10 * scratchRegs.fractional_part_of_X + n ) 
-                          , number_of_decimals = scratchRegs.number_of_decimals + 1
-            }
-        else 
-            { scratchRegs | integral_part_of_X = ( 10 * scratchRegs.integral_part_of_X + n )
-            }
-
-    newReg_X = ( Basics.toFloat newScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat newScratchRegs.fractional_part_of_X ) / decimal_place )
-    newStackRegs = { stackRegs | reg_X = newReg_X }
-    updatedModel = { model |  automaticMemoryStackRegisters = newStackRegs 
-                   ,          scratchRegisters              = newScratchRegs  
-                   }
-    newModel = update_Display_Precision updatedModel model.displayPrecision
-  in 
-    newModel
-
-numericalInputTerminated model =
-  let
-    promotedModel = liftStack model
-  in
-    { promotedModel | scratchRegisters = initializeScratchRegisters
-    }
-
-
-backSpaceReg_X model =
-  let 
-    stackRegs = model.automaticMemoryStackRegisters
-  in 
-    { stackRegs | reg_X = toFloat ( floor ( stackRegs.reg_X / 10 ) )} 
-
-liftStack model =
-  let
-    stackRegs = model.automaticMemoryStackRegisters
-    promotedStack = { stackRegs | 
-      reg_T = stackRegs.reg_Z
-    , reg_Z = stackRegs.reg_Y
-    , reg_Y = stackRegs.reg_X
-    } 
-    promotedModel = { model | automaticMemoryStackRegisters = promotedStack }
-  in
-    promotedModel
-
-exchange_X_Y_Regs model =
-  let
-    stackRegs = model.automaticMemoryStackRegisters
-    tmp_Y = stackRegs.reg_Y
-    exchangedStack = { stackRegs | 
-      reg_Y = stackRegs.reg_X
-    , reg_X = tmp_Y
-    } 
-    promotedModel = { model | automaticMemoryStackRegisters = exchangedStack }
-  in
-    promotedModel
-
-roll_Down_Stack model =
-  let
-    stackRegs = model.automaticMemoryStackRegisters
-    tmp_X = stackRegs.reg_X
-    rolledStack = { stackRegs | 
-      reg_X = stackRegs.reg_Y
-    , reg_Y = stackRegs.reg_Z
-    , reg_Z = stackRegs.reg_T
-    , reg_T = tmp_X
-    } 
-    promotedModel = { model | automaticMemoryStackRegisters = rolledStack }
-  in
-    promotedModel
-
-
-unaryOperator model op =
-  let
-    stackRegs = model.automaticMemoryStackRegisters
-    promotedStack = { stackRegs | 
-      reg_T = stackRegs.reg_Z
-    , reg_Z = stackRegs.reg_Y
-    , reg_Y = stackRegs.reg_X
-    , reg_Last_X = stackRegs.reg_X
-    , reg_X = ( op stackRegs.reg_X )
-    } 
-    promotedModel = { model 
-                    | automaticMemoryStackRegisters = promotedStack 
-                    , inputMode = White
-                    --, calculatorOperationalState = AcceptingOperationsOrNumbers
-                    }
-  in
-    promotedModel
-
-
-
-update_Display_Precision model n =
-  let 
-    newModel = if ( n < 10 ) 
-                then update_Display_Precision_util model n 
-                else update_Display_to_Scientific model 
-  in 
-    newModel
-
-update_Display_Precision_util model n =
-  let
-    displayPrecision = n
-    stackRegs = model.automaticMemoryStackRegisters
-    reg_X = stackRegs.reg_X
-    newDisplayString = ( print ( Formatting.roundTo displayPrecision ) reg_X )
-
-    newModel = { model | displayString    = newDisplayString
-               ,         displayPrecision = displayPrecision 
-               ,         inputMode = White
-               }
-  in 
-    newModel
-
-
-update_Display_to_Scientific model =
-  let
-    displayPrecision = 10
-    stackRegs = model.automaticMemoryStackRegisters
-    reg_X = stackRegs.reg_X
-    decimal_place = reg_X |> Basics.abs |> Basics.logBase 10
-    sign_of_exponent = if ( decimal_place < 0 ) then 1 else -1
-    newExponent = if ( reg_X < 1 ) then ( decimal_place |> Basics.ceiling ) else ( decimal_place |> Basics.floor )
-    newNumber = reg_X * ( 10 ^ ( sign_of_exponent * newExponent |> Basics.toFloat ) )
-    exp_display_part = print (padLeft 2 '0' int ) newExponent |> String.right 2
-    newDisplayString = ( print ( Formatting.roundTo 6 ) newNumber ) ++ "  " ++ (exp_display_part )
-
-    newModel = { model | displayString    = newDisplayString
-               ,         displayPrecision = displayPrecision 
-               ,         inputMode = White
-               }
-  in 
-    newModel
-
-
-type UpdateHandler 
-  =  UpdateHandler ( Msg -> Model -> List UpdateHandler -> ( Model, Cmd Msg ) )
-
-chainHandler : Msg -> Model -> List UpdateHandler -> ( Model, Cmd Msg )
-chainHandler msg model handlers =
-  let 
-    firstHandler      = List.head handlers
-    remainingHandlers = List.tail handlers
-  in
-    case ( firstHandler, remainingHandlers )  of 
-      ( Just ( UpdateHandler handler ), Just rest_handler )-> handler msg model rest_handler
-      ( Just ( UpdateHandler handler ), _                 )-> handler msg model []
-      ( Nothing                       , _                 ) -> ( model, Cmd.none )
-
-
-handleDigitKeys : Msg -> Model -> List UpdateHandler -> ( Model, Cmd Msg )
-handleDigitKeys msg model nonDigitHandlers =
-  case msg of 
-    -- handle digits here 
-    _ ->
-      chainHandler msg model nonDigitHandlers
-
-
-handleUnaryOperatorKeys : Msg -> Model -> List UpdateHandler -> ( Model, Cmd Msg )
-handleUnaryOperatorKeys msg model remainingHandlers =
-  case msg of 
-    -- handle unary ops here
-    _ ->
-      chainHandler msg model remainingHandlers
-
-
-
-newUpdate : Msg -> Model -> ( Model, Cmd Msg )
-newUpdate msg model =
-  case msg of
-    -- handle a few here if required
-    _ ->
-      List.map UpdateHandler [ handleDigitKeys, handleUnaryOperatorKeys ]
-      |> chainHandler msg model 
-
-
+import HP12c_Update_utils exposing (..)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-  case msg of
-    KeyMsg code ->
-      if code == 32 then -- space bar toggles keyboard shortcuts
-        ( { model | keyCode = code
-                  , shortcutVisible = not model.shortcutVisible 
-                  , message = "Space bar pressed : " ++ Basics.toString ( model.shortcutVisible )
-          }, Cmd.none 
-        )
-      else
-        ( { model | keyCode = code }  , Cmd.none )
--------------------------------- First Row of Keys
-  --{ reg_n   : Float
-  --, reg_i   : Float
-  --, reg_PV  : Float
-  --, reg_PMT : Float
-  --, reg_FV  : Float
+  let 
+    handler = 
+      case msg of
+        KeyMsg code -> handleKeyCode code 
+
+        N_Key                     -> defaultModelTransformer
+        I_Key                     -> defaultModelTransformer
+        PV_Key                    -> defaultModelTransformer
+        PMT_Key                   -> defaultModelTransformer
+        FV_Key                    -> defaultModelTransformer
+        CHS_Key                   -> defaultModelTransformer
+
+        Times_12_Key              -> defaultModelTransformer
+        DIVIDE_BY_12_Key          -> defaultModelTransformer
+        CF_0_Key                  -> defaultModelTransformer
+        CF_j_Key                  -> defaultModelTransformer
+        N_j_Key                   -> defaultModelTransformer
+
+        AMORT_Key                 -> defaultModelTransformer
+        INT_Key                   -> defaultModelTransformer
+        NPV_Key                   -> defaultModelTransformer
+        IRR_Key                   -> defaultModelTransformer
+
+        DATE_Key                  -> defaultModelTransformer
+        BEG_Key                   -> defaultModelTransformer
+        END_Key                   -> defaultModelTransformer
+        Delta_Days_Key            -> defaultModelTransformer
+        D_MY_Key                  -> defaultModelTransformer
+        M_DY_Key                  -> defaultModelTransformer
+
+        RunMode_Key               -> defaultModelTransformer
+        GTO_Key                   -> defaultModelTransformer
+        PSE_Key                   -> defaultModelTransformer
+        BST_Key                   -> defaultModelTransformer
+        SST_Key                   -> defaultModelTransformer
+        Program_Mode_Key          -> defaultModelTransformer
 
 
-    N_Key                 ->
-      --let 
-      --  finRegs = model.financialRegisters
-      --  finRegsEntered = model.financialRegistersEntered
+        CL_x_Key                  -> defaultModelTransformer
+        CLEAR_Σ_Key               -> defaultModelTransformer
+        CLEAR_PRGM_Key            -> defaultModelTransformer
+        CLEAR_FIN_Key             -> defaultModelTransformer
+        CLEAR_REG_Key             -> clearAllRegisters
+        CLEAR_PREFIX_Key          -> defaultModelTransformer
+
+        STO_Key                   -> defaultModelTransformer
+        RCL_Key                   -> defaultModelTransformer
+        MEM_Key                   -> defaultModelTransformer
+
+        Divide_Key                -> binaryOperator y_divided_by_x   
+        Y_toThe_X_Key             -> binaryOperator y_to_the_x  
+        Multiply_Key              -> binaryOperator y_times_x  
+        Subtract_Key              -> binaryOperator y_minus_x  
+        Sum_Key                   -> binaryOperator y_plus_x  
+
+        LN_Key                    -> unaryOperator natural_log
+        Square_Root_Key           -> unaryOperator square_root
+        Reciprocal_Key            -> unaryOperator reciprocal
+        E_to_the_x_Key            -> unaryOperator e_to_the_x
+        FRAC_Key                  -> unaryOperator fractional_part
+        INTG_Key                  -> unaryOperator integral_part
+        X_Squared_Key             -> unaryOperator x_squared
+        N_Factorial_Key           -> unaryOperator n_factorial
+        RND_Key                   -> unaryOperator ( round_function model.displayPrecision )
 
 
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Times_12_Key          ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    AMORT_Key             ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    I_Key                 ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    DIVIDE_BY_12_Key      ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    INT_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    PV_Key                ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    CF_0_Key              ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    NPV_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    PMT_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    CF_j_Key              ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    RND_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    FV_Key                ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    N_j_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    IRR_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    CHS_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    DATE_Key              ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    RPN_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Number_7_Key          ->
-      let 
-        newModel = updateReg_X model 7
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+        PRICE_Key                 -> defaultModelTransformer
+        YTM_Key                   -> defaultModelTransformer
 
-    BEG_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-
-    SetPrecision_7_Key    ->
-      let 
-        newModel = update_Display_Precision model 7
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    Number_8_Key          ->
-      let 
-        newModel = updateReg_X model 8
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    END_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-
-    SetPrecision_8_Key    ->
-      let 
-        newModel = update_Display_Precision model 8
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    Number_9_Key          ->
-      let 
-        newModel = updateReg_X model 9
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+        SL_Key                    -> defaultModelTransformer
+        SOYD_Key                  -> defaultModelTransformer
+        DB_Key                    -> defaultModelTransformer
 
 
-    MEM_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
 
-    SetPrecision_9_Key    ->
-      let 
-        newModel = update_Display_Precision model 9
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+        Weighted_Mean_Key         -> defaultModelTransformer
+        Mean_of_X_Key             -> defaultModelTransformer
+        Std_Dev_Key               -> defaultModelTransformer
+        Sigma_Plus_Key            -> defaultModelTransformer
+        Sigma_Minus_Key           -> defaultModelTransformer
 
-    Divide_Key            ->
-      let 
-        newModel = binaryOperator model y_divided_by_x
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+        X_lte_Y_Key               -> defaultModelTransformer
+        X_eq_0_Key                -> defaultModelTransformer
+        Linear_Estimate_X_Key     -> defaultModelTransformer
+        Linear_Estimate_Y_Key     -> defaultModelTransformer
 
-    Undo_Key              ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
--------------------------------- Second Row of Keys
-    Y_toThe_X_Key         ->
-      let 
-        newModel = binaryOperator model y_to_the_x
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
 
-    Square_Root_Key       ->
-      let 
-        newModel = unaryOperator model square_root
-      in 
-      ( { newModel | message = Basics.toString msg    }, Cmd.none 
+        RPN_Key                   -> defaultModelTransformer
+        ALG_Key                   -> defaultModelTransformer
+
+        Equals_Key                -> numericalInputTerminated
+        Enter_Key                 -> numericalInputTerminated
+        BackSpace_Key             -> backSpaceReg_X
+
+        Roll_Down_Key             -> roll_Down_Stack
+        Exchange_X_Y_Key          -> exchange_X_Y_Regs
+        Last_X_Key                -> defaultModelTransformer
+
+        Left_Paren_Key            -> defaultModelTransformer
+        Right_Paren_Key           -> defaultModelTransformer
+
+        Number_1_Key              -> handleDigitInput 1
+        Number_2_Key              -> handleDigitInput 2
+        Number_3_Key              -> handleDigitInput 3
+        Number_4_Key              -> handleDigitInput 4
+        Number_5_Key              -> handleDigitInput 5
+        Number_6_Key              -> handleDigitInput 6
+        Number_7_Key              -> handleDigitInput 7
+        Number_8_Key              -> handleDigitInput 8
+        Number_9_Key              -> handleDigitInput 9
+        Number_0_Key              -> handleDigitInput 0
+        Decimal_Point_Key         -> handleDecimalPoint 
+        EEX_Key                   -> defaultModelTransformer
+
+
+        ON_Key                    -> handlePOWERONKey 
+        OFF_Key                   -> handlePOWERONKey 
+
+        Percentage_T_Key          -> defaultModelTransformer
+        Delta_Percentage_Key      -> defaultModelTransformer
+        Percent_Key               -> defaultModelTransformer
+
+
+        SetPrecision_0_Key        -> update_Display_Precision  0
+        SetPrecision_1_Key        -> update_Display_Precision  1
+        SetPrecision_2_Key        -> update_Display_Precision  2
+        SetPrecision_3_Key        -> update_Display_Precision  3
+        SetPrecision_4_Key        -> update_Display_Precision  4
+        SetPrecision_5_Key        -> update_Display_Precision  5
+        SetPrecision_6_Key        -> update_Display_Precision  6
+        SetPrecision_7_Key        -> update_Display_Precision  7
+        SetPrecision_8_Key        -> update_Display_Precision  8
+        SetPrecision_9_Key        -> update_Display_Precision  9
+        SetDisplayScientific_Key  -> update_Display_Precision 10
+
+
+        Orange_F_Key              -> setPrefix Orange 
+        Blue_G_Key                -> setPrefix Blue 
+
+        Undo_Key                  -> defaultModelTransformer
+       
+    newModel = handler model 
+    defaultMessage u msg =
+      ( 
+        if ( u )
+          then "UNIMPLEMENTED!!!"
+          else ""
       )
-    PRICE_Key             ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Reciprocal_Key        ->
-      let 
-        newModel = unaryOperator model reciprocal
-      in 
-      ( { newModel | message = Basics.toString msg }, Cmd.none 
-      )
-    E_to_the_x_Key        ->
-      let 
-        newModel = unaryOperator model e_to_the_x
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-    YTM_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Percentage_T_Key      ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    LN_Key                ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    SL_Key                ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Delta_Percentage_Key  ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    FRAC_Key              ->
-      let 
-        newModel = unaryOperator model fractional_part
-      in 
-        ( { newModel | message = Basics.toString msg
-          ,            inputMode = White  
-          }, Cmd.none 
-        )
-
-    SOYD_Key              ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Percent_Key           ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    INTG_Key              ->
-      let 
-        newModel = unaryOperator model integral_part
-      in 
-        ( { newModel | message = Basics.toString msg
-          ,            inputMode = White  
-          }, Cmd.none 
-        )
-    DB_Key                ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    EEX_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Delta_Days_Key        ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    ALG_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Number_4_Key          ->
-      let 
-        newModel = updateReg_X model 4
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-
-    D_MY_Key              ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-
-    SetPrecision_4_Key    ->
-      let 
-        newModel = update_Display_Precision model 4
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-
-    Number_5_Key          ->
-      let 
-        newModel = updateReg_X model 5
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-
-    M_DY_Key              ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-
-    SetPrecision_5_Key    ->
-      let 
-        newModel = update_Display_Precision model 5
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-
-    Number_6_Key          ->
-      let 
-        newModel = updateReg_X model 6
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-
-    Weighted_Mean_Key     ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-
-    SetPrecision_6_Key    ->
-      let 
-        newModel = update_Display_Precision model 6
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    Multiply_Key          ->
-      let 
-        newModel = binaryOperator model y_times_x
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    X_Squared_Key         ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
--------------------------------- Third Row of Keys
-    RunMode_Key           ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    PSE_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Program_Mode_Key      ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    SST_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    BST_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    CLEAR_Σ_Key           ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Roll_Down_Key         ->
-      let 
-        rolledStackModel = roll_Down_Stack model
-      in
-        ( { rolledStackModel | message = Basics.toString msg  }, Cmd.none )
-
-    GTO_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    CLEAR_PRGM_Key        ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Exchange_X_Y_Key      ->
-      let 
-        newModel =  exchange_X_Y_Regs model
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    X_lte_Y_Key           ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    CLEAR_FIN_Key         ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    CL_x_Key              ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    X_eq_0_Key            ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    CLEAR_REG_Key         ->
-      let 
-        cleared_model =
-          { model | message = Basics.toString msg
-          ,         automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters
-          ,         dataStorageRegisters          = initializeDataStorageRegisters 
-          ,         statisticalRegisters          = initializeStatisticalRegisters
-          ,         financialRegisters            = initializeFinancialRegisters
-          ,         scratchRegisters              = initializeScratchRegisters
-          }
-        newModel = update_Display_Precision cleared_model model.displayPrecision
-      in 
-        ( newModel, Cmd.none )
-
-
-    Enter_Key             ->
-      let 
-        newModel = numericalInputTerminated model 
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    Equals_Key            ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    CLEAR_PREFIX_Key      ->
-      ( { model | message = Basics.toString msg  
-        ,         inputMode = White
-        }, Cmd.none 
-      )
-    Number_1_Key          ->
-      let 
-        newModel = updateReg_X model 1
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-
-    Linear_Estimate_X_Key ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-
-    SetPrecision_1_Key    ->
-      let 
-        newModel = update_Display_Precision model 1
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    Number_2_Key          ->
-      let 
-        newModel = updateReg_X model 2
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-
-    Linear_Estimate_Y_Key ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-
-    SetPrecision_2_Key    ->
-      let 
-        newModel = update_Display_Precision model 2
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-
-    Number_3_Key          ->
-      let 
-        newModel = updateReg_X model 3
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-
-    N_Factorial_Key       ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-
-    SetPrecision_3_Key    ->
-      let 
-        newModel = update_Display_Precision model 3
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    Subtract_Key          ->
-      let 
-        newModel = binaryOperator model y_minus_x
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    BackSpace_Key         ->
-      ( { model | message = Basics.toString msg  
-        ,         automaticMemoryStackRegisters = backSpaceReg_X model 
-        }, Cmd.none )
--------------------------------- Fourth Row of Keys
-    ON_Key                ->
-      ( { initialModel | message = Basics.toString msg  }, Cmd.none )
-    OFF_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Orange_F_Key          ->
-      ( { model | message   = Basics.toString msg  
-        ,         inputMode = Orange
-        }, Cmd.none 
-      )
-    Blue_G_Key            ->
-      ( { model | message   = Basics.toString msg
-        ,         inputMode = Blue
-        }, Cmd.none 
-      )
-    STO_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Left_Paren_Key        ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    RCL_Key               ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Right_Paren_Key       ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Number_0_Key          ->
-      let 
-        newModel = updateReg_X model 0
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    Mean_of_X_Key         ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-
-
-    SetPrecision_0_Key    ->
-      let 
-        newModel = update_Display_Precision model 0
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )      
-
-    Decimal_Point_Key     ->
-      let 
-        modelScratchRegs = model.scratchRegisters 
-        newScratchRegs = { modelScratchRegs | acceptNewDigitInto = FractionalPart }
-        newModel    = { model | scratchRegisters = newScratchRegs }
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    Std_Dev_Key           ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-
-    SetDisplayScientific_Key ->
-      let 
-        newModel = update_Display_to_Scientific model
-      in 
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-
-    Sigma_Plus_Key        ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Sigma_Minus_Key       ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    Sum_Key               ->
-      let 
-        newModel = binaryOperator model y_plus_x
-      in
-        ( { newModel | message = Basics.toString msg  }, Cmd.none )
-
-    Last_X_Key            ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
-    _ ->
-      ( { model | message = " Not Yet implemented "           }, Cmd.none )
+      ++ Basics.toString msg
+  in
+    ( { newModel | message = defaultMessage newModel.unimplemented msg, unimplemented = False }, Cmd.none )

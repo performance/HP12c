@@ -112,6 +112,7 @@ type alias Model =
   , message                       : String
   , displayString                 : String
   , displayPrecision              : Int
+  , unimplemented                 : Bool
   }
 
 initializeScratchRegisters : ScratchRegisters
@@ -187,6 +188,7 @@ initialModel =
   , message                       = "No Keys"
   , displayString                 = "0.00"
   , displayPrecision              = 2
+  , unimplemented                 = False
   }
 
 
