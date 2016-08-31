@@ -1,8 +1,6 @@
 module Main exposing (..)
 
-
---import List
---import Json.Decode as Json
+-- Link to manual: http://www.hp.com/ctg/Manual/bpia5309.pdf
 
 import Keyboard
 

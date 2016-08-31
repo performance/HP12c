@@ -3,6 +3,9 @@ module HP12c_Update exposing (..)
 import HP12c_KeyTypes exposing (..)
 import HP12c_Model exposing (..)
 
+import Formatting exposing (..)
+import String
+
 -- Update
 
 -- unaryOperators
@@ -74,9 +77,10 @@ updateReg_X model n =
 
     newReg_X = ( Basics.toFloat newScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat newScratchRegs.fractional_part_of_X ) / decimal_place )
     newStackRegs = { stackRegs | reg_X = newReg_X }
-    newModel = { model |  automaticMemoryStackRegisters = newStackRegs 
-               ,          scratchRegisters              = newScratchRegs  
-               }
+    updatedModel = { model |  automaticMemoryStackRegisters = newStackRegs 
+                   ,          scratchRegisters              = newScratchRegs  
+                   }
+    newModel = update_Display_Precision updatedModel model.displayPrecision
   in 
     newModel
 
@@ -151,6 +155,93 @@ unaryOperator model op =
   in
     promotedModel
 
+
+
+update_Display_Precision model n =
+  let 
+    newModel = if ( n < 10 ) 
+                then update_Display_Precision_util model n 
+                else update_Display_to_Scientific model 
+  in 
+    newModel
+
+update_Display_Precision_util model n =
+  let
+    displayPrecision = n
+    stackRegs = model.automaticMemoryStackRegisters
+    reg_X = stackRegs.reg_X
+    newDisplayString = ( print ( Formatting.roundTo displayPrecision ) reg_X )
+
+    newModel = { model | displayString    = newDisplayString
+               ,         displayPrecision = displayPrecision 
+               ,         inputMode = White
+               }
+  in 
+    newModel
+
+
+update_Display_to_Scientific model =
+  let
+    displayPrecision = 10
+    stackRegs = model.automaticMemoryStackRegisters
+    reg_X = stackRegs.reg_X
+    decimal_place = reg_X |> Basics.abs |> Basics.logBase 10
+    sign_of_exponent = if ( decimal_place < 0 ) then 1 else -1
+    newExponent = if ( reg_X < 1 ) then ( decimal_place |> Basics.ceiling ) else ( decimal_place |> Basics.floor )
+    newNumber = reg_X * ( 10 ^ ( sign_of_exponent * newExponent |> Basics.toFloat ) )
+    exp_display_part = print (padLeft 2 '0' int ) newExponent |> String.right 2
+    newDisplayString = ( print ( Formatting.roundTo 6 ) newNumber ) ++ "  " ++ (exp_display_part )
+
+    newModel = { model | displayString    = newDisplayString
+               ,         displayPrecision = displayPrecision 
+               ,         inputMode = White
+               }
+  in 
+    newModel
+
+
+type UpdateHandler 
+  =  UpdateHandler ( Msg -> Model -> List UpdateHandler -> ( Model, Cmd Msg ) )
+
+chainHandler : Msg -> Model -> List UpdateHandler -> ( Model, Cmd Msg )
+chainHandler msg model handlers =
+  let 
+    firstHandler      = List.head handlers
+    remainingHandlers = List.tail handlers
+  in
+    case ( firstHandler, remainingHandlers )  of 
+      ( Just ( UpdateHandler handler ), Just rest_handler )-> handler msg model rest_handler
+      ( Just ( UpdateHandler handler ), _                 )-> handler msg model []
+      ( Nothing                       , _                 ) -> ( model, Cmd.none )
+
+
+handleDigitKeys : Msg -> Model -> List UpdateHandler -> ( Model, Cmd Msg )
+handleDigitKeys msg model nonDigitHandlers =
+  case msg of 
+    -- handle digits here 
+    _ ->
+      chainHandler msg model nonDigitHandlers
+
+
+handleUnaryOperatorKeys : Msg -> Model -> List UpdateHandler -> ( Model, Cmd Msg )
+handleUnaryOperatorKeys msg model remainingHandlers =
+  case msg of 
+    -- handle unary ops here
+    _ ->
+      chainHandler msg model remainingHandlers
+
+
+
+newUpdate : Msg -> Model -> ( Model, Cmd Msg )
+newUpdate msg model =
+  case msg of
+    -- handle a few here if required
+    _ ->
+      List.map UpdateHandler [ handleDigitKeys, handleUnaryOperatorKeys ]
+      |> chainHandler msg model 
+
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
   case msg of
@@ -164,7 +255,19 @@ update msg model =
       else
         ( { model | keyCode = code }  , Cmd.none )
 -------------------------------- First Row of Keys
+  --{ reg_n   : Float
+  --, reg_i   : Float
+  --, reg_PV  : Float
+  --, reg_PMT : Float
+  --, reg_FV  : Float
+
+
     N_Key                 ->
+      --let 
+      --  finRegs = model.financialRegisters
+      --  finRegsEntered = model.financialRegistersEntered
+
+
       ( { model | message = Basics.toString msg  }, Cmd.none )
     Times_12_Key          ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
@@ -208,15 +311,28 @@ update msg model =
 
     BEG_Key               ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
+
+    SetPrecision_7_Key    ->
+      let 
+        newModel = update_Display_Precision model 7
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+
     Number_8_Key          ->
       let 
         newModel = updateReg_X model 8
       in
         ( { newModel | message = Basics.toString msg  }, Cmd.none )
 
-
     END_Key               ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
+
+    SetPrecision_8_Key    ->
+      let 
+        newModel = update_Display_Precision model 8
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+
     Number_9_Key          ->
       let 
         newModel = updateReg_X model 9
@@ -226,6 +342,13 @@ update msg model =
 
     MEM_Key               ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
+
+    SetPrecision_9_Key    ->
+      let 
+        newModel = update_Display_Precision model 9
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+
     Divide_Key            ->
       let 
         newModel = binaryOperator model y_divided_by_x
@@ -308,6 +431,14 @@ update msg model =
 
     D_MY_Key              ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
+
+    SetPrecision_4_Key    ->
+      let 
+        newModel = update_Display_Precision model 4
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+
+
     Number_5_Key          ->
       let 
         newModel = updateReg_X model 5
@@ -317,6 +448,14 @@ update msg model =
 
     M_DY_Key              ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
+
+    SetPrecision_5_Key    ->
+      let 
+        newModel = update_Display_Precision model 5
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+
+
     Number_6_Key          ->
       let 
         newModel = updateReg_X model 6
@@ -326,6 +465,13 @@ update msg model =
 
     Weighted_Mean_Key     ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
+
+    SetPrecision_6_Key    ->
+      let 
+        newModel = update_Display_Precision model 6
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+
     Multiply_Key          ->
       let 
         newModel = binaryOperator model y_times_x
@@ -372,7 +518,20 @@ update msg model =
     X_eq_0_Key            ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
     CLEAR_REG_Key         ->
-      ( { model | message = Basics.toString msg  }, Cmd.none )
+      let 
+        cleared_model =
+          { model | message = Basics.toString msg
+          ,         automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters
+          ,         dataStorageRegisters          = initializeDataStorageRegisters 
+          ,         statisticalRegisters          = initializeStatisticalRegisters
+          ,         financialRegisters            = initializeFinancialRegisters
+          ,         scratchRegisters              = initializeScratchRegisters
+          }
+        newModel = update_Display_Precision cleared_model model.displayPrecision
+      in 
+        ( newModel, Cmd.none )
+
+
     Enter_Key             ->
       let 
         newModel = numericalInputTerminated model 
@@ -395,6 +554,13 @@ update msg model =
 
     Linear_Estimate_X_Key ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
+
+    SetPrecision_1_Key    ->
+      let 
+        newModel = update_Display_Precision model 1
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+
     Number_2_Key          ->
       let 
         newModel = updateReg_X model 2
@@ -404,6 +570,14 @@ update msg model =
 
     Linear_Estimate_Y_Key ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
+
+    SetPrecision_2_Key    ->
+      let 
+        newModel = update_Display_Precision model 2
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+
+
     Number_3_Key          ->
       let 
         newModel = updateReg_X model 3
@@ -413,6 +587,13 @@ update msg model =
 
     N_Factorial_Key       ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
+
+    SetPrecision_3_Key    ->
+      let 
+        newModel = update_Display_Precision model 3
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+
     Subtract_Key          ->
       let 
         newModel = binaryOperator model y_minus_x
@@ -455,6 +636,13 @@ update msg model =
     Mean_of_X_Key         ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
 
+
+    SetPrecision_0_Key    ->
+      let 
+        newModel = update_Display_Precision model 0
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )      
+
     Decimal_Point_Key     ->
       let 
         modelScratchRegs = model.scratchRegisters 
@@ -465,6 +653,14 @@ update msg model =
 
     Std_Dev_Key           ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
+
+    SetDisplayScientific_Key ->
+      let 
+        newModel = update_Display_to_Scientific model
+      in 
+        ( { newModel | message = Basics.toString msg  }, Cmd.none )
+
+
     Sigma_Plus_Key        ->
       ( { model | message = Basics.toString msg  }, Cmd.none )
     Sigma_Minus_Key       ->

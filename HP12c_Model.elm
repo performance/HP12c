@@ -23,6 +23,14 @@ type alias ScratchRegisters =
   , acceptNewDigitInto   : AcceptNewDigitInto
   }
 
+type alias FinancialRegistersEntered =
+  { reg_n_entered   : Bool
+  , reg_i_entered   : Bool
+  , reg_PV_entered  : Bool
+  , reg_PMT_entered : Bool
+  , reg_FV_entered  : Bool
+  }  
+
 type alias FinancialRegisters =
   { reg_n   : Float
   , reg_i   : Float
@@ -95,12 +103,15 @@ type alias Model =
   , scratchRegisters              : ScratchRegisters
   , automaticMemoryStackRegisters : AutomaticMemoryStackRegisters
   , financialRegisters            : FinancialRegisters
+  , financialRegistersEntered     : FinancialRegistersEntered
   , dataStorageRegisters          : DataStorageRegisters
   , statisticalRegisters          : StatisticalRegisters
   , programMemory                 : ProgramMemory
   , keyCode                       : Keyboard.KeyCode
   , shortcutVisible               : Bool
   , message                       : String
+  , displayString                 : String
+  , displayPrecision              : Int
   }
 
 initializeScratchRegisters : ScratchRegisters
@@ -128,6 +139,16 @@ initializeFinancialRegisters =
   , reg_FV  = 0
   , regs_N  = Array.initialize 80  ( always 0 )
   }
+
+initializeFinancialRegistersEntered : FinancialRegistersEntered
+initializeFinancialRegistersEntered = 
+  { reg_n_entered   = False
+  , reg_i_entered   = False
+  , reg_PV_entered  = False
+  , reg_PMT_entered = False
+  , reg_FV_entered  = False
+  } 
+
 initializeDataStorageRegisters : DataStorageRegisters
 initializeDataStorageRegisters =
   { reg_R          = Array.initialize  10 ( always 0 )
@@ -157,12 +178,15 @@ initialModel =
   , scratchRegisters              = initializeScratchRegisters
   , automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters
   , financialRegisters            = initializeFinancialRegisters
+  , financialRegistersEntered     = initializeFinancialRegistersEntered 
   , dataStorageRegisters          = initializeDataStorageRegisters
   , statisticalRegisters          = initializeStatisticalRegisters
   , programMemory                 = initializeProgramMemory
   , keyCode                       = 0
   , shortcutVisible               = False
   , message                       = "No Keys"
+  , displayString                 = "0.00"
+  , displayPrecision              = 2
   }
 
 

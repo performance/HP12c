@@ -42,8 +42,8 @@ type Msg -- Cal_C_Keys                    Blue                         Orange
   | Blue_G_Key
   | STO_Key                           | Left_Paren_Key
   | RCL_Key                           | Right_Paren_Key
-  | Number_0_Key                      | Mean_of_X_Key
-  | Decimal_Point_Key                 | Std_Dev_Key
+  | Number_0_Key                      | Mean_of_X_Key           |     SetPrecision_0_Key 
+  | Decimal_Point_Key                 | Std_Dev_Key             |     SetDisplayScientific_Key
   | Sigma_Plus_Key                    | Sigma_Minus_Key
   | Sum_Key                           | Last_X_Key
   | KeyMsg Keyboard.KeyCode -- for any key not on the calc

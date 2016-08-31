@@ -123,7 +123,7 @@ stack_registers_div model =
        classNames [ "calc_model" ], Html.Attributes.style [ ( "left", "0px"),( "top", "574px"), ("position", "absolute")  ]
     ]
     
-   ( List.intersperse  empty_br_node ( List.map text ( String.split "," ( toString model.automaticMemoryStackRegisters ) )  ) 
+   ( List.intersperse  empty_br_node ( List.map text ( ( String.split "," ( toString model.automaticMemoryStackRegisters ) ) ++  [ "display: " ++ model.displayString ] )  ) 
 
    )
 

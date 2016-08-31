@@ -266,12 +266,12 @@ keyCodeToMsg inputMode code =
     48  -> case inputMode of
               White  -> Number_0_Key      -- "0" -- zero
               Blue   -> Mean_of_X_Key
-              Orange -> Number_0_Key -- KeyMsg code
+              Orange -> SetPrecision_0_Key -- KeyMsg code
 
     46  -> case inputMode of
               White  -> Decimal_Point_Key -- ".""
               Blue   -> Std_Dev_Key
-              Orange -> Decimal_Point_Key -- KeyMsg code
+              Orange -> SetDisplayScientific_Key
 
     87  -> case inputMode of
               White  -> Sigma_Plus_Key    -- "W"
