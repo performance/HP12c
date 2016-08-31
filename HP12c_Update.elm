@@ -45,12 +45,12 @@ update msg model =
         Program_Mode_Key          -> defaultModelTransformer
 
 
-        CL_x_Key                  -> defaultModelTransformer
-        CLEAR_Σ_Key               -> defaultModelTransformer
-        CLEAR_PRGM_Key            -> defaultModelTransformer
-        CLEAR_FIN_Key             -> defaultModelTransformer
+        CL_x_Key                  -> clearXRegister
+        CLEAR_Σ_Key               -> clearSigma
+        CLEAR_PRGM_Key            -> clearProgramMemory
+        CLEAR_FIN_Key             -> clearFinancialRegisters
         CLEAR_REG_Key             -> clearAllRegisters
-        CLEAR_PREFIX_Key          -> defaultModelTransformer
+        CLEAR_PREFIX_Key          -> clearPrefix -- TODO: easing for display
 
         STO_Key                   -> defaultModelTransformer
         RCL_Key                   -> defaultModelTransformer
@@ -103,7 +103,7 @@ update msg model =
 
         Roll_Down_Key             -> roll_Down_Stack
         Exchange_X_Y_Key          -> exchange_X_Y_Regs
-        Last_X_Key                -> defaultModelTransformer
+        Last_X_Key                -> last_X
 
         Left_Paren_Key            -> defaultModelTransformer
         Right_Paren_Key           -> defaultModelTransformer
@@ -157,4 +157,12 @@ update msg model =
       )
       ++ Basics.toString msg
   in
-    ( { newModel | message = defaultMessage newModel.unimplemented msg, unimplemented = False }, Cmd.none )
+    ( 
+      { newModel | 
+        message       = defaultMessage newModel.unimplemented msg
+      , unimplemented = False 
+      , inputQueue    = msg :: newModel.inputQueue 
+      }
+    , 
+      Cmd.none 
+    )

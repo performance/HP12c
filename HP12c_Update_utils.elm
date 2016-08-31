@@ -9,7 +9,7 @@ import Keyboard
 
 -- Update
 
-
+---------- Stack operations 
 liftStack : Model -> Model
 liftStack model =
   let
@@ -51,7 +51,29 @@ roll_Down_Stack model =
   in
     promotedModel
 
--- unaryOperators
+
+last_X : Model -> Model
+last_X model =
+  let
+    stackRegs = model.automaticMemoryStackRegisters
+    promotedStack = { stackRegs | 
+      reg_T = stackRegs.reg_Z
+    , reg_Z = stackRegs.reg_Y
+    , reg_Y = stackRegs.reg_X
+    , reg_X = stackRegs.reg_Last_X
+    } 
+    promotedModel = 
+      { model | 
+        automaticMemoryStackRegisters = promotedStack
+      , inputMode                     = White
+      }
+  in
+    promotedModel
+
+---------- Stack operations 
+
+---------- unaryOperators
+
 reciprocal  x = 1/x
 x_squared   x = x * x
 square_root x = Basics.sqrt x
@@ -71,7 +93,7 @@ round_function n x =
     float_n = Basics.toFloat n
   in 
     Basics.toFloat ( Basics.floor( x * ( 10 ^ float_n ) ) ) / ( 10 ^ float_n )
--- TODO: check if the calc rounds it by adding 0.5
+    -- TODO: check if the calc rounds it by adding 0.5
 
 integral_part   x = Basics.toFloat ( Basics.floor x )
 fractional_part x = x - ( integral_part x )
@@ -97,7 +119,7 @@ unaryOperator op model =
   in
     promotedModel
 
-
+---------- unaryOperators
 
 -----------  Binary operators lhs is reg_y, rhs is reg_x
 
@@ -130,6 +152,10 @@ binaryOperator op model =
   in
     promotedModel
 
+-----------  Binary operators lhs is reg_y, rhs is reg_x
+
+
+-- TODO: change this to handle STO RCL GTO etc
 handleDigitInput: Int -> Model -> Model
 handleDigitInput newDigit model = 
   let 
@@ -162,6 +188,7 @@ handleDigitInput newDigit model =
   in 
     newModel
 
+-- TODO: change this to handle STO RCL GTO etc
 handleDecimalPoint : Model -> Model
 handleDecimalPoint model = 
   let 
@@ -201,6 +228,67 @@ clearAllRegisters model =
       ,         financialRegisters            = initializeFinancialRegisters
       ,         scratchRegisters              = initializeScratchRegisters
       }
+    newModel = update_Display_Precision model.displayPrecision cleared_model
+  in 
+    newModel
+
+clearFinancialRegisters : Model -> Model
+clearFinancialRegisters model =
+  let 
+    cleared_model =
+      { model | 
+                financialRegisters            = initializeFinancialRegisters
+      ,         scratchRegisters              = initializeScratchRegisters
+      }
+    newModel = update_Display_Precision model.displayPrecision cleared_model
+  in 
+    newModel
+
+clearProgramMemory : Model -> Model
+clearProgramMemory model =
+  if ( model.computationMode == PRGM_MODE )
+    then
+      let 
+        cleared_model =
+          { model | 
+                    programMemory            = initializeProgramMemory
+          }
+      in 
+        cleared_model
+    else
+      model
+
+
+--CLEAR PREFIX after f, g, STO, RCL or GTO cancels that key (page 18).
+--f CLEAR PREFIX also displays mantissa of number in the displayed X-register
+
+clearPrefix : Model -> Model
+clearPrefix model = 
+  { model | 
+    inputMode = White
+  , message = "DOES NOT YET HANDLE STO RCL AND GTO, and need to figure out how to display mantissa for one sec only " 
+  }
+
+
+clearSigma : Model -> Model
+clearSigma model =
+  let 
+    cleared_model =
+      { model | 
+                automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters
+      ,         statisticalRegisters          = initializeStatisticalRegisters
+      ,         scratchRegisters              = initializeScratchRegisters
+      }
+    newModel = update_Display_Precision model.displayPrecision cleared_model
+  in 
+    newModel
+
+clearXRegister : Model -> Model
+clearXRegister model =
+  let 
+    stackRegs     = model.automaticMemoryStackRegisters
+    newStackRegs  = { stackRegs | reg_X = 0 }
+    cleared_model = { model | automaticMemoryStackRegisters = newStackRegs }
     newModel = update_Display_Precision model.displayPrecision cleared_model
   in 
     newModel

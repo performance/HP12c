@@ -1,5 +1,7 @@
 module HP12c_Model exposing (..)
 
+import HP12c_KeyTypes exposing (..)
+
 import Array exposing (..)
 
 import Keyboard
@@ -14,7 +16,13 @@ type alias AutomaticMemoryStackRegisters =
 
 type AcceptNewDigitInto 
   = IntegralPart
-  |  FractionalPart
+  | FractionalPart
+  | STO_Reg 
+  | STO_Dot_Reg
+  | RCL_Reg
+  | RCL_Dot_Reg
+  | GTO_Addrs
+
 
 type alias ScratchRegisters =
   { integral_part_of_X   : Int
@@ -95,9 +103,11 @@ type CalculatorOperationalState
 type ComputationMode
   = RPN_Mode
   | ALG_Mode
+  | PRGM_MODE
 
 type alias Model =
-  { inputMode                     : InputMode
+  { inputQueue                    : List Msg
+  , inputMode                     : InputMode
   , computationMode               : ComputationMode
   --, calculatorOperationalState    : CalculatorOperationalState
   , scratchRegisters              : ScratchRegisters
@@ -173,7 +183,8 @@ initializeProgramMemory =
 
 initialModel : Model
 initialModel =
-  { inputMode                     = White
+  { inputQueue                    = []
+  , inputMode                     = White
   , computationMode               = RPN_Mode
   --, calculatorOperationalState    = AcceptingOperationsOrNumbers
   , scratchRegisters              = initializeScratchRegisters
