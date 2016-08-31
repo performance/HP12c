@@ -51,19 +51,28 @@ roll_Down_Stack model =
   in
     promotedModel
 
-
+-- g LST x lifts the stack ( unless Enter, CLx Σ+ Σ-, 12× , 12÷, was the last key pressed )
 last_X : Model -> Model
 last_X model =
   let
-    stackRegs = model.automaticMemoryStackRegisters
+    lift_blockers =  [ Enter_Key, CL_x_Key, Sigma_Plus_Key, Sigma_Minus_Key, Times_12_Key, DIVIDE_BY_12_Key ]
+    last_key_input = List.head model.inputQueue
+    should_we_even_lift_bro = 
+      case last_key_input of 
+        Just test_this_key -> 
+          not <| List.isEmpty <|
+          List.filter ( \x -> x == test_this_key ) lift_blockers
+        Nothing            ->  False
+
+    liftedModel = if should_we_even_lift_bro 
+                  then liftStack model 
+                  else model
+    stackRegs = liftedModel.automaticMemoryStackRegisters
     promotedStack = { stackRegs | 
-      reg_T = stackRegs.reg_Z
-    , reg_Z = stackRegs.reg_Y
-    , reg_Y = stackRegs.reg_X
-    , reg_X = stackRegs.reg_Last_X
+      reg_X = stackRegs.reg_Last_X
     } 
     promotedModel = 
-      { model | 
+      { liftedModel | 
         automaticMemoryStackRegisters = promotedStack
       , inputMode                     = White
       }
@@ -128,6 +137,8 @@ y_plus_x       y x = y + x
 y_minus_x      y x = y - x
 y_times_x      y x = y * x 
 y_divided_by_x y x = y / x
+
+
 
 
 
