@@ -1,10 +1,10 @@
-module HP12c_Model exposing (..)
+module HP12c_Model    exposing (..)
+
+import Array          exposing (..)
+import Keyboard
 
 import HP12c_KeyTypes exposing (..)
 
-import Array exposing (..)
-
-import Keyboard
 
 type alias AutomaticMemoryStackRegisters =
   { reg_T : Float
@@ -17,6 +17,7 @@ type alias AutomaticMemoryStackRegisters =
 type AcceptNewDigitInto 
   = IntegralPart
   | FractionalPart
+  | ExponentForEEX
   | STO_Reg 
   | STO_Dot_Reg
   | RCL_Reg

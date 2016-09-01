@@ -1,15 +1,16 @@
-module HP12c_View exposing (..)
-
-import Html exposing (..)
-import Html.Events exposing (..)
-import Html.Attributes exposing (..)
+module HP12c_View          exposing (..)
 
 import Char
 import String
 
+import Html                exposing (..)
+import Html.Events         exposing (..)
+import Html.Attributes     exposing (..)
+
+
 import HP12c_KeyBoardInput exposing (..)
-import HP12c_KeyTypes exposing (..)
-import HP12c_Model exposing (..)
+import HP12c_KeyTypes      exposing (..)
+import HP12c_Model         exposing (..)
 
 
 -- Helpers

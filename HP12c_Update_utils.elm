@@ -1,11 +1,13 @@
 module HP12c_Update_utils exposing (..)
 
-import HP12c_KeyTypes exposing (..)
-import HP12c_Model exposing (..)
-
-import Formatting exposing (..)
 import String
 import Keyboard
+import Formatting         exposing (..)
+
+import HP12c_KeyTypes     exposing (..)
+import HP12c_Model        exposing (..)
+
+
 
 -- Update
 
@@ -64,21 +66,21 @@ last_X model =
           List.filter ( \x -> x == test_this_key ) lift_blockers
         Nothing            ->  False
 
-    liftedModel = if should_we_even_lift_bro 
+    maybeLiftedModel = if should_we_even_lift_bro 
                   then liftStack model 
                   else model
-    stackRegs = liftedModel.automaticMemoryStackRegisters
-    promotedStack = { stackRegs | 
+    stackRegs = maybeLiftedModel.automaticMemoryStackRegisters
+    maybePromotedStack = { stackRegs | 
       reg_X = stackRegs.reg_Last_X
     } 
-    promotedModel = 
-      { liftedModel | 
-        automaticMemoryStackRegisters = promotedStack
+    maybePromotedModel = 
+      { maybeLiftedModel | 
+        automaticMemoryStackRegisters = maybePromotedStack
       , inputMode                     = White
       }
+    newModel = update_Display_Precision model.displayPrecision maybePromotedModel
   in
-    promotedModel
-
+    newModel
 ---------- Stack operations 
 
 ---------- unaryOperators
@@ -112,21 +114,20 @@ unaryOperator : ( Float -> Float ) -> Model -> Model
 unaryOperator op model =
   let
     stackRegs     = model.automaticMemoryStackRegisters
-    promotedStack = 
+    unPromotedStack = 
       { stackRegs | 
-        reg_T      = stackRegs.reg_Z
-      , reg_Z      = stackRegs.reg_Y
-      , reg_Y      = stackRegs.reg_X
-      , reg_Last_X = stackRegs.reg_X
+        reg_Last_X = stackRegs.reg_X
       , reg_X      = ( op stackRegs.reg_X )
       } 
-    promotedModel = 
+    unPromotedModel = 
       { model | 
-        automaticMemoryStackRegisters = promotedStack 
+        automaticMemoryStackRegisters = unPromotedStack
       , inputMode = White
       }
+    newModel = update_Display_Precision model.displayPrecision unPromotedModel
   in
-    promotedModel
+    newModel
+
 
 ---------- unaryOperators
 
@@ -138,7 +139,36 @@ y_minus_x      y x = y - x
 y_times_x      y x = y * x 
 y_divided_by_x y x = y / x
 
+x_percent_of_y y x = y * x / 100
+delta_percentage y x = 
+  let
+    sign = if y > x 
+           then 1
+           else -1
+  in
+    sign * y * ( y - x )/ 100
 
+percentage_of_total y x = 100 * x / y 
+
+
+binaryOperator_No_Down_Shift : ( Float -> Float -> Float ) -> Model -> Model 
+binaryOperator_No_Down_Shift op model =
+  let
+    stackRegs     = model.automaticMemoryStackRegisters
+    result        = ( op stackRegs.reg_Y stackRegs.reg_X )
+    unPromotedStack = 
+      { stackRegs | 
+        reg_Last_X = stackRegs.reg_X
+      , reg_X      = result
+      } 
+    promotedModel = 
+      { model | 
+        automaticMemoryStackRegisters = unPromotedStack
+      , inputMode = White
+      }
+    newModel = update_Display_Precision model.displayPrecision promotedModel
+  in
+    newModel
 
 
 
@@ -160,10 +190,15 @@ binaryOperator op model =
         automaticMemoryStackRegisters = promotedStack
       , inputMode = White
       }
+    newModel = update_Display_Precision model.displayPrecision promotedModel
   in
-    promotedModel
+    newModel
 
 -----------  Binary operators lhs is reg_y, rhs is reg_x
+
+setComputationMode: ComputationMode -> Model -> Model
+setComputationMode computationMode model =
+  { model | computationMode = computationMode }
 
 
 -- TODO: change this to handle STO RCL GTO etc
@@ -323,7 +358,7 @@ update_Display_Precision_util n model =
 
     newModel = { model | displayString    = newDisplayString
                ,         displayPrecision = displayPrecision 
-               ,         inputMode = White
+               ,         inputMode        = White
                }
   in 
     newModel

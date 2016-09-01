@@ -1,10 +1,9 @@
 module HP12c_KeyBoardInput exposing (..)
 
-
-
 -- TODO: read manual to figure out what to do with STO etc keys in orange mode
 
 import Keyboard
+
 import HP12c_KeyTypes exposing (..)
 import HP12c_Model    exposing (..)
 

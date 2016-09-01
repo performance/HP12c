@@ -1,8 +1,7 @@
-module HP12c_Update exposing (..)
-import HP12c_KeyTypes exposing (..)
+module HP12c_Update       exposing (..)
 
-
-import HP12c_Model exposing (..)
+import HP12c_KeyTypes     exposing (..)
+import HP12c_Model        exposing (..)
 import HP12c_Update_utils exposing (..)
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -94,8 +93,8 @@ update msg model =
         Linear_Estimate_Y_Key     -> defaultModelTransformer
 
 
-        RPN_Key                   -> defaultModelTransformer
-        ALG_Key                   -> defaultModelTransformer
+        RPN_Key                   -> setComputationMode RPN_Mode
+        ALG_Key                   -> setComputationMode ALG_Mode
 
         Equals_Key                -> numericalInputTerminated
         Enter_Key                 -> numericalInputTerminated
@@ -125,9 +124,9 @@ update msg model =
         ON_Key                    -> handlePOWERONKey 
         OFF_Key                   -> handlePOWERONKey 
 
-        Percentage_T_Key          -> defaultModelTransformer
-        Delta_Percentage_Key      -> defaultModelTransformer
-        Percent_Key               -> defaultModelTransformer
+        Percentage_T_Key          -> binaryOperator_No_Down_Shift percentage_of_total
+        Delta_Percentage_Key      -> binaryOperator_No_Down_Shift delta_percentage
+        Percent_Key               -> binaryOperator_No_Down_Shift x_percent_of_y
 
 
         SetPrecision_0_Key        -> update_Display_Precision  0

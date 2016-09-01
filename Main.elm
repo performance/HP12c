@@ -3,17 +3,15 @@ module Main exposing (..)
 -- Link to manual: http://www.hp.com/ctg/Manual/bpia5309.pdf
 
 import Keyboard
-
-
 import Html.App as Html
 
-import Json.Decode exposing (..)
+import Json.Decode         exposing (..)
 
 import HP12c_KeyBoardInput exposing (..)
-import HP12c_KeyTypes exposing (..)
-import HP12c_Model exposing (..)
-import HP12c_View exposing (..)
-import HP12c_Update exposing (..)
+import HP12c_KeyTypes      exposing (..)
+import HP12c_Model         exposing (..)
+import HP12c_View          exposing (..)
+import HP12c_Update        exposing (..)
 -- import HP12c_Update_handlers exposing (..)
 
 
@@ -33,8 +31,8 @@ init  =
 
 main =
   Html.program -- WithFlags
-    { init = init
-    , view = view
-    , update = update
+    { init          = init
+    , view          = view
+    , update        = update
     , subscriptions = subscriptions -- \_ -> Sub.none
     }
