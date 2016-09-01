@@ -32,10 +32,10 @@ liftStack : Model -> Model
 liftStack model =
   let
     stackRegs = model.automaticMemoryStackRegisters
-    promotedStack = liftAutomaticMemoryStack stackRegs
-    promotedModel = { model | automaticMemoryStackRegisters = promotedStack }
+    liftedStack = liftAutomaticMemoryStack stackRegs
+    liftedModel = { model | automaticMemoryStackRegisters = liftedStack }
   in
-    promotedModel
+    liftedModel
 
 exchange_X_Y_Regs : Model -> Model
 exchange_X_Y_Regs model =
@@ -46,7 +46,7 @@ exchange_X_Y_Regs model =
       reg_Y = stackRegs.reg_X
     , reg_X = tmp_Y
     } 
-    promotedModel = { model | automaticMemoryStackRegisters = exchangedStack }
+    promotedModel = { model | automaticMemoryStackRegisters = exchangedStack, addToInputQueue   = True }
   in
     promotedModel
 
@@ -61,7 +61,7 @@ roll_Down_Stack model =
     , reg_Z = stackRegs.reg_T
     , reg_T = tmp_X
     } 
-    promotedModel = { model | automaticMemoryStackRegisters = rolledStack }
+    promotedModel = { model | automaticMemoryStackRegisters = rolledStack, addToInputQueue   = True }
   in
     promotedModel
 
@@ -71,12 +71,16 @@ last_X model =
   let
     lift_blockers =  [ Enter_Key, CL_x_Key, Sigma_Plus_Key, Sigma_Minus_Key, Times_12_Key, DIVIDE_BY_12_Key ]
     last_key_input = List.head model.inputQueue
-    should_we_even_lift_bro = 
+    ( should_we_even_lift_bro, dbgmsg ) = 
       case last_key_input of 
         Just test_this_key -> 
-          not <| List.isEmpty <|
-          List.filter ( \x -> x == test_this_key ) lift_blockers
-        Nothing            ->  False
+          let 
+            filtered_blockers = List.filter ( \x -> x == test_this_key ) lift_blockers
+            flag =  List.isEmpty <| filtered_blockers
+            msg  = " TEST:---> " ++ Basics.toString test_this_key ++  Basics.toString flag ++  " <---:" ++ Basics.toString filtered_blockers
+          in 
+            ( flag, msg )
+        Nothing            ->  ( False, "No Head " )
 
     maybeLiftedModel = if should_we_even_lift_bro 
                   then liftStack model 
@@ -89,6 +93,9 @@ last_X model =
       { maybeLiftedModel | 
         automaticMemoryStackRegisters = maybePromotedStack
       , inputMode                     = White
+      , scratchRegisters  = initializeScratchRegisters
+      , addToInputQueue   = True
+      , message = dbgmsg
       }
     newModel = update_Display_Precision model.displayPrecision maybePromotedModel
   in
@@ -125,8 +132,8 @@ fractional_part x = x - ( integral_part x )
 unaryOperator : ( Float -> Float ) -> Model -> Model
 unaryOperator op model =
   let
-    stackRegs       = model.automaticMemoryStackRegisters
-    result          = ( op stackRegs.reg_X ) 
+    stackRegs        = model.automaticMemoryStackRegisters
+    result           = ( op stackRegs.reg_X ) 
     unReducededStack = 
       { stackRegs | 
         reg_Last_X = stackRegs.reg_X
@@ -138,6 +145,7 @@ unaryOperator op model =
         automaticMemoryStackRegisters = unReducededStack
       , inputMode = White
       , scratchRegisters = { scratchRegs | acceptNewDigitInto = NewNumber }
+      , addToInputQueue   = True
       }
     newModel = update_Display_Precision model.displayPrecision unReducedModel
   in
@@ -179,6 +187,7 @@ binaryOperator_No_Down_Shift op model =
       { model | 
         automaticMemoryStackRegisters = unPromotedStack
       , inputMode = White
+      , addToInputQueue   = True
       }
     newModel = update_Display_Precision model.displayPrecision promotedModel
   in
@@ -205,6 +214,7 @@ binaryOperator op model =
         automaticMemoryStackRegisters = reducedStack
       , inputMode = White
       , scratchRegisters = { scratchRegs | acceptNewDigitInto = NewNumber }
+      , addToInputQueue  = True
       }
     newModel = update_Display_Precision model.displayPrecision promotedModel
   in
@@ -214,7 +224,7 @@ binaryOperator op model =
 
 setComputationMode: ComputationMode -> Model -> Model
 setComputationMode computationMode model =
-  { model | computationMode = computationMode }
+  { model | computationMode = computationMode, addToInputQueue   = False }
 
 
 -- TODO: change this to handle STO RCL GTO etc
@@ -285,6 +295,7 @@ handleDigitInput newDigit model =
       { model |  
         automaticMemoryStackRegisters = newStackRegs
       , scratchRegisters              = newScratchRegs  
+      , addToInputQueue               = True
       }
     newModel = update_Display_Precision model.displayPrecision updatedModel 
   in 
@@ -296,7 +307,7 @@ handleDecimalPoint model =
   let 
     modelScratchRegs = model.scratchRegisters 
     newScratchRegs = { modelScratchRegs | acceptNewDigitInto = FractionalPart }
-    newModel    = { model | scratchRegisters = newScratchRegs }
+    newModel    = { model | scratchRegisters = newScratchRegs, addToInputQueue   = True }
   in 
     newModel
 
@@ -308,7 +319,7 @@ handleEEX_Key model =
   let 
     modelScratchRegs = model.scratchRegisters 
     newScratchRegs = { modelScratchRegs | acceptNewDigitInto = ExponentForEEX }
-    newModel    = { model | scratchRegisters = newScratchRegs }
+    newModel    = { model | scratchRegisters = newScratchRegs, addToInputQueue   = True }
   in 
     newModel
 
@@ -317,9 +328,12 @@ handleEEX_Key model =
 numericalInputTerminated : Model -> Model
 numericalInputTerminated model =
   let
-    promotedModel = liftStack model
+    liftedModel = liftStack model
+    stackRegs     = liftedModel.automaticMemoryStackRegisters 
+    lastXUpdatedStack =  { stackRegs | reg_Last_X = stackRegs.reg_X }
   in
-    { promotedModel | scratchRegisters = initializeScratchRegisters
+    { liftedModel | scratchRegisters = initializeScratchRegisters
+    , automaticMemoryStackRegisters = lastXUpdatedStack
     }
 
 backSpaceReg_X : Model -> Model
@@ -327,7 +341,7 @@ backSpaceReg_X model =
   let 
     stackRegs    = model.automaticMemoryStackRegisters
     newStackRegs = { stackRegs | reg_X = toFloat ( floor ( stackRegs.reg_X / 10 ) )}
-    newModel     = { model | automaticMemoryStackRegisters = newStackRegs }
+    newModel     = { model | automaticMemoryStackRegisters = newStackRegs, addToInputQueue   = True }
   in 
     newModel
 
@@ -341,6 +355,7 @@ clearAllRegisters model =
       ,         statisticalRegisters          = initializeStatisticalRegisters
       ,         financialRegisters            = initializeFinancialRegisters
       ,         scratchRegisters              = initializeScratchRegisters
+      , addToInputQueue   = True
       }
     newModel = update_Display_Precision model.displayPrecision cleared_model
   in 
@@ -353,6 +368,7 @@ clearFinancialRegisters model =
       { model | 
                 financialRegisters            = initializeFinancialRegisters
       ,         scratchRegisters              = initializeScratchRegisters
+      ,         addToInputQueue   = True
       }
     newModel = update_Display_Precision model.displayPrecision cleared_model
   in 
@@ -366,6 +382,7 @@ clearProgramMemory model =
         cleared_model =
           { model | 
                     programMemory            = initializeProgramMemory
+                  , addToInputQueue   = True
           }
       in 
         cleared_model
@@ -380,6 +397,7 @@ clearPrefix : Model -> Model
 clearPrefix model = 
   { model | 
     inputMode = White
+  , addToInputQueue   = True
   , message = "DOES NOT YET HANDLE STO RCL AND GTO, and need to figure out how to display mantissa for one sec only " 
   }
 
@@ -392,6 +410,7 @@ clearSigma model =
                 automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters
       ,         statisticalRegisters          = initializeStatisticalRegisters
       ,         scratchRegisters              = initializeScratchRegisters
+      ,         addToInputQueue               = True
       }
     newModel = update_Display_Precision model.displayPrecision cleared_model
   in 
@@ -402,7 +421,11 @@ clearXRegister model =
   let 
     stackRegs     = model.automaticMemoryStackRegisters
     newStackRegs  = { stackRegs | reg_X = 0 }
-    cleared_model = { model | automaticMemoryStackRegisters = newStackRegs }
+    cleared_model = 
+      { model |
+        automaticMemoryStackRegisters = newStackRegs
+      , addToInputQueue               = True
+      }
     newModel = update_Display_Precision model.displayPrecision cleared_model
   in 
     newModel
@@ -453,7 +476,10 @@ update_Display_to_Scientific model =
 
 setPrefix: InputMode -> Model -> Model
 setPrefix inputMode model =
-  { model | inputMode = inputMode, addToInputQueue = False }
+  { model | 
+    inputMode       = inputMode
+  , addToInputQueue = False  
+  }
 
 handleKeyCode : Keyboard.KeyCode -> Model -> Model
 handleKeyCode code model =
@@ -472,4 +498,9 @@ handlePOWERONKey model = initialModel
 
 defaultModelTransformer : Model -> Model
 defaultModelTransformer model = 
-  { model | unimplemented = True }
+  { model | 
+    unimplemented     = True 
+  , addToInputQueue   = True
+  }
+
+

@@ -135,7 +135,7 @@ input_queue_div model =
        classNames [ "calc_model" ], Html.Attributes.style [ ( "left", "610px"),( "top", "0px"), ("position", "absolute")  ]
     ]
     
-   ( List.intersperse  empty_br_node ( List.map text ( ( String.split "," ( toString model.inputQueue ) ) ++  [ "display: " ++ model.displayString ] )  ) 
+   ( List.intersperse  empty_br_node ( List.map text ( [ "display: " ++ model.displayString ] ++ ( String.split "," ( toString model.inputQueue ) ) )  ) 
 
    )
 

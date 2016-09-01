@@ -152,7 +152,7 @@ update msg model =
       ( 
         if ( u )
           then "UNIMPLEMENTED!!!"
-          else ""
+          else "" -- newModel.message
       )
       ++ Basics.toString msg
   in
