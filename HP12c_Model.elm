@@ -27,7 +27,8 @@ type AcceptNewDigitInto
 
 
 type alias ScratchRegisters =
-  { integral_part_of_X   : Int
+  { reg_X_is_Positive    : Bool
+  , integral_part_of_X   : Int
   , fractional_part_of_X : Int
   , number_of_decimals   : Int
   , acceptNewDigitInto   : AcceptNewDigitInto
@@ -130,7 +131,8 @@ type alias Model =
 
 initializeScratchRegisters : ScratchRegisters
 initializeScratchRegisters = 
-  { integral_part_of_X   = 0
+  { reg_X_is_Positive    = True
+  , integral_part_of_X   = 0
   , fractional_part_of_X = 0
   , number_of_decimals   = 0
   , acceptNewDigitInto   = IntegralPart

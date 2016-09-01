@@ -158,7 +158,7 @@ keyCodeToMsg inputMode code =
               Blue   -> BST_Key
               Orange -> CLEAR_Σ_Key
 
-    81  -> case inputMode of
+    82  -> case inputMode of
               White  -> Roll_Down_Key--"R"
               Blue   -> GTO_Key
               Orange -> CLEAR_PRGM_Key

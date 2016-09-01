@@ -227,6 +227,15 @@ setComputationMode computationMode model =
   { model | computationMode = computationMode, addToInputQueue   = False }
 
 
+until_evaluate_X_register : ScratchRegisters -> Float
+until_evaluate_X_register modelScratchRegs = 
+  let 
+    decimal_place  = ( 10 ^ ( modelScratchRegs.number_of_decimals + 1 ) )
+    sign_of_X      = if ( modelScratchRegs.reg_X_is_Positive ) then 1  else -1
+    newReg_X       = sign_of_X * ( Basics.toFloat modelScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat modelScratchRegs.fractional_part_of_X ) / decimal_place )    
+  in 
+    newReg_X
+
 -- TODO: change this to handle STO RCL GTO etc
 handleDigitInput: Int -> Model -> Model
 handleDigitInput newDigit model = 
@@ -234,6 +243,7 @@ handleDigitInput newDigit model =
     stackRegs      = model.automaticMemoryStackRegisters
     scratchRegs    = model.scratchRegisters
     decimal_place  = ( 10 ^ ( scratchRegs.number_of_decimals + 1 ) )
+    sign_of_X      = if ( scratchRegs.reg_X_is_Positive ) then 1  else -1
     
     ( newScratchRegs, newStackRegs ) =
       case scratchRegs.acceptNewDigitInto of 
@@ -245,7 +255,7 @@ handleDigitInput newDigit model =
                 fractional_part_of_X = ( 10 * scratchRegs.fractional_part_of_X + newDigit ) 
               , number_of_decimals   = scratchRegs.number_of_decimals + 1
               }
-            newReg_X     = ( Basics.toFloat newScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat newScratchRegs.fractional_part_of_X ) / decimal_place )    
+            newReg_X     = sign_of_X * ( Basics.toFloat newScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat newScratchRegs.fractional_part_of_X ) / decimal_place )    
             newStackRegs = { stackRegs | reg_X = newReg_X }
           in 
             ( newScratchRegs, newStackRegs ) 
@@ -258,7 +268,7 @@ handleDigitInput newDigit model =
                 fractional_part_of_X = 0  
               , integral_part_of_X   = ( 10 * scratchRegs.integral_part_of_X + newDigit )
               }
-            newReg_X     = ( Basics.toFloat newScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat newScratchRegs.fractional_part_of_X ) / decimal_place )    
+            newReg_X     = sign_of_X * ( Basics.toFloat newScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat newScratchRegs.fractional_part_of_X ) / decimal_place )    
             newStackRegs = { stackRegs | reg_X = newReg_X }
           in 
             ( newScratchRegs, newStackRegs ) 
@@ -296,6 +306,7 @@ handleDigitInput newDigit model =
         automaticMemoryStackRegisters = newStackRegs
       , scratchRegisters              = newScratchRegs  
       , addToInputQueue               = True
+      , message = "[>>> sign_of_X is " ++ Basics.toString sign_of_X ++ " <<<] "
       }
     newModel = update_Display_Precision model.displayPrecision updatedModel 
   in 
@@ -308,6 +319,26 @@ handleDecimalPoint model =
     modelScratchRegs = model.scratchRegisters 
     newScratchRegs = { modelScratchRegs | acceptNewDigitInto = FractionalPart }
     newModel    = { model | scratchRegisters = newScratchRegs, addToInputQueue   = True }
+  in 
+    newModel
+
+-- TODO: change this to handle STO RCL GTO etc
+handle_CHS_Key : Model -> Model
+handle_CHS_Key model = 
+  let 
+    modelScratchRegs = model.scratchRegisters 
+    newScratchRegs   = { modelScratchRegs | reg_X_is_Positive = not modelScratchRegs.reg_X_is_Positive }
+    newReg_X =  until_evaluate_X_register newScratchRegs
+    modelStackRegs = model.automaticMemoryStackRegisters
+    revaluatedStackRegs = { modelStackRegs | reg_X = newReg_X }
+    toggledModel     = 
+      { model | 
+        automaticMemoryStackRegisters = revaluatedStackRegs
+      , scratchRegisters = newScratchRegs
+      , addToInputQueue   = True
+      , message = "[>>> out of CHS handler sign_of_X is " ++ Basics.toString newScratchRegs.reg_X_is_Positive ++ " <<<] "
+      }
+    newModel = update_Display_Precision model.displayPrecision toggledModel
   in 
     newModel
 

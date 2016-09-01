@@ -16,7 +16,6 @@ update msg model =
         PV_Key                    -> defaultModelTransformer
         PMT_Key                   -> defaultModelTransformer
         FV_Key                    -> defaultModelTransformer
-        CHS_Key                   -> defaultModelTransformer
 
         Times_12_Key              -> defaultModelTransformer
         DIVIDE_BY_12_Key          -> defaultModelTransformer
@@ -119,7 +118,7 @@ update msg model =
         Number_0_Key              -> handleDigitInput 0
         Decimal_Point_Key         -> handleDecimalPoint 
         EEX_Key                   -> defaultModelTransformer -- handleEEX_Key
-
+        CHS_Key                   -> handle_CHS_Key
 
         ON_Key                    -> handlePOWERONKey 
         OFF_Key                   -> handlePOWERONKey 
