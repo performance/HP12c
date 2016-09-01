@@ -12,15 +12,27 @@ import HP12c_Model        exposing (..)
 -- Update
 
 ---------- Stack operations 
+
+
+
+liftAutomaticMemoryStack : AutomaticMemoryStackRegisters -> AutomaticMemoryStackRegisters
+liftAutomaticMemoryStack currentStackRegs =
+  let 
+    liftedStack = { currentStackRegs | 
+      reg_T = currentStackRegs.reg_Z
+    , reg_Z = currentStackRegs.reg_Y
+    , reg_Y = currentStackRegs.reg_X
+    }
+  in 
+    liftedStack
+
+
+
 liftStack : Model -> Model
 liftStack model =
   let
     stackRegs = model.automaticMemoryStackRegisters
-    promotedStack = { stackRegs | 
-      reg_T = stackRegs.reg_Z
-    , reg_Z = stackRegs.reg_Y
-    , reg_Y = stackRegs.reg_X
-    } 
+    promotedStack = liftAutomaticMemoryStack stackRegs
     promotedModel = { model | automaticMemoryStackRegisters = promotedStack }
   in
     promotedModel
@@ -113,21 +125,23 @@ fractional_part x = x - ( integral_part x )
 unaryOperator : ( Float -> Float ) -> Model -> Model
 unaryOperator op model =
   let
-    stackRegs     = model.automaticMemoryStackRegisters
-    unPromotedStack = 
+    stackRegs       = model.automaticMemoryStackRegisters
+    result          = ( op stackRegs.reg_X ) 
+    unReducededStack = 
       { stackRegs | 
         reg_Last_X = stackRegs.reg_X
-      , reg_X      = ( op stackRegs.reg_X )
+      , reg_X      = result
       } 
-    unPromotedModel = 
+    scratchRegs = model.scratchRegisters
+    unReducedModel = 
       { model | 
-        automaticMemoryStackRegisters = unPromotedStack
+        automaticMemoryStackRegisters = unReducededStack
       , inputMode = White
+      , scratchRegisters = { scratchRegs | acceptNewDigitInto = NewNumber }
       }
-    newModel = update_Display_Precision model.displayPrecision unPromotedModel
+    newModel = update_Display_Precision model.displayPrecision unReducedModel
   in
     newModel
-
 
 ---------- unaryOperators
 
@@ -177,7 +191,7 @@ binaryOperator op model =
   let
     stackRegs     = model.automaticMemoryStackRegisters
     result        = ( op stackRegs.reg_Y stackRegs.reg_X )
-    promotedStack = 
+    reducedStack = 
       { stackRegs | 
         reg_T      = stackRegs.reg_T
       , reg_Z      = stackRegs.reg_T
@@ -185,10 +199,12 @@ binaryOperator op model =
       , reg_Last_X = stackRegs.reg_X
       , reg_X      = result
       } 
+    scratchRegs = model.scratchRegisters
     promotedModel = 
       { model | 
-        automaticMemoryStackRegisters = promotedStack
+        automaticMemoryStackRegisters = reducedStack
       , inputMode = White
+      , scratchRegisters = { scratchRegs | acceptNewDigitInto = NewNumber }
       }
     newModel = update_Display_Precision model.displayPrecision promotedModel
   in
@@ -209,25 +225,65 @@ handleDigitInput newDigit model =
     scratchRegs    = model.scratchRegisters
     decimal_place  = ( 10 ^ ( scratchRegs.number_of_decimals + 1 ) )
     
-    newScratchRegs =
-      if scratchRegs.acceptNewDigitInto == FractionalPart 
-        then 
-            { 
-              scratchRegs | 
-              fractional_part_of_X = ( 10 * scratchRegs.fractional_part_of_X + newDigit ) 
-            , number_of_decimals   = scratchRegs.number_of_decimals + 1
-            }
-        else 
-            { 
-              scratchRegs | 
-              integral_part_of_X = ( 10 * scratchRegs.integral_part_of_X + newDigit )
-            }
+    ( newScratchRegs, newStackRegs ) =
+      case scratchRegs.acceptNewDigitInto of 
+        FractionalPart -> 
+          let 
+            newScratchRegs =
+              { 
+                scratchRegs | 
+                fractional_part_of_X = ( 10 * scratchRegs.fractional_part_of_X + newDigit ) 
+              , number_of_decimals   = scratchRegs.number_of_decimals + 1
+              }
+            newReg_X     = ( Basics.toFloat newScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat newScratchRegs.fractional_part_of_X ) / decimal_place )    
+            newStackRegs = { stackRegs | reg_X = newReg_X }
+          in 
+            ( newScratchRegs, newStackRegs ) 
+          
+        IntegralPart   ->
+          let 
+            newScratchRegs =
+              { 
+                scratchRegs | 
+                fractional_part_of_X = 0  
+              , integral_part_of_X   = ( 10 * scratchRegs.integral_part_of_X + newDigit )
+              }
+            newReg_X     = ( Basics.toFloat newScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat newScratchRegs.fractional_part_of_X ) / decimal_place )    
+            newStackRegs = { stackRegs | reg_X = newReg_X }
+          in 
+            ( newScratchRegs, newStackRegs ) 
 
-    newReg_X     = ( Basics.toFloat newScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat newScratchRegs.fractional_part_of_X ) / decimal_place )
-    newStackRegs = { stackRegs | reg_X = newReg_X }
+        NewNumber      ->
+          let             
+            newScratchRegs =
+              { 
+                scratchRegs | 
+                fractional_part_of_X = 0  
+              , integral_part_of_X   = newDigit
+              , acceptNewDigitInto   = IntegralPart
+              }
+            liftedStack  = liftAutomaticMemoryStack stackRegs
+            newReg_X     = ( Basics.toFloat newScratchRegs.integral_part_of_X ) 
+            newStackRegs = { liftedStack | reg_X = newReg_X }
+          in 
+            ( newScratchRegs, newStackRegs ) 
+
+        ExponentForEEX ->
+          ( scratchRegs, stackRegs )  -- TODO: unhandled for now
+        STO_Reg -> 
+          ( scratchRegs, stackRegs )  -- TODO: unhandled for now
+        STO_Dot_Reg ->
+          ( scratchRegs, stackRegs )  -- TODO: unhandled for now
+        RCL_Reg     -> 
+          ( scratchRegs, stackRegs )  -- TODO: unhandled for now
+        RCL_Dot_Reg     -> 
+          ( scratchRegs, stackRegs )  -- TODO: unhandled for now
+        GTO_Addrs     -> 
+          ( scratchRegs, stackRegs )  -- TODO: unhandled for now
+
     updatedModel = 
       { model |  
-        automaticMemoryStackRegisters = newStackRegs 
+        automaticMemoryStackRegisters = newStackRegs
       , scratchRegisters              = newScratchRegs  
       }
     newModel = update_Display_Precision model.displayPrecision updatedModel 
@@ -240,6 +296,18 @@ handleDecimalPoint model =
   let 
     modelScratchRegs = model.scratchRegisters 
     newScratchRegs = { modelScratchRegs | acceptNewDigitInto = FractionalPart }
+    newModel    = { model | scratchRegisters = newScratchRegs }
+  in 
+    newModel
+
+
+
+-- TODO: change this to handle STO RCL GTO etc
+handleEEX_Key : Model -> Model
+handleEEX_Key model = 
+  let 
+    modelScratchRegs = model.scratchRegisters 
+    newScratchRegs = { modelScratchRegs | acceptNewDigitInto = ExponentForEEX }
     newModel    = { model | scratchRegisters = newScratchRegs }
   in 
     newModel

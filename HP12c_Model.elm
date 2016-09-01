@@ -15,7 +15,8 @@ type alias AutomaticMemoryStackRegisters =
   }
 
 type AcceptNewDigitInto 
-  = IntegralPart
+  = NewNumber
+  | IntegralPart
   | FractionalPart
   | ExponentForEEX
   | STO_Reg 
