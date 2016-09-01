@@ -385,13 +385,14 @@ update_Display_to_Scientific model =
 
 setPrefix: InputMode -> Model -> Model
 setPrefix inputMode model =
-  { model | inputMode = inputMode }
+  { model | inputMode = inputMode, addToInputQueue = False }
 
 handleKeyCode : Keyboard.KeyCode -> Model -> Model
 handleKeyCode code model =
   if code == 32 then -- space bar toggles keyboard shortcuts
     { model | keyCode = code
             , shortcutVisible = not model.shortcutVisible 
+            , addToInputQueue = False
             , message = "Space bar pressed : " ++ Basics.toString ( model.shortcutVisible )
     }
   

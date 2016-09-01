@@ -160,7 +160,9 @@ update msg model =
       { newModel | 
         message       = defaultMessage newModel.unimplemented msg
       , unimplemented = False 
-      , inputQueue    = msg :: newModel.inputQueue 
+      , inputQueue    = if ( newModel.addToInputQueue ) 
+                        then msg :: newModel.inputQueue 
+                        else newModel.inputQueue
       }
     , 
       Cmd.none 

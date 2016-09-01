@@ -108,6 +108,7 @@ type ComputationMode
 
 type alias Model =
   { inputQueue                    : List Msg
+  , addToInputQueue               : Bool
   , inputMode                     : InputMode
   , computationMode               : ComputationMode
   --, calculatorOperationalState    : CalculatorOperationalState
@@ -185,6 +186,7 @@ initializeProgramMemory =
 initialModel : Model
 initialModel =
   { inputQueue                    = []
+  , addToInputQueue               = True
   , inputMode                     = White
   , computationMode               = RPN_Mode
   --, calculatorOperationalState    = AcceptingOperationsOrNumbers

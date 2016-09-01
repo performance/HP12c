@@ -128,6 +128,17 @@ stack_registers_div model =
 
    )
 
+
+input_queue_div model =
+    div
+    [
+       classNames [ "calc_model" ], Html.Attributes.style [ ( "left", "610px"),( "top", "0px"), ("position", "absolute")  ]
+    ]
+    
+   ( List.intersperse  empty_br_node ( List.map text ( ( String.split "," ( toString model.inputQueue ) ) ++  [ "display: " ++ model.displayString ] )  ) 
+
+   )
+
 financial_registers_div model =
     div
     [
@@ -158,7 +169,7 @@ modelinfodiv model =
 
 
 divs_to_show model =
-  [ stylesheet ] ++ [ button_divs model ] ++ [ modelinfodiv model ] ++ [stack_registers_div model ] ++ [ financial_registers_div model ]
+  [ stylesheet ] ++ [ button_divs model ] ++ [ modelinfodiv model ] ++ [stack_registers_div model ] ++ [ financial_registers_div model ] ++ [ input_queue_div model ]
 
 view : Model -> Html Msg
 view model =
