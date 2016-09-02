@@ -162,13 +162,7 @@ y_times_x      y x = y * x
 y_divided_by_x y x = y / x
 
 x_percent_of_y y x = y * x / 100
-delta_percentage y x = 
-  let
-    sign = if y > x 
-           then 1
-           else -1
-  in
-    sign * y * ( y - x )/ 100
+delta_percentage y x = 100 * ( x - y) / y 
 
 percentage_of_total y x = 100 * x / y 
 
