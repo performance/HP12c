@@ -227,8 +227,12 @@ until_evaluate_X_register modelScratchRegs =
     decimal_place  = ( 10 ^ ( modelScratchRegs.number_of_decimals + 1 ) )
     sign_of_X      = if ( modelScratchRegs.reg_X_is_Positive ) then 1  else -1
     newReg_X       = sign_of_X * ( Basics.toFloat modelScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat modelScratchRegs.fractional_part_of_X ) / decimal_place )    
+    newReg_X_with_EEX = newReg_X * ( 10 ^ ( Basics.toFloat modelScratchRegs.exponent_for_EEX ) )
+    reg_X_to_Use = if ( modelScratchRegs.acceptNewDigitInto == ExponentForEEX )
+                   then newReg_X_with_EEX
+                   else newReg_X
   in 
-    newReg_X
+    reg_X_to_Use
 
 -- TODO: change this to handle STO RCL GTO etc
 handleDigitInput: Int -> Model -> Model
@@ -283,7 +287,17 @@ handleDigitInput newDigit model =
             ( newScratchRegs, newStackRegs ) 
 
         ExponentForEEX ->
-          ( scratchRegs, stackRegs )  -- TODO: unhandled for now
+          let 
+            newScratchRegs =
+              { 
+                scratchRegs | 
+                exponent_for_EEX     = ( 10 * scratchRegs.exponent_for_EEX + newDigit ) % 100
+              }
+            newReg_X     = sign_of_X * ( Basics.toFloat newScratchRegs.integral_part_of_X )  + ( ( Basics.toFloat newScratchRegs.fractional_part_of_X ) / decimal_place ) 
+            newReg_X_with_EEX = newReg_X * ( 10 ^ ( Basics.toFloat newScratchRegs.exponent_for_EEX ) )
+            newStackRegs = { stackRegs | reg_X = newReg_X_with_EEX }
+          in 
+            ( newScratchRegs, newStackRegs ) 
         STO_Reg -> 
           ( scratchRegs, stackRegs )  -- TODO: unhandled for now
         STO_Dot_Reg ->
@@ -295,14 +309,19 @@ handleDigitInput newDigit model =
         GTO_Addrs     -> 
           ( scratchRegs, stackRegs )  -- TODO: unhandled for now
 
+    newPrecision = if ( scratchRegs.acceptNewDigitInto == ExponentForEEX  ) -- && if magnitude of reg_X is > 10 ^ 10 
+                   then 10
+                   else model.displayPrecision 
     updatedModel = 
       { model |  
         automaticMemoryStackRegisters = newStackRegs
       , scratchRegisters              = newScratchRegs  
       , addToInputQueue               = True
+      , displayPrecision              = newPrecision  
       , message = "[>>> sign_of_X is " ++ Basics.toString sign_of_X ++ " <<<] "
       }
-    newModel = update_Display_Precision model.displayPrecision updatedModel 
+    -- TODO: for now EEX always shows in scientific
+    newModel = update_Display_Precision newPrecision updatedModel 
   in 
     newModel
 
@@ -321,7 +340,11 @@ handle_CHS_Key : Model -> Model
 handle_CHS_Key model = 
   let 
     modelScratchRegs = model.scratchRegisters 
-    newScratchRegs   = { modelScratchRegs | reg_X_is_Positive = not modelScratchRegs.reg_X_is_Positive }
+    newScratchRegs   = 
+      if ( modelScratchRegs.acceptNewDigitInto == ExponentForEEX )
+      then { modelScratchRegs | exponent_for_EEX = -1 * modelScratchRegs.exponent_for_EEX }
+      else { modelScratchRegs | reg_X_is_Positive = not modelScratchRegs.reg_X_is_Positive }
+
     newReg_X =  until_evaluate_X_register newScratchRegs
     modelStackRegs = model.automaticMemoryStackRegisters
     revaluatedStackRegs = { modelStackRegs | reg_X = newReg_X }

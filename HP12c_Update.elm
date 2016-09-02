@@ -117,7 +117,7 @@ update msg model =
         Number_9_Key              -> handleDigitInput 9
         Number_0_Key              -> handleDigitInput 0
         Decimal_Point_Key         -> handleDecimalPoint 
-        EEX_Key                   -> defaultModelTransformer -- handleEEX_Key
+        EEX_Key                   -> handleEEX_Key
         CHS_Key                   -> handle_CHS_Key
 
         ON_Key                    -> handlePOWERONKey 
