@@ -26,6 +26,7 @@ div.transparent_box {
     height: 32px;
     width: 34px;
     background-color: green;
+    cursor: pointer;
     z-index: 1;
 }
 
