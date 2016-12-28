@@ -6,18 +6,18 @@ div.calc_model {
     z-index: 1;
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
-    font-size: 30px;    
+    font-size: 30px;
 }
 
 div.calculator {
     position: absolute;
     width:590px;
-    height:370px; 
+    height:370px;
     background-repeat:no-repeat;
     background-size: cover;
-    background-image: url( DSR_HP12cp.png );
+    background-image: url( DSR_hp12cp.png );
     opacity: 0.995;
-    z-index: 0; 
+    z-index: 0;
 }
 
 div.transparent_box {
@@ -33,7 +33,7 @@ span.hint_key {
     padding: 0;
     margin: 0;
     color: black;
-    opacity: 1; 
+    opacity: 1;
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
     font-size: 30px;
