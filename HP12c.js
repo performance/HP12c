@@ -1466,11 +1466,17 @@ function guid(_)
 function update(oldRecord, updatedFields)
 {
 	var newRecord = {};
+
 	for (var key in oldRecord)
 	{
-		var value = (key in updatedFields) ? updatedFields[key] : oldRecord[key];
-		newRecord[key] = value;
+		newRecord[key] = oldRecord[key];
 	}
+
+	for (var key in updatedFields)
+	{
+		newRecord[key] = updatedFields[key];
+	}
+
 	return newRecord;
 }
 
@@ -1726,10 +1732,19 @@ return {
 };
 
 }();
-var _elm_lang$core$Basics$uncurry = F2(
-	function (f, _p0) {
+var _elm_lang$core$Basics$never = function (_p0) {
+	never:
+	while (true) {
 		var _p1 = _p0;
-		return A2(f, _p1._0, _p1._1);
+		var _v1 = _p1._0;
+		_p0 = _v1;
+		continue never;
+	}
+};
+var _elm_lang$core$Basics$uncurry = F2(
+	function (f, _p2) {
+		var _p3 = _p2;
+		return A2(f, _p3._0, _p3._1);
 	});
 var _elm_lang$core$Basics$curry = F3(
 	function (f, a, b) {
@@ -1740,16 +1755,8 @@ var _elm_lang$core$Basics$flip = F3(
 	function (f, b, a) {
 		return A2(f, a, b);
 	});
-var _elm_lang$core$Basics$snd = function (_p2) {
-	var _p3 = _p2;
-	return _p3._1;
-};
-var _elm_lang$core$Basics$fst = function (_p4) {
-	var _p5 = _p4;
-	return _p5._0;
-};
 var _elm_lang$core$Basics$always = F2(
-	function (a, _p6) {
+	function (a, _p4) {
 		return a;
 	});
 var _elm_lang$core$Basics$identity = function (x) {
@@ -1847,8 +1854,8 @@ var _elm_lang$core$Basics$radians = function (t) {
 var _elm_lang$core$Basics$GT = {ctor: 'GT'};
 var _elm_lang$core$Basics$EQ = {ctor: 'EQ'};
 var _elm_lang$core$Basics$LT = {ctor: 'LT'};
-var _elm_lang$core$Basics$Never = function (a) {
-	return {ctor: 'Never', _0: a};
+var _elm_lang$core$Basics$JustOneMore = function (a) {
+	return {ctor: 'JustOneMore', _0: a};
 };
 
 var _elm_lang$core$Maybe$withDefault = F2(
@@ -1861,30 +1868,11 @@ var _elm_lang$core$Maybe$withDefault = F2(
 		}
 	});
 var _elm_lang$core$Maybe$Nothing = {ctor: 'Nothing'};
-var _elm_lang$core$Maybe$oneOf = function (maybes) {
-	oneOf:
-	while (true) {
-		var _p1 = maybes;
-		if (_p1.ctor === '[]') {
-			return _elm_lang$core$Maybe$Nothing;
-		} else {
-			var _p3 = _p1._0;
-			var _p2 = _p3;
-			if (_p2.ctor === 'Nothing') {
-				var _v3 = _p1._1;
-				maybes = _v3;
-				continue oneOf;
-			} else {
-				return _p3;
-			}
-		}
-	}
-};
 var _elm_lang$core$Maybe$andThen = F2(
-	function (maybeValue, callback) {
-		var _p4 = maybeValue;
-		if (_p4.ctor === 'Just') {
-			return callback(_p4._0);
+	function (callback, maybeValue) {
+		var _p1 = maybeValue;
+		if (_p1.ctor === 'Just') {
+			return callback(_p1._0);
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
 		}
@@ -1894,50 +1882,50 @@ var _elm_lang$core$Maybe$Just = function (a) {
 };
 var _elm_lang$core$Maybe$map = F2(
 	function (f, maybe) {
-		var _p5 = maybe;
-		if (_p5.ctor === 'Just') {
+		var _p2 = maybe;
+		if (_p2.ctor === 'Just') {
 			return _elm_lang$core$Maybe$Just(
-				f(_p5._0));
+				f(_p2._0));
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
 		}
 	});
 var _elm_lang$core$Maybe$map2 = F3(
 	function (func, ma, mb) {
-		var _p6 = {ctor: '_Tuple2', _0: ma, _1: mb};
-		if (((_p6.ctor === '_Tuple2') && (_p6._0.ctor === 'Just')) && (_p6._1.ctor === 'Just')) {
+		var _p3 = {ctor: '_Tuple2', _0: ma, _1: mb};
+		if (((_p3.ctor === '_Tuple2') && (_p3._0.ctor === 'Just')) && (_p3._1.ctor === 'Just')) {
 			return _elm_lang$core$Maybe$Just(
-				A2(func, _p6._0._0, _p6._1._0));
+				A2(func, _p3._0._0, _p3._1._0));
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
 		}
 	});
 var _elm_lang$core$Maybe$map3 = F4(
 	function (func, ma, mb, mc) {
-		var _p7 = {ctor: '_Tuple3', _0: ma, _1: mb, _2: mc};
-		if ((((_p7.ctor === '_Tuple3') && (_p7._0.ctor === 'Just')) && (_p7._1.ctor === 'Just')) && (_p7._2.ctor === 'Just')) {
+		var _p4 = {ctor: '_Tuple3', _0: ma, _1: mb, _2: mc};
+		if ((((_p4.ctor === '_Tuple3') && (_p4._0.ctor === 'Just')) && (_p4._1.ctor === 'Just')) && (_p4._2.ctor === 'Just')) {
 			return _elm_lang$core$Maybe$Just(
-				A3(func, _p7._0._0, _p7._1._0, _p7._2._0));
+				A3(func, _p4._0._0, _p4._1._0, _p4._2._0));
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
 		}
 	});
 var _elm_lang$core$Maybe$map4 = F5(
 	function (func, ma, mb, mc, md) {
-		var _p8 = {ctor: '_Tuple4', _0: ma, _1: mb, _2: mc, _3: md};
-		if (((((_p8.ctor === '_Tuple4') && (_p8._0.ctor === 'Just')) && (_p8._1.ctor === 'Just')) && (_p8._2.ctor === 'Just')) && (_p8._3.ctor === 'Just')) {
+		var _p5 = {ctor: '_Tuple4', _0: ma, _1: mb, _2: mc, _3: md};
+		if (((((_p5.ctor === '_Tuple4') && (_p5._0.ctor === 'Just')) && (_p5._1.ctor === 'Just')) && (_p5._2.ctor === 'Just')) && (_p5._3.ctor === 'Just')) {
 			return _elm_lang$core$Maybe$Just(
-				A4(func, _p8._0._0, _p8._1._0, _p8._2._0, _p8._3._0));
+				A4(func, _p5._0._0, _p5._1._0, _p5._2._0, _p5._3._0));
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
 		}
 	});
 var _elm_lang$core$Maybe$map5 = F6(
 	function (func, ma, mb, mc, md, me) {
-		var _p9 = {ctor: '_Tuple5', _0: ma, _1: mb, _2: mc, _3: md, _4: me};
-		if ((((((_p9.ctor === '_Tuple5') && (_p9._0.ctor === 'Just')) && (_p9._1.ctor === 'Just')) && (_p9._2.ctor === 'Just')) && (_p9._3.ctor === 'Just')) && (_p9._4.ctor === 'Just')) {
+		var _p6 = {ctor: '_Tuple5', _0: ma, _1: mb, _2: mc, _3: md, _4: me};
+		if ((((((_p6.ctor === '_Tuple5') && (_p6._0.ctor === 'Just')) && (_p6._1.ctor === 'Just')) && (_p6._2.ctor === 'Just')) && (_p6._3.ctor === 'Just')) && (_p6._4.ctor === 'Just')) {
 			return _elm_lang$core$Maybe$Just(
-				A5(func, _p9._0._0, _p9._1._0, _p9._2._0, _p9._3._0, _p9._4._0));
+				A5(func, _p6._0._0, _p6._1._0, _p6._2._0, _p6._3._0, _p6._4._0));
 		} else {
 			return _elm_lang$core$Maybe$Nothing;
 		}
@@ -1973,21 +1961,6 @@ function toArray(xs)
 		xs = xs._1;
 	}
 	return out;
-}
-
-
-function range(lo, hi)
-{
-	var list = Nil;
-	if (lo <= hi)
-	{
-		do
-		{
-			list = Cons(hi, list);
-		}
-		while (hi-- > lo);
-	}
-	return list;
 }
 
 function foldr(f, b, xs)
@@ -2083,7 +2056,6 @@ return {
 	cons: F2(Cons),
 	toArray: toArray,
 	fromArray: fromArray,
-	range: range,
 
 	foldr: F3(foldr),
 
@@ -2147,14 +2119,12 @@ var _elm_lang$core$List$any = F2(
 	});
 var _elm_lang$core$List$all = F2(
 	function (isOkay, list) {
-		return _elm_lang$core$Basics$not(
-			A2(
-				_elm_lang$core$List$any,
-				function (_p2) {
-					return _elm_lang$core$Basics$not(
-						isOkay(_p2));
-				},
-				list));
+		return !A2(
+			_elm_lang$core$List$any,
+			function (_p2) {
+				return !isOkay(_p2);
+			},
+			list);
 	});
 var _elm_lang$core$List$foldr = _elm_lang$core$Native_List.foldr;
 var _elm_lang$core$List$foldl = F3(
@@ -2223,16 +2193,6 @@ var _elm_lang$core$List$minimum = function (list) {
 		return _elm_lang$core$Maybe$Nothing;
 	}
 };
-var _elm_lang$core$List$indexedMap = F2(
-	function (f, xs) {
-		return A3(
-			_elm_lang$core$List$map2,
-			f,
-			_elm_lang$core$Native_List.range(
-				0,
-				_elm_lang$core$List$length(xs) - 1),
-			xs);
-	});
 var _elm_lang$core$List$member = F2(
 	function (x, xs) {
 		return A2(
@@ -2274,33 +2234,32 @@ var _elm_lang$core$List$map = F2(
 			_elm_lang$core$List$foldr,
 			F2(
 				function (x, acc) {
-					return A2(
-						_elm_lang$core$List_ops['::'],
-						f(x),
-						acc);
+					return {
+						ctor: '::',
+						_0: f(x),
+						_1: acc
+					};
 				}),
-			_elm_lang$core$Native_List.fromArray(
-				[]),
+			{ctor: '[]'},
 			xs);
 	});
 var _elm_lang$core$List$filter = F2(
 	function (pred, xs) {
 		var conditionalCons = F2(
-			function (x, xs$) {
-				return pred(x) ? A2(_elm_lang$core$List_ops['::'], x, xs$) : xs$;
+			function (front, back) {
+				return pred(front) ? {ctor: '::', _0: front, _1: back} : back;
 			});
 		return A3(
 			_elm_lang$core$List$foldr,
 			conditionalCons,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
+			{ctor: '[]'},
 			xs);
 	});
 var _elm_lang$core$List$maybeCons = F3(
 	function (f, mx, xs) {
 		var _p10 = f(mx);
 		if (_p10.ctor === 'Just') {
-			return A2(_elm_lang$core$List_ops['::'], _p10._0, xs);
+			return {ctor: '::', _0: _p10._0, _1: xs};
 		} else {
 			return xs;
 		}
@@ -2310,8 +2269,7 @@ var _elm_lang$core$List$filterMap = F2(
 		return A3(
 			_elm_lang$core$List$foldr,
 			_elm_lang$core$List$maybeCons(f),
-			_elm_lang$core$Native_List.fromArray(
-				[]),
+			{ctor: '[]'},
 			xs);
 	});
 var _elm_lang$core$List$reverse = function (list) {
@@ -2319,10 +2277,9 @@ var _elm_lang$core$List$reverse = function (list) {
 		_elm_lang$core$List$foldl,
 		F2(
 			function (x, y) {
-				return A2(_elm_lang$core$List_ops['::'], x, y);
+				return {ctor: '::', _0: x, _1: y};
 			}),
-		_elm_lang$core$Native_List.fromArray(
-			[]),
+		{ctor: '[]'},
 		list);
 };
 var _elm_lang$core$List$scanl = F3(
@@ -2331,21 +2288,24 @@ var _elm_lang$core$List$scanl = F3(
 			function (x, accAcc) {
 				var _p11 = accAcc;
 				if (_p11.ctor === '::') {
-					return A2(
-						_elm_lang$core$List_ops['::'],
-						A2(f, x, _p11._0),
-						accAcc);
+					return {
+						ctor: '::',
+						_0: A2(f, x, _p11._0),
+						_1: accAcc
+					};
 				} else {
-					return _elm_lang$core$Native_List.fromArray(
-						[]);
+					return {ctor: '[]'};
 				}
 			});
 		return _elm_lang$core$List$reverse(
 			A3(
 				_elm_lang$core$List$foldl,
 				scan1,
-				_elm_lang$core$Native_List.fromArray(
-					[b]),
+				{
+					ctor: '::',
+					_0: b,
+					_1: {ctor: '[]'}
+				},
 				xs));
 	});
 var _elm_lang$core$List$append = F2(
@@ -2358,7 +2318,7 @@ var _elm_lang$core$List$append = F2(
 				_elm_lang$core$List$foldr,
 				F2(
 					function (x, y) {
-						return A2(_elm_lang$core$List_ops['::'], x, y);
+						return {ctor: '::', _0: x, _1: y};
 					}),
 				ys,
 				xs);
@@ -2368,8 +2328,7 @@ var _elm_lang$core$List$concat = function (lists) {
 	return A3(
 		_elm_lang$core$List$foldr,
 		_elm_lang$core$List$append,
-		_elm_lang$core$Native_List.fromArray(
-			[]),
+		{ctor: '[]'},
 		lists);
 };
 var _elm_lang$core$List$concatMap = F2(
@@ -2386,12 +2345,12 @@ var _elm_lang$core$List$partition = F2(
 				var _p15 = _p14._1;
 				return pred(x) ? {
 					ctor: '_Tuple2',
-					_0: A2(_elm_lang$core$List_ops['::'], x, _p16),
+					_0: {ctor: '::', _0: x, _1: _p16},
 					_1: _p15
 				} : {
 					ctor: '_Tuple2',
 					_0: _p16,
-					_1: A2(_elm_lang$core$List_ops['::'], x, _p15)
+					_1: {ctor: '::', _0: x, _1: _p15}
 				};
 			});
 		return A3(
@@ -2399,10 +2358,8 @@ var _elm_lang$core$List$partition = F2(
 			step,
 			{
 				ctor: '_Tuple2',
-				_0: _elm_lang$core$Native_List.fromArray(
-					[]),
-				_1: _elm_lang$core$Native_List.fromArray(
-					[])
+				_0: {ctor: '[]'},
+				_1: {ctor: '[]'}
 			},
 			list);
 	});
@@ -2413,8 +2370,8 @@ var _elm_lang$core$List$unzip = function (pairs) {
 			var _p20 = _p17;
 			return {
 				ctor: '_Tuple2',
-				_0: A2(_elm_lang$core$List_ops['::'], _p19._0, _p20._0),
-				_1: A2(_elm_lang$core$List_ops['::'], _p19._1, _p20._1)
+				_0: {ctor: '::', _0: _p19._0, _1: _p20._0},
+				_1: {ctor: '::', _0: _p19._1, _1: _p20._1}
 			};
 		});
 	return A3(
@@ -2422,10 +2379,8 @@ var _elm_lang$core$List$unzip = function (pairs) {
 		step,
 		{
 			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_List.fromArray(
-				[]),
-			_1: _elm_lang$core$Native_List.fromArray(
-				[])
+			_0: {ctor: '[]'},
+			_1: {ctor: '[]'}
 		},
 		pairs);
 };
@@ -2433,23 +2388,22 @@ var _elm_lang$core$List$intersperse = F2(
 	function (sep, xs) {
 		var _p21 = xs;
 		if (_p21.ctor === '[]') {
-			return _elm_lang$core$Native_List.fromArray(
-				[]);
+			return {ctor: '[]'};
 		} else {
 			var step = F2(
 				function (x, rest) {
-					return A2(
-						_elm_lang$core$List_ops['::'],
-						sep,
-						A2(_elm_lang$core$List_ops['::'], x, rest));
+					return {
+						ctor: '::',
+						_0: sep,
+						_1: {ctor: '::', _0: x, _1: rest}
+					};
 				});
 			var spersed = A3(
 				_elm_lang$core$List$foldr,
 				step,
-				_elm_lang$core$Native_List.fromArray(
-					[]),
+				{ctor: '[]'},
 				_p21._1);
-			return A2(_elm_lang$core$List_ops['::'], _p21._0, spersed);
+			return {ctor: '::', _0: _p21._0, _1: spersed};
 		}
 	});
 var _elm_lang$core$List$takeReverse = F3(
@@ -2465,7 +2419,7 @@ var _elm_lang$core$List$takeReverse = F3(
 				} else {
 					var _v23 = n - 1,
 						_v24 = _p22._1,
-						_v25 = A2(_elm_lang$core$List_ops['::'], _p22._0, taken);
+						_v25 = {ctor: '::', _0: _p22._0, _1: taken};
 					n = _v23;
 					list = _v24;
 					taken = _v25;
@@ -2481,14 +2435,12 @@ var _elm_lang$core$List$takeTailRec = F2(
 				_elm_lang$core$List$takeReverse,
 				n,
 				list,
-				_elm_lang$core$Native_List.fromArray(
-					[])));
+				{ctor: '[]'}));
 	});
 var _elm_lang$core$List$takeFast = F3(
 	function (ctr, n, list) {
 		if (_elm_lang$core$Native_Utils.cmp(n, 0) < 1) {
-			return _elm_lang$core$Native_List.fromArray(
-				[]);
+			return {ctor: '[]'};
 		} else {
 			var _p23 = {ctor: '_Tuple2', _0: n, _1: list};
 			_v26_5:
@@ -2504,12 +2456,30 @@ var _elm_lang$core$List$takeFast = F3(
 									case 1:
 										break _v26_1;
 									case 2:
-										return _elm_lang$core$Native_List.fromArray(
-											[_p23._1._0, _p23._1._1._0]);
+										return {
+											ctor: '::',
+											_0: _p23._1._0,
+											_1: {
+												ctor: '::',
+												_0: _p23._1._1._0,
+												_1: {ctor: '[]'}
+											}
+										};
 									case 3:
 										if (_p23._1._1._1.ctor === '::') {
-											return _elm_lang$core$Native_List.fromArray(
-												[_p23._1._0, _p23._1._1._0, _p23._1._1._1._0]);
+											return {
+												ctor: '::',
+												_0: _p23._1._0,
+												_1: {
+													ctor: '::',
+													_0: _p23._1._1._0,
+													_1: {
+														ctor: '::',
+														_0: _p23._1._1._1._0,
+														_1: {ctor: '[]'}
+													}
+												}
+											};
 										} else {
 											break _v26_5;
 										}
@@ -2520,31 +2490,39 @@ var _elm_lang$core$List$takeFast = F3(
 											var _p26 = _p23._1._0;
 											var _p25 = _p23._1._1._1._1._0;
 											var _p24 = _p23._1._1._1._1._1;
-											return (_elm_lang$core$Native_Utils.cmp(ctr, 1000) > 0) ? A2(
-												_elm_lang$core$List_ops['::'],
-												_p26,
-												A2(
-													_elm_lang$core$List_ops['::'],
-													_p27,
-													A2(
-														_elm_lang$core$List_ops['::'],
-														_p28,
-														A2(
-															_elm_lang$core$List_ops['::'],
-															_p25,
-															A2(_elm_lang$core$List$takeTailRec, n - 4, _p24))))) : A2(
-												_elm_lang$core$List_ops['::'],
-												_p26,
-												A2(
-													_elm_lang$core$List_ops['::'],
-													_p27,
-													A2(
-														_elm_lang$core$List_ops['::'],
-														_p28,
-														A2(
-															_elm_lang$core$List_ops['::'],
-															_p25,
-															A3(_elm_lang$core$List$takeFast, ctr + 1, n - 4, _p24)))));
+											return (_elm_lang$core$Native_Utils.cmp(ctr, 1000) > 0) ? {
+												ctor: '::',
+												_0: _p26,
+												_1: {
+													ctor: '::',
+													_0: _p27,
+													_1: {
+														ctor: '::',
+														_0: _p28,
+														_1: {
+															ctor: '::',
+															_0: _p25,
+															_1: A2(_elm_lang$core$List$takeTailRec, n - 4, _p24)
+														}
+													}
+												}
+											} : {
+												ctor: '::',
+												_0: _p26,
+												_1: {
+													ctor: '::',
+													_0: _p27,
+													_1: {
+														ctor: '::',
+														_0: _p28,
+														_1: {
+															ctor: '::',
+															_0: _p25,
+															_1: A3(_elm_lang$core$List$takeFast, ctr + 1, n - 4, _p24)
+														}
+													}
+												}
+											};
 										} else {
 											break _v26_5;
 										}
@@ -2561,8 +2539,11 @@ var _elm_lang$core$List$takeFast = F3(
 						break _v26_5;
 					}
 				} while(false);
-				return _elm_lang$core$Native_List.fromArray(
-					[_p23._1._0]);
+				return {
+					ctor: '::',
+					_0: _p23._1._0,
+					_1: {ctor: '[]'}
+				};
 			} while(false);
 			return list;
 		}
@@ -2578,7 +2559,7 @@ var _elm_lang$core$List$repeatHelp = F3(
 			if (_elm_lang$core$Native_Utils.cmp(n, 0) < 1) {
 				return result;
 			} else {
-				var _v27 = A2(_elm_lang$core$List_ops['::'], value, result),
+				var _v27 = {ctor: '::', _0: value, _1: result},
 					_v28 = n - 1,
 					_v29 = value;
 				result = _v27;
@@ -2592,10 +2573,45 @@ var _elm_lang$core$List$repeat = F2(
 	function (n, value) {
 		return A3(
 			_elm_lang$core$List$repeatHelp,
-			_elm_lang$core$Native_List.fromArray(
-				[]),
+			{ctor: '[]'},
 			n,
 			value);
+	});
+var _elm_lang$core$List$rangeHelp = F3(
+	function (lo, hi, list) {
+		rangeHelp:
+		while (true) {
+			if (_elm_lang$core$Native_Utils.cmp(lo, hi) < 1) {
+				var _v30 = lo,
+					_v31 = hi - 1,
+					_v32 = {ctor: '::', _0: hi, _1: list};
+				lo = _v30;
+				hi = _v31;
+				list = _v32;
+				continue rangeHelp;
+			} else {
+				return list;
+			}
+		}
+	});
+var _elm_lang$core$List$range = F2(
+	function (lo, hi) {
+		return A3(
+			_elm_lang$core$List$rangeHelp,
+			lo,
+			hi,
+			{ctor: '[]'});
+	});
+var _elm_lang$core$List$indexedMap = F2(
+	function (f, xs) {
+		return A3(
+			_elm_lang$core$List$map2,
+			f,
+			A2(
+				_elm_lang$core$List$range,
+				0,
+				_elm_lang$core$List$length(xs) - 1),
+			xs);
 	});
 
 var _elm_lang$core$Array$append = _elm_lang$core$Native_Array.append;
@@ -2635,7 +2651,8 @@ var _elm_lang$core$Array$toIndexedList = function (array) {
 			function (v0, v1) {
 				return {ctor: '_Tuple2', _0: v0, _1: v1};
 			}),
-		_elm_lang$core$Native_List.range(
+		A2(
+			_elm_lang$core$List$range,
 			0,
 			_elm_lang$core$Native_Array.length(array) - 1),
 		_elm_lang$core$Native_Array.toList(array));
@@ -2743,21 +2760,21 @@ function nativeBinding(callback)
 	};
 }
 
-function andThen(task, callback)
+function andThen(callback, task)
 {
 	return {
 		ctor: '_Task_andThen',
-		task: task,
-		callback: callback
+		callback: callback,
+		task: task
 	};
 }
 
-function onError(task, callback)
+function onError(callback, task)
 {
 	return {
 		ctor: '_Task_onError',
-		task: task,
-		callback: callback
+		callback: callback,
+		task: task
 	};
 }
 
@@ -2997,167 +3014,109 @@ var _elm_lang$core$Native_Platform = function() {
 
 // PROGRAMS
 
-function addPublicModule(object, name, main)
+function program(impl)
 {
-	var init = main ? makeEmbed(name, main) : mainIsUndefined(name);
-
-	object['worker'] = function worker(flags)
+	return function(flagDecoder)
 	{
-		return init(undefined, flags, false);
-	}
-
-	object['embed'] = function embed(domNode, flags)
-	{
-		return init(domNode, flags, true);
-	}
-
-	object['fullscreen'] = function fullscreen(flags)
-	{
-		return init(document.body, flags, true);
-	};
-}
-
-
-// PROGRAM FAIL
-
-function mainIsUndefined(name)
-{
-	return function(domNode)
-	{
-		var message = 'Cannot initialize module `' + name +
-			'` because it has no `main` value!\nWhat should I show on screen?';
-		domNode.innerHTML = errorHtml(message);
-		throw new Error(message);
-	};
-}
-
-function errorHtml(message)
-{
-	return '<div style="padding-left:1em;">'
-		+ '<h2 style="font-weight:normal;"><b>Oops!</b> Something went wrong when starting your Elm program.</h2>'
-		+ '<pre style="padding-left:1em;">' + message + '</pre>'
-		+ '</div>';
-}
-
-
-// PROGRAM SUCCESS
-
-function makeEmbed(moduleName, main)
-{
-	return function embed(rootDomNode, flags, withRenderer)
-	{
-		try
+		return function(object, moduleName)
 		{
-			var program = mainToProgram(moduleName, main);
-			if (!withRenderer)
+			object['worker'] = function worker(flags)
 			{
-				program.renderer = dummyRenderer;
-			}
-			return makeEmbedHelp(moduleName, program, rootDomNode, flags);
-		}
-		catch (e)
-		{
-			rootDomNode.innerHTML = errorHtml(e.message);
-			throw e;
-		}
+				if (typeof flags !== 'undefined')
+				{
+					throw new Error(
+						'The `' + moduleName + '` module does not need flags.\n'
+						+ 'Call ' + moduleName + '.worker() with no arguments and you should be all set!'
+					);
+				}
+
+				return initialize(
+					impl.init,
+					impl.update,
+					impl.subscriptions,
+					renderer
+				);
+			};
+		};
 	};
 }
 
-function dummyRenderer()
+function programWithFlags(impl)
 {
-	return { update: function() {} };
+	return function(flagDecoder)
+	{
+		return function(object, moduleName)
+		{
+			object['worker'] = function worker(flags)
+			{
+				if (typeof flagDecoder === 'undefined')
+				{
+					throw new Error(
+						'Are you trying to sneak a Never value into Elm? Trickster!\n'
+						+ 'It looks like ' + moduleName + '.main is defined with `programWithFlags` but has type `Program Never`.\n'
+						+ 'Use `program` instead if you do not want flags.'
+					);
+				}
+
+				var result = A2(_elm_lang$core$Native_Json.run, flagDecoder, flags);
+				if (result.ctor === 'Err')
+				{
+					throw new Error(
+						moduleName + '.worker(...) was called with an unexpected argument.\n'
+						+ 'I tried to convert it to an Elm value, but ran into this problem:\n\n'
+						+ result._0
+					);
+				}
+
+				return initialize(
+					impl.init(result._0),
+					impl.update,
+					impl.subscriptions,
+					renderer
+				);
+			};
+		};
+	};
+}
+
+function renderer(enqueue, _)
+{
+	return function(_) {};
 }
 
 
-// MAIN TO PROGRAM
+// HTML TO PROGRAM
 
-function mainToProgram(moduleName, wrappedMain)
+function htmlToProgram(vnode)
 {
-	var main = wrappedMain.main;
+	var emptyBag = batch(_elm_lang$core$Native_List.Nil);
+	var noChange = _elm_lang$core$Native_Utils.Tuple2(
+		_elm_lang$core$Native_Utils.Tuple0,
+		emptyBag
+	);
 
-	if (typeof main.init === 'undefined')
-	{
-		var emptyBag = batch(_elm_lang$core$Native_List.Nil);
-		var noChange = _elm_lang$core$Native_Utils.Tuple2(
-			_elm_lang$core$Native_Utils.Tuple0,
-			emptyBag
-		);
-
-		return _elm_lang$virtual_dom$VirtualDom$programWithFlags({
-			init: function() { return noChange; },
-			view: function() { return main; },
-			update: F2(function() { return noChange; }),
-			subscriptions: function () { return emptyBag; }
-		});
-	}
-
-	var flags = wrappedMain.flags;
-	var init = flags
-		? initWithFlags(moduleName, main.init, flags)
-		: initWithoutFlags(moduleName, main.init);
-
-	return _elm_lang$virtual_dom$VirtualDom$programWithFlags({
-		init: init,
-		view: main.view,
-		update: main.update,
-		subscriptions: main.subscriptions,
+	return _elm_lang$virtual_dom$VirtualDom$program({
+		init: noChange,
+		view: function(model) { return main; },
+		update: F2(function(msg, model) { return noChange; }),
+		subscriptions: function (model) { return emptyBag; }
 	});
 }
 
-function initWithoutFlags(moduleName, realInit)
+
+// INITIALIZE A PROGRAM
+
+function initialize(init, update, subscriptions, renderer)
 {
-	return function init(flags)
-	{
-		if (typeof flags !== 'undefined')
-		{
-			throw new Error(
-				'You are giving module `' + moduleName + '` an argument in JavaScript.\n'
-				+ 'This module does not take arguments though! You probably need to change the\n'
-				+ 'initialization code to something like `Elm.' + moduleName + '.fullscreen()`'
-			);
-		}
-		return realInit();
-	};
-}
-
-function initWithFlags(moduleName, realInit, flagDecoder)
-{
-	return function init(flags)
-	{
-		var result = A2(_elm_lang$core$Native_Json.run, flagDecoder, flags);
-		if (result.ctor === 'Err')
-		{
-			throw new Error(
-				'You are trying to initialize module `' + moduleName + '` with an unexpected argument.\n'
-				+ 'When trying to convert it to a usable Elm value, I run into this problem:\n\n'
-				+ result._0
-			);
-		}
-		return realInit(result._0);
-	};
-}
-
-
-// SETUP RUNTIME SYSTEM
-
-function makeEmbedHelp(moduleName, program, rootDomNode, flags)
-{
-	var init = program.init;
-	var update = program.update;
-	var subscriptions = program.subscriptions;
-	var view = program.view;
-	var makeRenderer = program.renderer;
-
 	// ambient state
 	var managers = {};
-	var renderer;
+	var updateView;
 
 	// init and update state in main process
 	var initApp = _elm_lang$core$Native_Scheduler.nativeBinding(function(callback) {
-		var results = init(flags);
-		var model = results._0;
-		renderer = makeRenderer(rootDomNode, enqueue, view(model));
-		var cmds = results._1;
+		var model = init._0;
+		updateView = renderer(enqueue, model);
+		var cmds = init._1;
 		var subs = subscriptions(model);
 		dispatchEffects(managers, cmds, subs);
 		callback(_elm_lang$core$Native_Scheduler.succeed(model));
@@ -3168,7 +3127,7 @@ function makeEmbedHelp(moduleName, program, rootDomNode, flags)
 		return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback) {
 			var results = A2(update, msg, model);
 			model = results._0;
-			renderer.update(view(model));
+			updateView(model);
 			var cmds = results._1;
 			var subs = subscriptions(model);
 			dispatchEffects(managers, cmds, subs);
@@ -3282,10 +3241,10 @@ function spawnLoop(init, onMessage)
 		var handleMsg = _elm_lang$core$Native_Scheduler.receive(function(msg) {
 			return onMessage(msg, state);
 		});
-		return A2(andThen, handleMsg, loop);
+		return A2(andThen, loop, handleMsg);
 	}
 
-	var task = A2(andThen, init, loop);
+	var task = A2(andThen, loop, init);
 
 	return _elm_lang$core$Native_Scheduler.rawSpawn(task);
 }
@@ -3450,10 +3409,12 @@ function setupOutgoingPort(name)
 	{
 		while (cmdList.ctor !== '[]')
 		{
+			// grab a separate reference to subs in case unsubscribe is called
+			var currentSubs = subs;
 			var value = converter(cmdList._0);
-			for (var i = 0; i < subs.length; i++)
+			for (var i = 0; i < currentSubs.length; i++)
 			{
-				subs[i](value);
+				currentSubs[i](value);
 			}
 			cmdList = cmdList._1;
 		}
@@ -3472,6 +3433,9 @@ function setupOutgoingPort(name)
 
 	function unsubscribe(callback)
 	{
+		// copy subs into a new array in case unsubscribe is called within a
+		// subscribed callback
+		subs = subs.slice();
 		var index = subs.indexOf(callback);
 		if (index >= 0)
 		{
@@ -3587,11 +3551,14 @@ return {
 	sendToSelf: F2(sendToSelf),
 
 	// global setup
-	mainToProgram: mainToProgram,
 	effectManagers: effectManagers,
 	outgoingPort: outgoingPort,
 	incomingPort: incomingPort,
-	addPublicModule: addPublicModule,
+
+	htmlToProgram: htmlToProgram,
+	program: program,
+	programWithFlags: programWithFlags,
+	initialize: initialize,
 
 	// effect bags
 	leaf: leaf,
@@ -3601,18 +3568,9 @@ return {
 
 }();
 
-var _elm_lang$core$Platform$hack = _elm_lang$core$Native_Scheduler.succeed;
-var _elm_lang$core$Platform$sendToSelf = _elm_lang$core$Native_Platform.sendToSelf;
-var _elm_lang$core$Platform$sendToApp = _elm_lang$core$Native_Platform.sendToApp;
-var _elm_lang$core$Platform$Program = {ctor: 'Program'};
-var _elm_lang$core$Platform$Task = {ctor: 'Task'};
-var _elm_lang$core$Platform$ProcessId = {ctor: 'ProcessId'};
-var _elm_lang$core$Platform$Router = {ctor: 'Router'};
-
 var _elm_lang$core$Platform_Cmd$batch = _elm_lang$core$Native_Platform.batch;
 var _elm_lang$core$Platform_Cmd$none = _elm_lang$core$Platform_Cmd$batch(
-	_elm_lang$core$Native_List.fromArray(
-		[]));
+	{ctor: '[]'});
 var _elm_lang$core$Platform_Cmd_ops = _elm_lang$core$Platform_Cmd_ops || {};
 _elm_lang$core$Platform_Cmd_ops['!'] = F2(
 	function (model, commands) {
@@ -3624,6 +3582,22 @@ _elm_lang$core$Platform_Cmd_ops['!'] = F2(
 	});
 var _elm_lang$core$Platform_Cmd$map = _elm_lang$core$Native_Platform.map;
 var _elm_lang$core$Platform_Cmd$Cmd = {ctor: 'Cmd'};
+
+var _elm_lang$core$Platform_Sub$batch = _elm_lang$core$Native_Platform.batch;
+var _elm_lang$core$Platform_Sub$none = _elm_lang$core$Platform_Sub$batch(
+	{ctor: '[]'});
+var _elm_lang$core$Platform_Sub$map = _elm_lang$core$Native_Platform.map;
+var _elm_lang$core$Platform_Sub$Sub = {ctor: 'Sub'};
+
+var _elm_lang$core$Platform$hack = _elm_lang$core$Native_Scheduler.succeed;
+var _elm_lang$core$Platform$sendToSelf = _elm_lang$core$Native_Platform.sendToSelf;
+var _elm_lang$core$Platform$sendToApp = _elm_lang$core$Native_Platform.sendToApp;
+var _elm_lang$core$Platform$programWithFlags = _elm_lang$core$Native_Platform.programWithFlags;
+var _elm_lang$core$Platform$program = _elm_lang$core$Native_Platform.program;
+var _elm_lang$core$Platform$Program = {ctor: 'Program'};
+var _elm_lang$core$Platform$Task = {ctor: 'Task'};
+var _elm_lang$core$Platform$ProcessId = {ctor: 'ProcessId'};
+var _elm_lang$core$Platform$Router = {ctor: 'Router'};
 
 var _elm_lang$core$Result$toMaybe = function (result) {
 	var _p0 = result;
@@ -3646,7 +3620,7 @@ var _elm_lang$core$Result$Err = function (a) {
 	return {ctor: 'Err', _0: a};
 };
 var _elm_lang$core$Result$andThen = F2(
-	function (result, callback) {
+	function (callback, result) {
 		var _p2 = result;
 		if (_p2.ctor === 'Ok') {
 			return callback(_p2._0);
@@ -3747,7 +3721,7 @@ var _elm_lang$core$Result$map5 = F6(
 			return _elm_lang$core$Result$Err(_p7._0._0);
 		}
 	});
-var _elm_lang$core$Result$formatError = F2(
+var _elm_lang$core$Result$mapError = F2(
 	function (f, result) {
 		var _p8 = result;
 		if (_p8.ctor === 'Ok') {
@@ -3775,158 +3749,142 @@ var _elm_lang$core$Task$spawnCmd = F2(
 		return _elm_lang$core$Native_Scheduler.spawn(
 			A2(
 				_elm_lang$core$Task$andThen,
-				_p1._0,
-				_elm_lang$core$Platform$sendToApp(router)));
+				_elm_lang$core$Platform$sendToApp(router),
+				_p1._0));
 	});
 var _elm_lang$core$Task$fail = _elm_lang$core$Native_Scheduler.fail;
 var _elm_lang$core$Task$mapError = F2(
-	function (f, task) {
+	function (convert, task) {
 		return A2(
 			_elm_lang$core$Task$onError,
-			task,
-			function (err) {
+			function (_p2) {
 				return _elm_lang$core$Task$fail(
-					f(err));
-			});
+					convert(_p2));
+			},
+			task);
 	});
 var _elm_lang$core$Task$succeed = _elm_lang$core$Native_Scheduler.succeed;
 var _elm_lang$core$Task$map = F2(
 	function (func, taskA) {
 		return A2(
 			_elm_lang$core$Task$andThen,
-			taskA,
 			function (a) {
 				return _elm_lang$core$Task$succeed(
 					func(a));
-			});
+			},
+			taskA);
 	});
 var _elm_lang$core$Task$map2 = F3(
 	function (func, taskA, taskB) {
 		return A2(
 			_elm_lang$core$Task$andThen,
-			taskA,
 			function (a) {
 				return A2(
 					_elm_lang$core$Task$andThen,
-					taskB,
 					function (b) {
 						return _elm_lang$core$Task$succeed(
 							A2(func, a, b));
-					});
-			});
+					},
+					taskB);
+			},
+			taskA);
 	});
 var _elm_lang$core$Task$map3 = F4(
 	function (func, taskA, taskB, taskC) {
 		return A2(
 			_elm_lang$core$Task$andThen,
-			taskA,
 			function (a) {
 				return A2(
 					_elm_lang$core$Task$andThen,
-					taskB,
 					function (b) {
 						return A2(
 							_elm_lang$core$Task$andThen,
-							taskC,
 							function (c) {
 								return _elm_lang$core$Task$succeed(
 									A3(func, a, b, c));
-							});
-					});
-			});
+							},
+							taskC);
+					},
+					taskB);
+			},
+			taskA);
 	});
 var _elm_lang$core$Task$map4 = F5(
 	function (func, taskA, taskB, taskC, taskD) {
 		return A2(
 			_elm_lang$core$Task$andThen,
-			taskA,
 			function (a) {
 				return A2(
 					_elm_lang$core$Task$andThen,
-					taskB,
 					function (b) {
 						return A2(
 							_elm_lang$core$Task$andThen,
-							taskC,
 							function (c) {
 								return A2(
 									_elm_lang$core$Task$andThen,
-									taskD,
 									function (d) {
 										return _elm_lang$core$Task$succeed(
 											A4(func, a, b, c, d));
-									});
-							});
-					});
-			});
+									},
+									taskD);
+							},
+							taskC);
+					},
+					taskB);
+			},
+			taskA);
 	});
 var _elm_lang$core$Task$map5 = F6(
 	function (func, taskA, taskB, taskC, taskD, taskE) {
 		return A2(
 			_elm_lang$core$Task$andThen,
-			taskA,
 			function (a) {
 				return A2(
 					_elm_lang$core$Task$andThen,
-					taskB,
 					function (b) {
 						return A2(
 							_elm_lang$core$Task$andThen,
-							taskC,
 							function (c) {
 								return A2(
 									_elm_lang$core$Task$andThen,
-									taskD,
 									function (d) {
 										return A2(
 											_elm_lang$core$Task$andThen,
-											taskE,
 											function (e) {
 												return _elm_lang$core$Task$succeed(
 													A5(func, a, b, c, d, e));
-											});
-									});
-							});
-					});
-			});
-	});
-var _elm_lang$core$Task$andMap = F2(
-	function (taskFunc, taskValue) {
-		return A2(
-			_elm_lang$core$Task$andThen,
-			taskFunc,
-			function (func) {
-				return A2(
-					_elm_lang$core$Task$andThen,
-					taskValue,
-					function (value) {
-						return _elm_lang$core$Task$succeed(
-							func(value));
-					});
-			});
+											},
+											taskE);
+									},
+									taskD);
+							},
+							taskC);
+					},
+					taskB);
+			},
+			taskA);
 	});
 var _elm_lang$core$Task$sequence = function (tasks) {
-	var _p2 = tasks;
-	if (_p2.ctor === '[]') {
+	var _p3 = tasks;
+	if (_p3.ctor === '[]') {
 		return _elm_lang$core$Task$succeed(
-			_elm_lang$core$Native_List.fromArray(
-				[]));
+			{ctor: '[]'});
 	} else {
 		return A3(
 			_elm_lang$core$Task$map2,
 			F2(
 				function (x, y) {
-					return A2(_elm_lang$core$List_ops['::'], x, y);
+					return {ctor: '::', _0: x, _1: y};
 				}),
-			_p2._0,
-			_elm_lang$core$Task$sequence(_p2._1));
+			_p3._0,
+			_elm_lang$core$Task$sequence(_p3._1));
 	}
 };
 var _elm_lang$core$Task$onEffects = F3(
 	function (router, commands, state) {
 		return A2(
 			_elm_lang$core$Task$map,
-			function (_p3) {
+			function (_p4) {
 				return {ctor: '_Tuple0'};
 			},
 			_elm_lang$core$Task$sequence(
@@ -3935,67 +3893,47 @@ var _elm_lang$core$Task$onEffects = F3(
 					_elm_lang$core$Task$spawnCmd(router),
 					commands)));
 	});
-var _elm_lang$core$Task$toMaybe = function (task) {
-	return A2(
-		_elm_lang$core$Task$onError,
-		A2(_elm_lang$core$Task$map, _elm_lang$core$Maybe$Just, task),
-		function (_p4) {
-			return _elm_lang$core$Task$succeed(_elm_lang$core$Maybe$Nothing);
-		});
-};
-var _elm_lang$core$Task$fromMaybe = F2(
-	function ($default, maybe) {
-		var _p5 = maybe;
-		if (_p5.ctor === 'Just') {
-			return _elm_lang$core$Task$succeed(_p5._0);
-		} else {
-			return _elm_lang$core$Task$fail($default);
-		}
-	});
-var _elm_lang$core$Task$toResult = function (task) {
-	return A2(
-		_elm_lang$core$Task$onError,
-		A2(_elm_lang$core$Task$map, _elm_lang$core$Result$Ok, task),
-		function (msg) {
-			return _elm_lang$core$Task$succeed(
-				_elm_lang$core$Result$Err(msg));
-		});
-};
-var _elm_lang$core$Task$fromResult = function (result) {
-	var _p6 = result;
-	if (_p6.ctor === 'Ok') {
-		return _elm_lang$core$Task$succeed(_p6._0);
-	} else {
-		return _elm_lang$core$Task$fail(_p6._0);
-	}
-};
 var _elm_lang$core$Task$init = _elm_lang$core$Task$succeed(
 	{ctor: '_Tuple0'});
 var _elm_lang$core$Task$onSelfMsg = F3(
-	function (_p9, _p8, _p7) {
+	function (_p7, _p6, _p5) {
 		return _elm_lang$core$Task$succeed(
 			{ctor: '_Tuple0'});
 	});
 var _elm_lang$core$Task$command = _elm_lang$core$Native_Platform.leaf('Task');
-var _elm_lang$core$Task$T = function (a) {
-	return {ctor: 'T', _0: a};
+var _elm_lang$core$Task$Perform = function (a) {
+	return {ctor: 'Perform', _0: a};
 };
-var _elm_lang$core$Task$perform = F3(
-	function (onFail, onSuccess, task) {
+var _elm_lang$core$Task$perform = F2(
+	function (toMessage, task) {
 		return _elm_lang$core$Task$command(
-			_elm_lang$core$Task$T(
+			_elm_lang$core$Task$Perform(
+				A2(_elm_lang$core$Task$map, toMessage, task)));
+	});
+var _elm_lang$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return _elm_lang$core$Task$command(
+			_elm_lang$core$Task$Perform(
 				A2(
 					_elm_lang$core$Task$onError,
-					A2(_elm_lang$core$Task$map, onSuccess, task),
-					function (x) {
+					function (_p8) {
 						return _elm_lang$core$Task$succeed(
-							onFail(x));
-					})));
+							resultToMessage(
+								_elm_lang$core$Result$Err(_p8)));
+					},
+					A2(
+						_elm_lang$core$Task$andThen,
+						function (_p9) {
+							return _elm_lang$core$Task$succeed(
+								resultToMessage(
+									_elm_lang$core$Result$Ok(_p9)));
+						},
+						task))));
 	});
 var _elm_lang$core$Task$cmdMap = F2(
 	function (tagger, _p10) {
 		var _p11 = _p10;
-		return _elm_lang$core$Task$T(
+		return _elm_lang$core$Task$Perform(
 			A2(_elm_lang$core$Task$map, tagger, _p11._0));
 	});
 _elm_lang$core$Native_Platform.effectManagers['Task'] = {pkg: 'elm-lang/core', init: _elm_lang$core$Task$init, onEffects: _elm_lang$core$Task$onEffects, onSelfMsg: _elm_lang$core$Task$onSelfMsg, tag: 'cmd', cmdMap: _elm_lang$core$Task$cmdMap};
@@ -4437,10 +4375,9 @@ var _elm_lang$core$Dict$keys = function (dict) {
 		_elm_lang$core$Dict$foldr,
 		F3(
 			function (key, value, keyList) {
-				return A2(_elm_lang$core$List_ops['::'], key, keyList);
+				return {ctor: '::', _0: key, _1: keyList};
 			}),
-		_elm_lang$core$Native_List.fromArray(
-			[]),
+		{ctor: '[]'},
 		dict);
 };
 var _elm_lang$core$Dict$values = function (dict) {
@@ -4448,10 +4385,9 @@ var _elm_lang$core$Dict$values = function (dict) {
 		_elm_lang$core$Dict$foldr,
 		F3(
 			function (key, value, valueList) {
-				return A2(_elm_lang$core$List_ops['::'], value, valueList);
+				return {ctor: '::', _0: value, _1: valueList};
 			}),
-		_elm_lang$core$Native_List.fromArray(
-			[]),
+		{ctor: '[]'},
 		dict);
 };
 var _elm_lang$core$Dict$toList = function (dict) {
@@ -4459,13 +4395,13 @@ var _elm_lang$core$Dict$toList = function (dict) {
 		_elm_lang$core$Dict$foldr,
 		F3(
 			function (key, value, list) {
-				return A2(
-					_elm_lang$core$List_ops['::'],
-					{ctor: '_Tuple2', _0: key, _1: value},
-					list);
+				return {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: key, _1: value},
+					_1: list
+				};
 			}),
-		_elm_lang$core$Native_List.fromArray(
-			[]),
+		{ctor: '[]'},
 		dict);
 };
 var _elm_lang$core$Dict$foldl = F3(
@@ -4565,18 +4501,43 @@ var _elm_lang$core$Dict$reportRemBug = F4(
 	function (msg, c, lgot, rgot) {
 		return _elm_lang$core$Native_Debug.crash(
 			_elm_lang$core$String$concat(
-				_elm_lang$core$Native_List.fromArray(
-					[
-						'Internal red-black tree invariant violated, expected ',
-						msg,
-						' and got ',
-						_elm_lang$core$Basics$toString(c),
-						'/',
-						lgot,
-						'/',
-						rgot,
-						'\nPlease report this bug to <https://github.com/elm-lang/core/issues>'
-					])));
+				{
+					ctor: '::',
+					_0: 'Internal red-black tree invariant violated, expected ',
+					_1: {
+						ctor: '::',
+						_0: msg,
+						_1: {
+							ctor: '::',
+							_0: ' and got ',
+							_1: {
+								ctor: '::',
+								_0: _elm_lang$core$Basics$toString(c),
+								_1: {
+									ctor: '::',
+									_0: '/',
+									_1: {
+										ctor: '::',
+										_0: lgot,
+										_1: {
+											ctor: '::',
+											_0: '/',
+											_1: {
+												ctor: '::',
+												_0: rgot,
+												_1: {
+													ctor: '::',
+													_0: '\nPlease report this bug to <https://github.com/elm-lang/core/issues>',
+													_1: {ctor: '[]'}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}));
 	});
 var _elm_lang$core$Dict$isBBlack = function (dict) {
 	var _p13 = dict;
@@ -5036,11 +4997,11 @@ var _elm_lang$core$Dict$removeMax = F5(
 		}
 	});
 var _elm_lang$core$Dict$rem = F3(
-	function (c, l, r) {
-		var _p29 = {ctor: '_Tuple2', _0: l, _1: r};
+	function (color, left, right) {
+		var _p29 = {ctor: '_Tuple2', _0: left, _1: right};
 		if (_p29._0.ctor === 'RBEmpty_elm_builtin') {
 			if (_p29._1.ctor === 'RBEmpty_elm_builtin') {
-				var _p30 = c;
+				var _p30 = color;
 				switch (_p30.ctor) {
 					case 'Red':
 						return _elm_lang$core$Dict$RBEmpty_elm_builtin(_elm_lang$core$Dict$LBlack);
@@ -5052,14 +5013,14 @@ var _elm_lang$core$Dict$rem = F3(
 			} else {
 				var _p33 = _p29._1._0;
 				var _p32 = _p29._0._0;
-				var _p31 = {ctor: '_Tuple3', _0: c, _1: _p32, _2: _p33};
+				var _p31 = {ctor: '_Tuple3', _0: color, _1: _p32, _2: _p33};
 				if ((((_p31.ctor === '_Tuple3') && (_p31._0.ctor === 'Black')) && (_p31._1.ctor === 'LBlack')) && (_p31._2.ctor === 'Red')) {
 					return A5(_elm_lang$core$Dict$RBNode_elm_builtin, _elm_lang$core$Dict$Black, _p29._1._1, _p29._1._2, _p29._1._3, _p29._1._4);
 				} else {
 					return A4(
 						_elm_lang$core$Dict$reportRemBug,
 						'Black/LBlack/Red',
-						c,
+						color,
 						_elm_lang$core$Basics$toString(_p32),
 						_elm_lang$core$Basics$toString(_p33));
 				}
@@ -5068,14 +5029,14 @@ var _elm_lang$core$Dict$rem = F3(
 			if (_p29._1.ctor === 'RBEmpty_elm_builtin') {
 				var _p36 = _p29._1._0;
 				var _p35 = _p29._0._0;
-				var _p34 = {ctor: '_Tuple3', _0: c, _1: _p35, _2: _p36};
+				var _p34 = {ctor: '_Tuple3', _0: color, _1: _p35, _2: _p36};
 				if ((((_p34.ctor === '_Tuple3') && (_p34._0.ctor === 'Black')) && (_p34._1.ctor === 'Red')) && (_p34._2.ctor === 'LBlack')) {
 					return A5(_elm_lang$core$Dict$RBNode_elm_builtin, _elm_lang$core$Dict$Black, _p29._0._1, _p29._0._2, _p29._0._3, _p29._0._4);
 				} else {
 					return A4(
 						_elm_lang$core$Dict$reportRemBug,
 						'Black/Red/LBlack',
-						c,
+						color,
 						_elm_lang$core$Basics$toString(_p35),
 						_elm_lang$core$Basics$toString(_p36));
 				}
@@ -5083,11 +5044,11 @@ var _elm_lang$core$Dict$rem = F3(
 				var _p40 = _p29._0._2;
 				var _p39 = _p29._0._4;
 				var _p38 = _p29._0._1;
-				var l$ = A5(_elm_lang$core$Dict$removeMax, _p29._0._0, _p38, _p40, _p29._0._3, _p39);
+				var newLeft = A5(_elm_lang$core$Dict$removeMax, _p29._0._0, _p38, _p40, _p29._0._3, _p39);
 				var _p37 = A3(_elm_lang$core$Dict$maxWithDefault, _p38, _p40, _p39);
 				var k = _p37._0;
 				var v = _p37._1;
-				return A5(_elm_lang$core$Dict$bubble, c, k, v, l$, r);
+				return A5(_elm_lang$core$Dict$bubble, color, k, v, newLeft, right);
 			}
 		}
 	});
@@ -5331,13 +5292,6 @@ return {
 };
 
 }();
-var _elm_lang$core$Platform_Sub$batch = _elm_lang$core$Native_Platform.batch;
-var _elm_lang$core$Platform_Sub$none = _elm_lang$core$Platform_Sub$batch(
-	_elm_lang$core$Native_List.fromArray(
-		[]));
-var _elm_lang$core$Platform_Sub$map = _elm_lang$core$Native_Platform.map;
-var _elm_lang$core$Platform_Sub$Sub = {ctor: 'Sub'};
-
 var _elm_lang$core$Time$setInterval = _elm_lang$core$Native_Time.setInterval_;
 var _elm_lang$core$Time$spawnHelp = F3(
 	function (router, intervals, processes) {
@@ -5346,20 +5300,19 @@ var _elm_lang$core$Time$spawnHelp = F3(
 			return _elm_lang$core$Task$succeed(processes);
 		} else {
 			var _p1 = _p0._0;
-			return A2(
-				_elm_lang$core$Task$andThen,
-				_elm_lang$core$Native_Scheduler.spawn(
-					A2(
-						_elm_lang$core$Time$setInterval,
-						_p1,
-						A2(_elm_lang$core$Platform$sendToSelf, router, _p1))),
-				function (id) {
-					return A3(
-						_elm_lang$core$Time$spawnHelp,
-						router,
-						_p0._1,
-						A3(_elm_lang$core$Dict$insert, _p1, id, processes));
-				});
+			var spawnRest = function (id) {
+				return A3(
+					_elm_lang$core$Time$spawnHelp,
+					router,
+					_p0._1,
+					A3(_elm_lang$core$Dict$insert, _p1, id, processes));
+			};
+			var spawnTimer = _elm_lang$core$Native_Scheduler.spawn(
+				A2(
+					_elm_lang$core$Time$setInterval,
+					_p1,
+					A2(_elm_lang$core$Platform$sendToSelf, router, _p1)));
+			return A2(_elm_lang$core$Task$andThen, spawnRest, spawnTimer);
 		}
 	});
 var _elm_lang$core$Time$addMySub = F2(
@@ -5372,14 +5325,17 @@ var _elm_lang$core$Time$addMySub = F2(
 			return A3(
 				_elm_lang$core$Dict$insert,
 				_p5,
-				_elm_lang$core$Native_List.fromArray(
-					[_p6]),
+				{
+					ctor: '::',
+					_0: _p6,
+					_1: {ctor: '[]'}
+				},
 				state);
 		} else {
 			return A3(
 				_elm_lang$core$Dict$insert,
 				_p5,
-				A2(_elm_lang$core$List_ops['::'], _p6, _p4._0),
+				{ctor: '::', _0: _p6, _1: _p4._0},
 				state);
 		}
 	});
@@ -5406,26 +5362,24 @@ var _elm_lang$core$Time$onSelfMsg = F3(
 		if (_p7.ctor === 'Nothing') {
 			return _elm_lang$core$Task$succeed(state);
 		} else {
+			var tellTaggers = function (time) {
+				return _elm_lang$core$Task$sequence(
+					A2(
+						_elm_lang$core$List$map,
+						function (tagger) {
+							return A2(
+								_elm_lang$core$Platform$sendToApp,
+								router,
+								tagger(time));
+						},
+						_p7._0));
+			};
 			return A2(
 				_elm_lang$core$Task$andThen,
-				_elm_lang$core$Time$now,
-				function (time) {
-					return A2(
-						_elm_lang$core$Task$andThen,
-						_elm_lang$core$Task$sequence(
-							A2(
-								_elm_lang$core$List$map,
-								function (tagger) {
-									return A2(
-										_elm_lang$core$Platform$sendToApp,
-										router,
-										tagger(time));
-								},
-								_p7._0)),
-						function (_p8) {
-							return _elm_lang$core$Task$succeed(state);
-						});
-				});
+				function (_p8) {
+					return _elm_lang$core$Task$succeed(state);
+				},
+				A2(_elm_lang$core$Task$andThen, tellTaggers, _elm_lang$core$Time$now));
 		}
 	});
 var _elm_lang$core$Time$subscription = _elm_lang$core$Native_Platform.leaf('Time');
@@ -5447,10 +5401,10 @@ var _elm_lang$core$Time$onEffects = F3(
 					_1: _p13._1,
 					_2: A2(
 						_elm_lang$core$Task$andThen,
-						_elm_lang$core$Native_Scheduler.kill(id),
 						function (_p14) {
 							return _p13._2;
-						})
+						},
+						_elm_lang$core$Native_Scheduler.kill(id))
 				};
 			});
 		var bothStep = F4(
@@ -5468,7 +5422,7 @@ var _elm_lang$core$Time$onEffects = F3(
 				var _p18 = _p17;
 				return {
 					ctor: '_Tuple3',
-					_0: A2(_elm_lang$core$List_ops['::'], interval, _p18._0),
+					_0: {ctor: '::', _0: interval, _1: _p18._0},
 					_1: _p18._1,
 					_2: _p18._2
 				};
@@ -5483,8 +5437,7 @@ var _elm_lang$core$Time$onEffects = F3(
 			_p10.processes,
 			{
 				ctor: '_Tuple3',
-				_0: _elm_lang$core$Native_List.fromArray(
-					[]),
+				_0: {ctor: '[]'},
 				_1: _elm_lang$core$Dict$empty,
 				_2: _elm_lang$core$Task$succeed(
 					{ctor: '_Tuple0'})
@@ -5494,16 +5447,16 @@ var _elm_lang$core$Time$onEffects = F3(
 		var killTask = _p19._2;
 		return A2(
 			_elm_lang$core$Task$andThen,
-			killTask,
-			function (_p20) {
-				return A2(
-					_elm_lang$core$Task$andThen,
-					A3(_elm_lang$core$Time$spawnHelp, router, spawnList, existingDict),
-					function (newProcesses) {
-						return _elm_lang$core$Task$succeed(
-							A2(_elm_lang$core$Time$State, newTaggers, newProcesses));
-					});
-			});
+			function (newProcesses) {
+				return _elm_lang$core$Task$succeed(
+					A2(_elm_lang$core$Time$State, newTaggers, newProcesses));
+			},
+			A2(
+				_elm_lang$core$Task$andThen,
+				function (_p20) {
+					return A3(_elm_lang$core$Time$spawnHelp, router, spawnList, existingDict);
+				},
+				killTask));
 	});
 var _elm_lang$core$Time$Every = F2(
 	function (a, b) {
@@ -5591,6 +5544,16 @@ function decodeField(field, decoder)
 	};
 }
 
+function decodeIndex(index, decoder)
+{
+	return {
+		ctor: '<decoder>',
+		tag: 'index',
+		index: index,
+		decoder: decoder
+	};
+}
+
 function decodeKeyValuePairs(decoder)
 {
 	return {
@@ -5600,7 +5563,7 @@ function decodeKeyValuePairs(decoder)
 	};
 }
 
-function decodeObject(f, decoders)
+function mapMany(f, decoders)
 {
 	return {
 		ctor: '<decoder>',
@@ -5610,31 +5573,11 @@ function decodeObject(f, decoders)
 	};
 }
 
-function decodeTuple(f, decoders)
-{
-	return {
-		ctor: '<decoder>',
-		tag: 'tuple',
-		func: f,
-		decoders: decoders
-	};
-}
-
-function andThen(decoder, callback)
+function andThen(callback, decoder)
 {
 	return {
 		ctor: '<decoder>',
 		tag: 'andThen',
-		decoder: decoder,
-		callback: callback
-	};
-}
-
-function customAndThen(decoder, callback)
-{
-	return {
-		ctor: '<decoder>',
-		tag: 'customAndThen',
 		decoder: decoder,
 		callback: callback
 	};
@@ -5652,87 +5595,44 @@ function oneOf(decoders)
 
 // DECODING OBJECTS
 
-function decodeObject1(f, d1)
+function map1(f, d1)
 {
-	return decodeObject(f, [d1]);
+	return mapMany(f, [d1]);
 }
 
-function decodeObject2(f, d1, d2)
+function map2(f, d1, d2)
 {
-	return decodeObject(f, [d1, d2]);
+	return mapMany(f, [d1, d2]);
 }
 
-function decodeObject3(f, d1, d2, d3)
+function map3(f, d1, d2, d3)
 {
-	return decodeObject(f, [d1, d2, d3]);
+	return mapMany(f, [d1, d2, d3]);
 }
 
-function decodeObject4(f, d1, d2, d3, d4)
+function map4(f, d1, d2, d3, d4)
 {
-	return decodeObject(f, [d1, d2, d3, d4]);
+	return mapMany(f, [d1, d2, d3, d4]);
 }
 
-function decodeObject5(f, d1, d2, d3, d4, d5)
+function map5(f, d1, d2, d3, d4, d5)
 {
-	return decodeObject(f, [d1, d2, d3, d4, d5]);
+	return mapMany(f, [d1, d2, d3, d4, d5]);
 }
 
-function decodeObject6(f, d1, d2, d3, d4, d5, d6)
+function map6(f, d1, d2, d3, d4, d5, d6)
 {
-	return decodeObject(f, [d1, d2, d3, d4, d5, d6]);
+	return mapMany(f, [d1, d2, d3, d4, d5, d6]);
 }
 
-function decodeObject7(f, d1, d2, d3, d4, d5, d6, d7)
+function map7(f, d1, d2, d3, d4, d5, d6, d7)
 {
-	return decodeObject(f, [d1, d2, d3, d4, d5, d6, d7]);
+	return mapMany(f, [d1, d2, d3, d4, d5, d6, d7]);
 }
 
-function decodeObject8(f, d1, d2, d3, d4, d5, d6, d7, d8)
+function map8(f, d1, d2, d3, d4, d5, d6, d7, d8)
 {
-	return decodeObject(f, [d1, d2, d3, d4, d5, d6, d7, d8]);
-}
-
-
-// DECODING TUPLES
-
-function decodeTuple1(f, d1)
-{
-	return decodeTuple(f, [d1]);
-}
-
-function decodeTuple2(f, d1, d2)
-{
-	return decodeTuple(f, [d1, d2]);
-}
-
-function decodeTuple3(f, d1, d2, d3)
-{
-	return decodeTuple(f, [d1, d2, d3]);
-}
-
-function decodeTuple4(f, d1, d2, d3, d4)
-{
-	return decodeTuple(f, [d1, d2, d3, d4]);
-}
-
-function decodeTuple5(f, d1, d2, d3, d4, d5)
-{
-	return decodeTuple(f, [d1, d2, d3, d4, d5]);
-}
-
-function decodeTuple6(f, d1, d2, d3, d4, d5, d6)
-{
-	return decodeTuple(f, [d1, d2, d3, d4, d5, d6]);
-}
-
-function decodeTuple7(f, d1, d2, d3, d4, d5, d6, d7)
-{
-	return decodeTuple(f, [d1, d2, d3, d4, d5, d6, d7]);
-}
-
-function decodeTuple8(f, d1, d2, d3, d4, d5, d6, d7, d8)
-{
-	return decodeTuple(f, [d1, d2, d3, d4, d5, d6, d7, d8]);
+	return mapMany(f, [d1, d2, d3, d4, d5, d6, d7, d8]);
 }
 
 
@@ -5758,14 +5658,14 @@ function badField(field, nestedProblems)
 	return { tag: 'field', field: field, rest: nestedProblems };
 }
 
+function badIndex(index, nestedProblems)
+{
+	return { tag: 'index', index: index, rest: nestedProblems };
+}
+
 function badOneOf(problems)
 {
 	return { tag: 'oneOf', problems: problems };
-}
-
-function badCustom(msg)
-{
-	return { tag: 'custom', msg: msg };
 }
 
 function bad(msg)
@@ -5795,6 +5695,11 @@ function badToString(problem)
 				problem = problem.rest;
 				break;
 
+			case 'index':
+				context += '[' + problem.index + ']';
+				problem = problem.rest;
+				break;
+
 			case 'oneOf':
 				var problems = problem.problems;
 				for (var i = 0; i < problems.length; i++)
@@ -5804,11 +5709,6 @@ function badToString(problem)
 				return 'I ran into the following problems'
 					+ (context === '_' ? '' : ' at ' + context)
 					+ ':\n\n' + problems.join('\n');
-
-			case 'custom':
-				return 'A `customDecoder` failed'
-					+ (context === '_' ? '' : ' at ' + context)
-					+ ' with the message: ' + problem.msg;
 
 			case 'fail':
 				return 'I ran into a `fail` decoder'
@@ -5945,9 +5845,21 @@ function runHelp(decoder, value)
 			}
 
 			var result = runHelp(decoder.decoder, value[field]);
-			return (result.tag === 'ok')
-				? result
-				: badField(field, result);
+			return (result.tag === 'ok') ? result : badField(field, result);
+
+		case 'index':
+			var index = decoder.index;
+			if (!(value instanceof Array))
+			{
+				return badPrimitive('an array', value);
+			}
+			if (index >= value.length)
+			{
+				return badPrimitive('a longer array. Need index ' + index + ' but there are only ' + value.length + ' entries', value);
+			}
+
+			var result = runHelp(decoder.decoder, value[index]);
+			return (result.tag === 'ok') ? result : badIndex(index, result);
 
 		case 'key-value':
 			if (typeof value !== 'object' || value === null || value instanceof Array)
@@ -5981,40 +5893,6 @@ function runHelp(decoder, value)
 				answer = answer(result.value);
 			}
 			return ok(answer);
-
-		case 'tuple':
-			var decoders = decoder.decoders;
-			var len = decoders.length;
-
-			if ( !(value instanceof Array) || value.length !== len )
-			{
-				return badPrimitive('a Tuple with ' + len + ' entries', value);
-			}
-
-			var answer = decoder.func;
-			for (var i = 0; i < len; i++)
-			{
-				var result = runHelp(decoders[i], value[i]);
-				if (result.tag !== 'ok')
-				{
-					return badIndex(i, result);
-				}
-				answer = answer(result.value);
-			}
-			return ok(answer);
-
-		case 'customAndThen':
-			var result = runHelp(decoder.decoder, value);
-			if (result.tag !== 'ok')
-			{
-				return result;
-			}
-			var realResult = decoder.callback(result.value);
-			if (realResult.ctor === 'Err')
-			{
-				return badCustom(realResult._0);
-			}
-			return ok(realResult._0);
 
 		case 'andThen':
 			var result = runHelp(decoder.decoder, value);
@@ -6088,8 +5966,10 @@ function equality(a, b)
 		case 'field':
 			return a.field === b.field && equality(a.decoder, b.decoder);
 
+		case 'index':
+			return a.index === b.index && equality(a.decoder, b.decoder);
+
 		case 'map-many':
-		case 'tuple':
 			if (a.func !== b.func)
 			{
 				return false;
@@ -6097,7 +5977,6 @@ function equality(a, b)
 			return listEquality(a.decoders, b.decoders);
 
 		case 'andThen':
-		case 'customAndThen':
 			return a.callback === b.callback && equality(a.decoder, b.decoder);
 
 		case 'oneOf':
@@ -6157,28 +6036,19 @@ return {
 	decodeContainer: F2(decodeContainer),
 
 	decodeField: F2(decodeField),
+	decodeIndex: F2(decodeIndex),
 
-	decodeObject1: F2(decodeObject1),
-	decodeObject2: F3(decodeObject2),
-	decodeObject3: F4(decodeObject3),
-	decodeObject4: F5(decodeObject4),
-	decodeObject5: F6(decodeObject5),
-	decodeObject6: F7(decodeObject6),
-	decodeObject7: F8(decodeObject7),
-	decodeObject8: F9(decodeObject8),
+	map1: F2(map1),
+	map2: F3(map2),
+	map3: F4(map3),
+	map4: F5(map4),
+	map5: F6(map5),
+	map6: F7(map6),
+	map7: F8(map7),
+	map8: F9(map8),
 	decodeKeyValuePairs: decodeKeyValuePairs,
 
-	decodeTuple1: F2(decodeTuple1),
-	decodeTuple2: F3(decodeTuple2),
-	decodeTuple3: F4(decodeTuple3),
-	decodeTuple4: F5(decodeTuple4),
-	decodeTuple5: F6(decodeTuple5),
-	decodeTuple6: F7(decodeTuple6),
-	decodeTuple7: F8(decodeTuple7),
-	decodeTuple8: F9(decodeTuple8),
-
 	andThen: F2(andThen),
-	customAndThen: F2(customAndThen),
 	fail: fail,
 	succeed: succeed,
 	oneOf: oneOf,
@@ -6205,72 +6075,109 @@ var _elm_lang$core$Json_Encode$string = _elm_lang$core$Native_Json.identity;
 var _elm_lang$core$Json_Encode$encode = _elm_lang$core$Native_Json.encode;
 var _elm_lang$core$Json_Encode$Value = {ctor: 'Value'};
 
-var _elm_lang$core$Json_Decode$tuple8 = _elm_lang$core$Native_Json.decodeTuple8;
-var _elm_lang$core$Json_Decode$tuple7 = _elm_lang$core$Native_Json.decodeTuple7;
-var _elm_lang$core$Json_Decode$tuple6 = _elm_lang$core$Native_Json.decodeTuple6;
-var _elm_lang$core$Json_Decode$tuple5 = _elm_lang$core$Native_Json.decodeTuple5;
-var _elm_lang$core$Json_Decode$tuple4 = _elm_lang$core$Native_Json.decodeTuple4;
-var _elm_lang$core$Json_Decode$tuple3 = _elm_lang$core$Native_Json.decodeTuple3;
-var _elm_lang$core$Json_Decode$tuple2 = _elm_lang$core$Native_Json.decodeTuple2;
-var _elm_lang$core$Json_Decode$tuple1 = _elm_lang$core$Native_Json.decodeTuple1;
-var _elm_lang$core$Json_Decode$succeed = _elm_lang$core$Native_Json.succeed;
-var _elm_lang$core$Json_Decode$fail = _elm_lang$core$Native_Json.fail;
-var _elm_lang$core$Json_Decode$andThen = _elm_lang$core$Native_Json.andThen;
-var _elm_lang$core$Json_Decode$customDecoder = _elm_lang$core$Native_Json.customAndThen;
-var _elm_lang$core$Json_Decode$decodeValue = _elm_lang$core$Native_Json.run;
+var _elm_lang$core$Json_Decode$null = _elm_lang$core$Native_Json.decodeNull;
 var _elm_lang$core$Json_Decode$value = _elm_lang$core$Native_Json.decodePrimitive('value');
+var _elm_lang$core$Json_Decode$andThen = _elm_lang$core$Native_Json.andThen;
+var _elm_lang$core$Json_Decode$fail = _elm_lang$core$Native_Json.fail;
+var _elm_lang$core$Json_Decode$succeed = _elm_lang$core$Native_Json.succeed;
+var _elm_lang$core$Json_Decode$lazy = function (thunk) {
+	return A2(
+		_elm_lang$core$Json_Decode$andThen,
+		thunk,
+		_elm_lang$core$Json_Decode$succeed(
+			{ctor: '_Tuple0'}));
+};
+var _elm_lang$core$Json_Decode$decodeValue = _elm_lang$core$Native_Json.run;
+var _elm_lang$core$Json_Decode$decodeString = _elm_lang$core$Native_Json.runOnString;
+var _elm_lang$core$Json_Decode$map8 = _elm_lang$core$Native_Json.map8;
+var _elm_lang$core$Json_Decode$map7 = _elm_lang$core$Native_Json.map7;
+var _elm_lang$core$Json_Decode$map6 = _elm_lang$core$Native_Json.map6;
+var _elm_lang$core$Json_Decode$map5 = _elm_lang$core$Native_Json.map5;
+var _elm_lang$core$Json_Decode$map4 = _elm_lang$core$Native_Json.map4;
+var _elm_lang$core$Json_Decode$map3 = _elm_lang$core$Native_Json.map3;
+var _elm_lang$core$Json_Decode$map2 = _elm_lang$core$Native_Json.map2;
+var _elm_lang$core$Json_Decode$map = _elm_lang$core$Native_Json.map1;
+var _elm_lang$core$Json_Decode$oneOf = _elm_lang$core$Native_Json.oneOf;
 var _elm_lang$core$Json_Decode$maybe = function (decoder) {
 	return A2(_elm_lang$core$Native_Json.decodeContainer, 'maybe', decoder);
 };
-var _elm_lang$core$Json_Decode$null = _elm_lang$core$Native_Json.decodeNull;
-var _elm_lang$core$Json_Decode$array = function (decoder) {
-	return A2(_elm_lang$core$Native_Json.decodeContainer, 'array', decoder);
-};
-var _elm_lang$core$Json_Decode$list = function (decoder) {
-	return A2(_elm_lang$core$Native_Json.decodeContainer, 'list', decoder);
-};
-var _elm_lang$core$Json_Decode$bool = _elm_lang$core$Native_Json.decodePrimitive('bool');
-var _elm_lang$core$Json_Decode$int = _elm_lang$core$Native_Json.decodePrimitive('int');
-var _elm_lang$core$Json_Decode$float = _elm_lang$core$Native_Json.decodePrimitive('float');
-var _elm_lang$core$Json_Decode$string = _elm_lang$core$Native_Json.decodePrimitive('string');
-var _elm_lang$core$Json_Decode$oneOf = _elm_lang$core$Native_Json.oneOf;
-var _elm_lang$core$Json_Decode$keyValuePairs = _elm_lang$core$Native_Json.decodeKeyValuePairs;
-var _elm_lang$core$Json_Decode$object8 = _elm_lang$core$Native_Json.decodeObject8;
-var _elm_lang$core$Json_Decode$object7 = _elm_lang$core$Native_Json.decodeObject7;
-var _elm_lang$core$Json_Decode$object6 = _elm_lang$core$Native_Json.decodeObject6;
-var _elm_lang$core$Json_Decode$object5 = _elm_lang$core$Native_Json.decodeObject5;
-var _elm_lang$core$Json_Decode$object4 = _elm_lang$core$Native_Json.decodeObject4;
-var _elm_lang$core$Json_Decode$object3 = _elm_lang$core$Native_Json.decodeObject3;
-var _elm_lang$core$Json_Decode$object2 = _elm_lang$core$Native_Json.decodeObject2;
-var _elm_lang$core$Json_Decode$object1 = _elm_lang$core$Native_Json.decodeObject1;
-var _elm_lang$core$Json_Decode_ops = _elm_lang$core$Json_Decode_ops || {};
-_elm_lang$core$Json_Decode_ops[':='] = _elm_lang$core$Native_Json.decodeField;
+var _elm_lang$core$Json_Decode$index = _elm_lang$core$Native_Json.decodeIndex;
+var _elm_lang$core$Json_Decode$field = _elm_lang$core$Native_Json.decodeField;
 var _elm_lang$core$Json_Decode$at = F2(
 	function (fields, decoder) {
-		return A3(
-			_elm_lang$core$List$foldr,
-			F2(
-				function (x, y) {
-					return A2(_elm_lang$core$Json_Decode_ops[':='], x, y);
-				}),
-			decoder,
-			fields);
+		return A3(_elm_lang$core$List$foldr, _elm_lang$core$Json_Decode$field, decoder, fields);
 	});
-var _elm_lang$core$Json_Decode$decodeString = _elm_lang$core$Native_Json.runOnString;
-var _elm_lang$core$Json_Decode$map = _elm_lang$core$Native_Json.decodeObject1;
+var _elm_lang$core$Json_Decode$keyValuePairs = _elm_lang$core$Native_Json.decodeKeyValuePairs;
 var _elm_lang$core$Json_Decode$dict = function (decoder) {
 	return A2(
 		_elm_lang$core$Json_Decode$map,
 		_elm_lang$core$Dict$fromList,
 		_elm_lang$core$Json_Decode$keyValuePairs(decoder));
 };
+var _elm_lang$core$Json_Decode$array = function (decoder) {
+	return A2(_elm_lang$core$Native_Json.decodeContainer, 'array', decoder);
+};
+var _elm_lang$core$Json_Decode$list = function (decoder) {
+	return A2(_elm_lang$core$Native_Json.decodeContainer, 'list', decoder);
+};
+var _elm_lang$core$Json_Decode$nullable = function (decoder) {
+	return _elm_lang$core$Json_Decode$oneOf(
+		{
+			ctor: '::',
+			_0: _elm_lang$core$Json_Decode$null(_elm_lang$core$Maybe$Nothing),
+			_1: {
+				ctor: '::',
+				_0: A2(_elm_lang$core$Json_Decode$map, _elm_lang$core$Maybe$Just, decoder),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _elm_lang$core$Json_Decode$float = _elm_lang$core$Native_Json.decodePrimitive('float');
+var _elm_lang$core$Json_Decode$int = _elm_lang$core$Native_Json.decodePrimitive('int');
+var _elm_lang$core$Json_Decode$bool = _elm_lang$core$Native_Json.decodePrimitive('bool');
+var _elm_lang$core$Json_Decode$string = _elm_lang$core$Native_Json.decodePrimitive('string');
 var _elm_lang$core$Json_Decode$Decoder = {ctor: 'Decoder'};
 
 var _elm_lang$core$Process$kill = _elm_lang$core$Native_Scheduler.kill;
 var _elm_lang$core$Process$sleep = _elm_lang$core$Native_Scheduler.sleep;
 var _elm_lang$core$Process$spawn = _elm_lang$core$Native_Scheduler.spawn;
 
+var _elm_lang$core$Tuple$mapSecond = F2(
+	function (func, _p0) {
+		var _p1 = _p0;
+		return {
+			ctor: '_Tuple2',
+			_0: _p1._0,
+			_1: func(_p1._1)
+		};
+	});
+var _elm_lang$core$Tuple$mapFirst = F2(
+	function (func, _p2) {
+		var _p3 = _p2;
+		return {
+			ctor: '_Tuple2',
+			_0: func(_p3._0),
+			_1: _p3._1
+		};
+	});
+var _elm_lang$core$Tuple$second = function (_p4) {
+	var _p5 = _p4;
+	return _p5._1;
+};
+var _elm_lang$core$Tuple$first = function (_p6) {
+	var _p7 = _p6;
+	return _p7._0;
+};
+
 var _elm_lang$dom$Native_Dom = function() {
+
+var fakeNode = {
+	addEventListener: function() {},
+	removeEventListener: function() {}
+};
+
+var onDocument = on(typeof document !== 'undefined' ? document : fakeNode);
+var onWindow = on(typeof window !== 'undefined' ? window : fakeNode);
 
 function on(node)
 {
@@ -6426,8 +6333,8 @@ function height(options, id)
 }
 
 return {
-	onDocument: F3(on(document)),
-	onWindow: F3(on(window)),
+	onDocument: F3(onDocument),
+	onWindow: F3(onWindow),
 
 	focus: focus,
 	blur: blur,
@@ -6448,7 +6355,8 @@ return {
 var _elm_lang$dom$Dom_LowLevel$onWindow = _elm_lang$dom$Native_Dom.onWindow;
 var _elm_lang$dom$Dom_LowLevel$onDocument = _elm_lang$dom$Native_Dom.onDocument;
 
-//import Native.Json //
+var _elm_lang$virtual_dom$VirtualDom_Debug$wrap;
+var _elm_lang$virtual_dom$VirtualDom_Debug$wrapWithFlags;
 
 var _elm_lang$virtual_dom$Native_VirtualDom = function() {
 
@@ -6457,6 +6365,7 @@ var EVENT_KEY = 'EVENT';
 var ATTR_KEY = 'ATTR';
 var ATTR_NS_KEY = 'ATTR_NS';
 
+var localDoc = typeof document !== 'undefined' ? document : {};
 
 
 ////////////  VIRTUAL DOM NODES  ////////////
@@ -6627,7 +6536,14 @@ function organizeFacts(factList)
 		{
 			namespace = entry.value;
 		}
-		else
+		else if (key === 'className')
+		{
+			var classes = facts[key];
+			facts[key] = typeof classes === 'undefined'
+				? entry.value
+				: classes + ' ' + entry.value;
+		}
+ 		else
 		{
 			facts[key] = entry.value;
 		}
@@ -6712,66 +6628,18 @@ function equalEvents(a, b)
 }
 
 
-
-////////////  RENDERER  ////////////
-
-
-function renderer(parent, tagger, initialVirtualNode)
+function mapProperty(func, property)
 {
-	var eventNode = { tagger: tagger, parent: undefined };
-
-	var domNode = render(initialVirtualNode, eventNode);
-	parent.appendChild(domNode);
-
-	var state = 'NO_REQUEST';
-	var currentVirtualNode = initialVirtualNode;
-	var nextVirtualNode = initialVirtualNode;
-
-	function registerVirtualNode(vNode)
+	if (property.key !== EVENT_KEY)
 	{
-		if (state === 'NO_REQUEST')
-		{
-			rAF(updateIfNeeded);
-		}
-		state = 'PENDING_REQUEST';
-		nextVirtualNode = vNode;
+		return property;
 	}
-
-	function updateIfNeeded()
-	{
-		switch (state)
-		{
-			case 'NO_REQUEST':
-				throw new Error(
-					'Unexpected draw callback.\n' +
-					'Please report this to <https://github.com/elm-lang/core/issues>.'
-				);
-
-			case 'PENDING_REQUEST':
-				rAF(updateIfNeeded);
-				state = 'EXTRA_REQUEST';
-
-				var patches = diff(currentVirtualNode, nextVirtualNode);
-				domNode = applyPatches(domNode, currentVirtualNode, patches, eventNode);
-				currentVirtualNode = nextVirtualNode;
-
-				return;
-
-			case 'EXTRA_REQUEST':
-				state = 'NO_REQUEST';
-				return;
-		}
-	}
-
-	return { update: registerVirtualNode };
+	return on(
+		property.realKey,
+		property.value.options,
+		A2(_elm_lang$core$Json_Decode$map, func, property.value.decoder)
+	);
 }
-
-
-var rAF =
-	typeof requestAnimationFrame !== 'undefined'
-		? requestAnimationFrame
-		: function(cb) { setTimeout(cb, 1000 / 60); };
-
 
 
 ////////////  RENDER  ////////////
@@ -6801,22 +6669,18 @@ function render(vNode, eventNode)
 				subNode = subNode.node;
 			}
 
-			var subEventRoot = {
-				tagger: tagger,
-				parent: eventNode
-			};
-
+			var subEventRoot = { tagger: tagger, parent: eventNode };
 			var domNode = render(subNode, subEventRoot);
 			domNode.elm_event_node_ref = subEventRoot;
 			return domNode;
 
 		case 'text':
-			return document.createTextNode(vNode.text);
+			return localDoc.createTextNode(vNode.text);
 
 		case 'node':
 			var domNode = vNode.namespace
-				? document.createElementNS(vNode.namespace, vNode.tag)
-				: document.createElement(vNode.tag);
+				? localDoc.createElementNS(vNode.namespace, vNode.tag)
+				: localDoc.createElement(vNode.tag);
 
 			applyFacts(domNode, eventNode, vNode.facts);
 
@@ -6831,8 +6695,8 @@ function render(vNode, eventNode)
 
 		case 'keyed-node':
 			var domNode = vNode.namespace
-				? document.createElementNS(vNode.namespace, vNode.tag)
-				: document.createElement(vNode.tag);
+				? localDoc.createElementNS(vNode.namespace, vNode.tag)
+				: localDoc.createElement(vNode.tag);
 
 			applyFacts(domNode, eventNode, vNode.facts);
 
@@ -7753,7 +7617,14 @@ function applyPatch(domNode, patch)
 			return applyPatchesHelp(domNode, patch.data);
 
 		case 'p-tagger':
-			domNode.elm_event_node_ref.tagger = patch.data;
+			if (typeof domNode.elm_event_node_ref !== 'undefined')
+			{
+				domNode.elm_event_node_ref.tagger = patch.data;
+			}
+			else
+			{
+				domNode.elm_event_node_ref = { tagger: patch.data, parent: patch.eventNode };
+			}
 			return domNode;
 
 		case 'p-remove-last':
@@ -7857,7 +7728,7 @@ function applyPatchReorderEndInsertsHelp(endInserts, patch)
 		return;
 	}
 
-	var frag = document.createDocumentFragment();
+	var frag = localDoc.createDocumentFragment();
 	for (var i = 0; i < endInserts.length; i++)
 	{
 		var insert = endInserts[i];
@@ -7871,28 +7742,480 @@ function applyPatchReorderEndInsertsHelp(endInserts, patch)
 }
 
 
+// PROGRAMS
 
-////////////  PROGRAMS  ////////////
+var program = makeProgram(checkNoFlags);
+var programWithFlags = makeProgram(checkYesFlags);
 
-
-function programWithFlags(details)
+function makeProgram(flagChecker)
 {
-	return {
-		init: details.init,
-		update: details.update,
-		subscriptions: details.subscriptions,
-		view: details.view,
-		renderer: renderer
+	return F2(function(debugWrap, impl)
+	{
+		return function(flagDecoder)
+		{
+			return function(object, moduleName, debugMetadata)
+			{
+				var checker = flagChecker(flagDecoder, moduleName);
+				if (typeof debugMetadata === 'undefined')
+				{
+					normalSetup(impl, object, moduleName, checker);
+				}
+				else
+				{
+					debugSetup(A2(debugWrap, debugMetadata, impl), object, moduleName, checker);
+				}
+			};
+		};
+	});
+}
+
+function staticProgram(vNode)
+{
+	var nothing = _elm_lang$core$Native_Utils.Tuple2(
+		_elm_lang$core$Native_Utils.Tuple0,
+		_elm_lang$core$Platform_Cmd$none
+	);
+	return A2(program, _elm_lang$virtual_dom$VirtualDom_Debug$wrap, {
+		init: nothing,
+		view: function() { return vNode; },
+		update: F2(function() { return nothing; }),
+		subscriptions: function() { return _elm_lang$core$Platform_Sub$none; }
+	})();
+}
+
+
+// FLAG CHECKERS
+
+function checkNoFlags(flagDecoder, moduleName)
+{
+	return function(init, flags, domNode)
+	{
+		if (typeof flags === 'undefined')
+		{
+			return init;
+		}
+
+		var errorMessage =
+			'The `' + moduleName + '` module does not need flags.\n'
+			+ 'Initialize it with no arguments and you should be all set!';
+
+		crash(errorMessage, domNode);
 	};
 }
+
+function checkYesFlags(flagDecoder, moduleName)
+{
+	return function(init, flags, domNode)
+	{
+		if (typeof flagDecoder === 'undefined')
+		{
+			var errorMessage =
+				'Are you trying to sneak a Never value into Elm? Trickster!\n'
+				+ 'It looks like ' + moduleName + '.main is defined with `programWithFlags` but has type `Program Never`.\n'
+				+ 'Use `program` instead if you do not want flags.'
+
+			crash(errorMessage, domNode);
+		}
+
+		var result = A2(_elm_lang$core$Native_Json.run, flagDecoder, flags);
+		if (result.ctor === 'Ok')
+		{
+			return init(result._0);
+		}
+
+		var errorMessage =
+			'Trying to initialize the `' + moduleName + '` module with an unexpected flag.\n'
+			+ 'I tried to convert it to an Elm value, but ran into this problem:\n\n'
+			+ result._0;
+
+		crash(errorMessage, domNode);
+	};
+}
+
+function crash(errorMessage, domNode)
+{
+	if (domNode)
+	{
+		domNode.innerHTML =
+			'<div style="padding-left:1em;">'
+			+ '<h2 style="font-weight:normal;"><b>Oops!</b> Something went wrong when starting your Elm program.</h2>'
+			+ '<pre style="padding-left:1em;">' + errorMessage + '</pre>'
+			+ '</div>';
+	}
+
+	throw new Error(errorMessage);
+}
+
+
+//  NORMAL SETUP
+
+function normalSetup(impl, object, moduleName, flagChecker)
+{
+	object['embed'] = function embed(node, flags)
+	{
+		while (node.lastChild)
+		{
+			node.removeChild(node.lastChild);
+		}
+
+		return _elm_lang$core$Native_Platform.initialize(
+			flagChecker(impl.init, flags, node),
+			impl.update,
+			impl.subscriptions,
+			normalRenderer(node, impl.view)
+		);
+	};
+
+	object['fullscreen'] = function fullscreen(flags)
+	{
+		return _elm_lang$core$Native_Platform.initialize(
+			flagChecker(impl.init, flags, document.body),
+			impl.update,
+			impl.subscriptions,
+			normalRenderer(document.body, impl.view)
+		);
+	};
+}
+
+function normalRenderer(parentNode, view)
+{
+	return function(tagger, initialModel)
+	{
+		var eventNode = { tagger: tagger, parent: undefined };
+		var initialVirtualNode = view(initialModel);
+		var domNode = render(initialVirtualNode, eventNode);
+		parentNode.appendChild(domNode);
+		return makeStepper(domNode, view, initialVirtualNode, eventNode);
+	};
+}
+
+
+// STEPPER
+
+var rAF =
+	typeof requestAnimationFrame !== 'undefined'
+		? requestAnimationFrame
+		: function(callback) { callback(); };
+
+function makeStepper(domNode, view, initialVirtualNode, eventNode)
+{
+	var state = 'NO_REQUEST';
+	var currNode = initialVirtualNode;
+	var nextModel;
+
+	function updateIfNeeded()
+	{
+		switch (state)
+		{
+			case 'NO_REQUEST':
+				throw new Error(
+					'Unexpected draw callback.\n' +
+					'Please report this to <https://github.com/elm-lang/virtual-dom/issues>.'
+				);
+
+			case 'PENDING_REQUEST':
+				rAF(updateIfNeeded);
+				state = 'EXTRA_REQUEST';
+
+				var nextNode = view(nextModel);
+				var patches = diff(currNode, nextNode);
+				domNode = applyPatches(domNode, currNode, patches, eventNode);
+				currNode = nextNode;
+
+				return;
+
+			case 'EXTRA_REQUEST':
+				state = 'NO_REQUEST';
+				return;
+		}
+	}
+
+	return function stepper(model)
+	{
+		if (state === 'NO_REQUEST')
+		{
+			rAF(updateIfNeeded);
+		}
+		state = 'PENDING_REQUEST';
+		nextModel = model;
+	};
+}
+
+
+// DEBUG SETUP
+
+function debugSetup(impl, object, moduleName, flagChecker)
+{
+	object['fullscreen'] = function fullscreen(flags)
+	{
+		var popoutRef = { doc: undefined };
+		return _elm_lang$core$Native_Platform.initialize(
+			flagChecker(impl.init, flags, document.body),
+			impl.update(scrollTask(popoutRef)),
+			impl.subscriptions,
+			debugRenderer(moduleName, document.body, popoutRef, impl.view, impl.viewIn, impl.viewOut)
+		);
+	};
+
+	object['embed'] = function fullscreen(node, flags)
+	{
+		var popoutRef = { doc: undefined };
+		return _elm_lang$core$Native_Platform.initialize(
+			flagChecker(impl.init, flags, node),
+			impl.update(scrollTask(popoutRef)),
+			impl.subscriptions,
+			debugRenderer(moduleName, node, popoutRef, impl.view, impl.viewIn, impl.viewOut)
+		);
+	};
+}
+
+function scrollTask(popoutRef)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		var doc = popoutRef.doc;
+		if (doc)
+		{
+			var msgs = doc.getElementsByClassName('debugger-sidebar-messages')[0];
+			if (msgs)
+			{
+				msgs.scrollTop = msgs.scrollHeight;
+			}
+		}
+		callback(_elm_lang$core$Native_Scheduler.succeed(_elm_lang$core$Native_Utils.Tuple0));
+	});
+}
+
+
+function debugRenderer(moduleName, parentNode, popoutRef, view, viewIn, viewOut)
+{
+	return function(tagger, initialModel)
+	{
+		var appEventNode = { tagger: tagger, parent: undefined };
+		var eventNode = { tagger: tagger, parent: undefined };
+
+		// make normal stepper
+		var appVirtualNode = view(initialModel);
+		var appNode = render(appVirtualNode, appEventNode);
+		parentNode.appendChild(appNode);
+		var appStepper = makeStepper(appNode, view, appVirtualNode, appEventNode);
+
+		// make overlay stepper
+		var overVirtualNode = viewIn(initialModel)._1;
+		var overNode = render(overVirtualNode, eventNode);
+		parentNode.appendChild(overNode);
+		var wrappedViewIn = wrapViewIn(appEventNode, overNode, viewIn);
+		var overStepper = makeStepper(overNode, wrappedViewIn, overVirtualNode, eventNode);
+
+		// make debugger stepper
+		var debugStepper = makeDebugStepper(initialModel, viewOut, eventNode, parentNode, moduleName, popoutRef);
+
+		return function stepper(model)
+		{
+			appStepper(model);
+			overStepper(model);
+			debugStepper(model);
+		}
+	};
+}
+
+function makeDebugStepper(initialModel, view, eventNode, parentNode, moduleName, popoutRef)
+{
+	var curr;
+	var domNode;
+
+	return function stepper(model)
+	{
+		if (!model.isDebuggerOpen)
+		{
+			return;
+		}
+
+		if (!popoutRef.doc)
+		{
+			curr = view(model);
+			domNode = openDebugWindow(moduleName, popoutRef, curr, eventNode);
+			return;
+		}
+
+		// switch to document of popout
+		localDoc = popoutRef.doc;
+
+		var next = view(model);
+		var patches = diff(curr, next);
+		domNode = applyPatches(domNode, curr, patches, eventNode);
+		curr = next;
+
+		// switch back to normal document
+		localDoc = document;
+	};
+}
+
+function openDebugWindow(moduleName, popoutRef, virtualNode, eventNode)
+{
+	var w = 900;
+	var h = 360;
+	var x = screen.width - w;
+	var y = screen.height - h;
+	var debugWindow = window.open('', '', 'width=' + w + ',height=' + h + ',left=' + x + ',top=' + y);
+
+	// switch to window document
+	localDoc = debugWindow.document;
+
+	popoutRef.doc = localDoc;
+	localDoc.title = 'Debugger - ' + moduleName;
+	localDoc.body.style.margin = '0';
+	localDoc.body.style.padding = '0';
+	var domNode = render(virtualNode, eventNode);
+	localDoc.body.appendChild(domNode);
+
+	localDoc.addEventListener('keydown', function(event) {
+		if (event.metaKey && event.which === 82)
+		{
+			window.location.reload();
+		}
+		if (event.which === 38)
+		{
+			eventNode.tagger({ ctor: 'Up' });
+			event.preventDefault();
+		}
+		if (event.which === 40)
+		{
+			eventNode.tagger({ ctor: 'Down' });
+			event.preventDefault();
+		}
+	});
+
+	function close()
+	{
+		popoutRef.doc = undefined;
+		debugWindow.close();
+	}
+	window.addEventListener('unload', close);
+	debugWindow.addEventListener('unload', function() {
+		popoutRef.doc = undefined;
+		window.removeEventListener('unload', close);
+		eventNode.tagger({ ctor: 'Close' });
+	});
+
+	// switch back to the normal document
+	localDoc = document;
+
+	return domNode;
+}
+
+
+// BLOCK EVENTS
+
+function wrapViewIn(appEventNode, overlayNode, viewIn)
+{
+	var ignorer = makeIgnorer(overlayNode);
+	var blocking = 'Normal';
+	var overflow;
+
+	var normalTagger = appEventNode.tagger;
+	var blockTagger = function() {};
+
+	return function(model)
+	{
+		var tuple = viewIn(model);
+		var newBlocking = tuple._0.ctor;
+		appEventNode.tagger = newBlocking === 'Normal' ? normalTagger : blockTagger;
+		if (blocking !== newBlocking)
+		{
+			traverse('removeEventListener', ignorer, blocking);
+			traverse('addEventListener', ignorer, newBlocking);
+
+			if (blocking === 'Normal')
+			{
+				overflow = document.body.style.overflow;
+				document.body.style.overflow = 'hidden';
+			}
+
+			if (newBlocking === 'Normal')
+			{
+				document.body.style.overflow = overflow;
+			}
+
+			blocking = newBlocking;
+		}
+		return tuple._1;
+	}
+}
+
+function traverse(verbEventListener, ignorer, blocking)
+{
+	switch(blocking)
+	{
+		case 'Normal':
+			return;
+
+		case 'Pause':
+			return traverseHelp(verbEventListener, ignorer, mostEvents);
+
+		case 'Message':
+			return traverseHelp(verbEventListener, ignorer, allEvents);
+	}
+}
+
+function traverseHelp(verbEventListener, handler, eventNames)
+{
+	for (var i = 0; i < eventNames.length; i++)
+	{
+		document.body[verbEventListener](eventNames[i], handler, true);
+	}
+}
+
+function makeIgnorer(overlayNode)
+{
+	return function(event)
+	{
+		if (event.type === 'keydown' && event.metaKey && event.which === 82)
+		{
+			return;
+		}
+
+		var isScroll = event.type === 'scroll' || event.type === 'wheel';
+
+		var node = event.target;
+		while (node !== null)
+		{
+			if (node.className === 'elm-overlay-message-details' && isScroll)
+			{
+				return;
+			}
+
+			if (node === overlayNode && !isScroll)
+			{
+				return;
+			}
+			node = node.parentNode;
+		}
+
+		event.stopPropagation();
+		event.preventDefault();
+	}
+}
+
+var mostEvents = [
+	'click', 'dblclick', 'mousemove',
+	'mouseup', 'mousedown', 'mouseenter', 'mouseleave',
+	'touchstart', 'touchend', 'touchcancel', 'touchmove',
+	'pointerdown', 'pointerup', 'pointerover', 'pointerout',
+	'pointerenter', 'pointerleave', 'pointermove', 'pointercancel',
+	'dragstart', 'drag', 'dragend', 'dragenter', 'dragover', 'dragleave', 'drop',
+	'keyup', 'keydown', 'keypress',
+	'input', 'change',
+	'focus', 'blur'
+];
+
+var allEvents = mostEvents.concat('wheel', 'scroll');
 
 
 return {
 	node: node,
 	text: text,
-
 	custom: custom,
-
 	map: F2(map),
 
 	on: F3(on),
@@ -7900,17 +8223,26 @@ return {
 	property: F2(property),
 	attribute: F2(attribute),
 	attributeNS: F3(attributeNS),
+	mapProperty: F2(mapProperty),
 
 	lazy: F2(lazy),
 	lazy2: F3(lazy2),
 	lazy3: F4(lazy3),
 	keyedNode: F3(keyedNode),
 
-	programWithFlags: programWithFlags
+	program: program,
+	programWithFlags: programWithFlags,
+	staticProgram: staticProgram
 };
 
 }();
-var _elm_lang$virtual_dom$VirtualDom$programWithFlags = _elm_lang$virtual_dom$Native_VirtualDom.programWithFlags;
+
+var _elm_lang$virtual_dom$VirtualDom$programWithFlags = function (impl) {
+	return A2(_elm_lang$virtual_dom$Native_VirtualDom.programWithFlags, _elm_lang$virtual_dom$VirtualDom_Debug$wrapWithFlags, impl);
+};
+var _elm_lang$virtual_dom$VirtualDom$program = function (impl) {
+	return A2(_elm_lang$virtual_dom$Native_VirtualDom.program, _elm_lang$virtual_dom$VirtualDom_Debug$wrap, impl);
+};
 var _elm_lang$virtual_dom$VirtualDom$keyedNode = _elm_lang$virtual_dom$Native_VirtualDom.keyedNode;
 var _elm_lang$virtual_dom$VirtualDom$lazy3 = _elm_lang$virtual_dom$Native_VirtualDom.lazy3;
 var _elm_lang$virtual_dom$VirtualDom$lazy2 = _elm_lang$virtual_dom$Native_VirtualDom.lazy2;
@@ -7922,6 +8254,7 @@ var _elm_lang$virtual_dom$VirtualDom$on = F2(
 		return A3(_elm_lang$virtual_dom$VirtualDom$onWithOptions, eventName, _elm_lang$virtual_dom$VirtualDom$defaultOptions, decoder);
 	});
 var _elm_lang$virtual_dom$VirtualDom$style = _elm_lang$virtual_dom$Native_VirtualDom.style;
+var _elm_lang$virtual_dom$VirtualDom$mapProperty = _elm_lang$virtual_dom$Native_VirtualDom.mapProperty;
 var _elm_lang$virtual_dom$VirtualDom$attributeNS = _elm_lang$virtual_dom$Native_VirtualDom.attributeNS;
 var _elm_lang$virtual_dom$VirtualDom$attribute = _elm_lang$virtual_dom$Native_VirtualDom.attribute;
 var _elm_lang$virtual_dom$VirtualDom$property = _elm_lang$virtual_dom$Native_VirtualDom.property;
@@ -7935,6 +8268,30 @@ var _elm_lang$virtual_dom$VirtualDom$Options = F2(
 var _elm_lang$virtual_dom$VirtualDom$Node = {ctor: 'Node'};
 var _elm_lang$virtual_dom$VirtualDom$Property = {ctor: 'Property'};
 
+var _elm_lang$html$Html$programWithFlags = _elm_lang$virtual_dom$VirtualDom$programWithFlags;
+var _elm_lang$html$Html$program = _elm_lang$virtual_dom$VirtualDom$program;
+var _elm_lang$html$Html$beginnerProgram = function (_p0) {
+	var _p1 = _p0;
+	return _elm_lang$html$Html$program(
+		{
+			init: A2(
+				_elm_lang$core$Platform_Cmd_ops['!'],
+				_p1.model,
+				{ctor: '[]'}),
+			update: F2(
+				function (msg, model) {
+					return A2(
+						_elm_lang$core$Platform_Cmd_ops['!'],
+						A2(_p1.update, msg, model),
+						{ctor: '[]'});
+				}),
+			view: _p1.view,
+			subscriptions: function (_p2) {
+				return _elm_lang$core$Platform_Sub$none;
+			}
+		});
+};
+var _elm_lang$html$Html$map = _elm_lang$virtual_dom$VirtualDom$map;
 var _elm_lang$html$Html$text = _elm_lang$virtual_dom$VirtualDom$text;
 var _elm_lang$html$Html$node = _elm_lang$virtual_dom$VirtualDom$node;
 var _elm_lang$html$Html$body = _elm_lang$html$Html$node('body');
@@ -7951,7 +8308,7 @@ var _elm_lang$html$Html$h6 = _elm_lang$html$Html$node('h6');
 var _elm_lang$html$Html$header = _elm_lang$html$Html$node('header');
 var _elm_lang$html$Html$footer = _elm_lang$html$Html$node('footer');
 var _elm_lang$html$Html$address = _elm_lang$html$Html$node('address');
-var _elm_lang$html$Html$main$ = _elm_lang$html$Html$node('main');
+var _elm_lang$html$Html$main_ = _elm_lang$html$Html$node('main');
 var _elm_lang$html$Html$p = _elm_lang$html$Html$node('p');
 var _elm_lang$html$Html$hr = _elm_lang$html$Html$node('hr');
 var _elm_lang$html$Html$pre = _elm_lang$html$Html$node('pre');
@@ -8005,7 +8362,6 @@ var _elm_lang$html$Html$audio = _elm_lang$html$Html$node('audio');
 var _elm_lang$html$Html$source = _elm_lang$html$Html$node('source');
 var _elm_lang$html$Html$track = _elm_lang$html$Html$node('track');
 var _elm_lang$html$Html$canvas = _elm_lang$html$Html$node('canvas');
-var _elm_lang$html$Html$svg = _elm_lang$html$Html$node('svg');
 var _elm_lang$html$Html$math = _elm_lang$html$Html$node('math');
 var _elm_lang$html$Html$table = _elm_lang$html$Html$node('table');
 var _elm_lang$html$Html$caption = _elm_lang$html$Html$node('caption');
@@ -8037,44 +8393,7 @@ var _elm_lang$html$Html$summary = _elm_lang$html$Html$node('summary');
 var _elm_lang$html$Html$menuitem = _elm_lang$html$Html$node('menuitem');
 var _elm_lang$html$Html$menu = _elm_lang$html$Html$node('menu');
 
-var _elm_lang$html$Html_App$programWithFlags = _elm_lang$virtual_dom$VirtualDom$programWithFlags;
-var _elm_lang$html$Html_App$program = function (app) {
-	return _elm_lang$html$Html_App$programWithFlags(
-		_elm_lang$core$Native_Utils.update(
-			app,
-			{
-				init: function (_p0) {
-					return app.init;
-				}
-			}));
-};
-var _elm_lang$html$Html_App$beginnerProgram = function (_p1) {
-	var _p2 = _p1;
-	return _elm_lang$html$Html_App$programWithFlags(
-		{
-			init: function (_p3) {
-				return A2(
-					_elm_lang$core$Platform_Cmd_ops['!'],
-					_p2.model,
-					_elm_lang$core$Native_List.fromArray(
-						[]));
-			},
-			update: F2(
-				function (msg, model) {
-					return A2(
-						_elm_lang$core$Platform_Cmd_ops['!'],
-						A2(_p2.update, msg, model),
-						_elm_lang$core$Native_List.fromArray(
-							[]));
-				}),
-			view: _p2.view,
-			subscriptions: function (_p4) {
-				return _elm_lang$core$Platform_Sub$none;
-			}
-		});
-};
-var _elm_lang$html$Html_App$map = _elm_lang$virtual_dom$VirtualDom$map;
-
+var _elm_lang$html$Html_Attributes$map = _elm_lang$virtual_dom$VirtualDom$mapProperty;
 var _elm_lang$html$Html_Attributes$attribute = _elm_lang$virtual_dom$VirtualDom$attribute;
 var _elm_lang$html$Html_Attributes$contextmenu = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$attribute, 'contextmenu', value);
@@ -8082,14 +8401,77 @@ var _elm_lang$html$Html_Attributes$contextmenu = function (value) {
 var _elm_lang$html$Html_Attributes$draggable = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$attribute, 'draggable', value);
 };
+var _elm_lang$html$Html_Attributes$itemprop = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'itemprop', value);
+};
+var _elm_lang$html$Html_Attributes$tabindex = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'tabIndex',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$charset = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'charset', value);
+};
+var _elm_lang$html$Html_Attributes$height = function (value) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'height',
+		_elm_lang$core$Basics$toString(value));
+};
+var _elm_lang$html$Html_Attributes$width = function (value) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'width',
+		_elm_lang$core$Basics$toString(value));
+};
+var _elm_lang$html$Html_Attributes$formaction = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'formAction', value);
+};
 var _elm_lang$html$Html_Attributes$list = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$attribute, 'list', value);
+};
+var _elm_lang$html$Html_Attributes$minlength = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'minLength',
+		_elm_lang$core$Basics$toString(n));
 };
 var _elm_lang$html$Html_Attributes$maxlength = function (n) {
 	return A2(
 		_elm_lang$html$Html_Attributes$attribute,
 		'maxlength',
 		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$size = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'size',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$form = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'form', value);
+};
+var _elm_lang$html$Html_Attributes$cols = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'cols',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$rows = function (n) {
+	return A2(
+		_elm_lang$html$Html_Attributes$attribute,
+		'rows',
+		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$challenge = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'challenge', value);
+};
+var _elm_lang$html$Html_Attributes$media = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'media', value);
+};
+var _elm_lang$html$Html_Attributes$rel = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'rel', value);
 };
 var _elm_lang$html$Html_Attributes$datetime = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$attribute, 'datetime', value);
@@ -8108,6 +8490,9 @@ var _elm_lang$html$Html_Attributes$rowspan = function (n) {
 		_elm_lang$html$Html_Attributes$attribute,
 		'rowspan',
 		_elm_lang$core$Basics$toString(n));
+};
+var _elm_lang$html$Html_Attributes$manifest = function (value) {
+	return A2(_elm_lang$html$Html_Attributes$attribute, 'manifest', value);
 };
 var _elm_lang$html$Html_Attributes$property = _elm_lang$virtual_dom$VirtualDom$property;
 var _elm_lang$html$Html_Attributes$stringProperty = F2(
@@ -8138,20 +8523,8 @@ var _elm_lang$html$Html_Attributes$dir = function (value) {
 var _elm_lang$html$Html_Attributes$dropzone = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'dropzone', value);
 };
-var _elm_lang$html$Html_Attributes$itemprop = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'itemprop', value);
-};
 var _elm_lang$html$Html_Attributes$lang = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'lang', value);
-};
-var _elm_lang$html$Html_Attributes$tabindex = function (n) {
-	return A2(
-		_elm_lang$html$Html_Attributes$stringProperty,
-		'tabIndex',
-		_elm_lang$core$Basics$toString(n));
-};
-var _elm_lang$html$Html_Attributes$charset = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'charset', value);
 };
 var _elm_lang$html$Html_Attributes$content = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'content', value);
@@ -8164,18 +8537,6 @@ var _elm_lang$html$Html_Attributes$language = function (value) {
 };
 var _elm_lang$html$Html_Attributes$src = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'src', value);
-};
-var _elm_lang$html$Html_Attributes$height = function (value) {
-	return A2(
-		_elm_lang$html$Html_Attributes$stringProperty,
-		'height',
-		_elm_lang$core$Basics$toString(value));
-};
-var _elm_lang$html$Html_Attributes$width = function (value) {
-	return A2(
-		_elm_lang$html$Html_Attributes$stringProperty,
-		'width',
-		_elm_lang$core$Basics$toString(value));
 };
 var _elm_lang$html$Html_Attributes$alt = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'alt', value);
@@ -8198,7 +8559,7 @@ var _elm_lang$html$Html_Attributes$sandbox = function (value) {
 var _elm_lang$html$Html_Attributes$srcdoc = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'srcdoc', value);
 };
-var _elm_lang$html$Html_Attributes$type$ = function (value) {
+var _elm_lang$html$Html_Attributes$type_ = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'type', value);
 };
 var _elm_lang$html$Html_Attributes$value = function (value) {
@@ -8225,20 +8586,8 @@ var _elm_lang$html$Html_Attributes$autocomplete = function (bool) {
 		'autocomplete',
 		bool ? 'on' : 'off');
 };
-var _elm_lang$html$Html_Attributes$autosave = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'autosave', value);
-};
 var _elm_lang$html$Html_Attributes$enctype = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'enctype', value);
-};
-var _elm_lang$html$Html_Attributes$formaction = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'formAction', value);
-};
-var _elm_lang$html$Html_Attributes$minlength = function (n) {
-	return A2(
-		_elm_lang$html$Html_Attributes$stringProperty,
-		'minLength',
-		_elm_lang$core$Basics$toString(n));
 };
 var _elm_lang$html$Html_Attributes$method = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'method', value);
@@ -8249,17 +8598,8 @@ var _elm_lang$html$Html_Attributes$name = function (value) {
 var _elm_lang$html$Html_Attributes$pattern = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'pattern', value);
 };
-var _elm_lang$html$Html_Attributes$size = function (n) {
-	return A2(
-		_elm_lang$html$Html_Attributes$stringProperty,
-		'size',
-		_elm_lang$core$Basics$toString(n));
-};
 var _elm_lang$html$Html_Attributes$for = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'htmlFor', value);
-};
-var _elm_lang$html$Html_Attributes$form = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'form', value);
 };
 var _elm_lang$html$Html_Attributes$max = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'max', value);
@@ -8269,18 +8609,6 @@ var _elm_lang$html$Html_Attributes$min = function (value) {
 };
 var _elm_lang$html$Html_Attributes$step = function (n) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'step', n);
-};
-var _elm_lang$html$Html_Attributes$cols = function (n) {
-	return A2(
-		_elm_lang$html$Html_Attributes$stringProperty,
-		'cols',
-		_elm_lang$core$Basics$toString(n));
-};
-var _elm_lang$html$Html_Attributes$rows = function (n) {
-	return A2(
-		_elm_lang$html$Html_Attributes$stringProperty,
-		'rows',
-		_elm_lang$core$Basics$toString(n));
 };
 var _elm_lang$html$Html_Attributes$wrap = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'wrap', value);
@@ -8293,9 +8621,6 @@ var _elm_lang$html$Html_Attributes$shape = function (value) {
 };
 var _elm_lang$html$Html_Attributes$coords = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'coords', value);
-};
-var _elm_lang$html$Html_Attributes$challenge = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'challenge', value);
 };
 var _elm_lang$html$Html_Attributes$keytype = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'keytype', value);
@@ -8318,14 +8643,8 @@ var _elm_lang$html$Html_Attributes$downloadAs = function (value) {
 var _elm_lang$html$Html_Attributes$hreflang = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'hreflang', value);
 };
-var _elm_lang$html$Html_Attributes$media = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'media', value);
-};
 var _elm_lang$html$Html_Attributes$ping = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'ping', value);
-};
-var _elm_lang$html$Html_Attributes$rel = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'rel', value);
 };
 var _elm_lang$html$Html_Attributes$start = function (n) {
 	return A2(
@@ -8338,9 +8657,6 @@ var _elm_lang$html$Html_Attributes$headers = function (value) {
 };
 var _elm_lang$html$Html_Attributes$scope = function (value) {
 	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'scope', value);
-};
-var _elm_lang$html$Html_Attributes$manifest = function (value) {
-	return A2(_elm_lang$html$Html_Attributes$stringProperty, 'manifest', value);
 };
 var _elm_lang$html$Html_Attributes$boolProperty = F2(
 	function (name, bool) {
@@ -8422,21 +8738,35 @@ var _elm_lang$html$Html_Attributes$classList = function (list) {
 			' ',
 			A2(
 				_elm_lang$core$List$map,
-				_elm_lang$core$Basics$fst,
-				A2(_elm_lang$core$List$filter, _elm_lang$core$Basics$snd, list))));
+				_elm_lang$core$Tuple$first,
+				A2(_elm_lang$core$List$filter, _elm_lang$core$Tuple$second, list))));
 };
 var _elm_lang$html$Html_Attributes$style = _elm_lang$virtual_dom$VirtualDom$style;
 
-var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode_ops[':='], 'keyCode', _elm_lang$core$Json_Decode$int);
+var _elm_lang$html$Html_Events$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
 var _elm_lang$html$Html_Events$targetChecked = A2(
 	_elm_lang$core$Json_Decode$at,
-	_elm_lang$core$Native_List.fromArray(
-		['target', 'checked']),
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'checked',
+			_1: {ctor: '[]'}
+		}
+	},
 	_elm_lang$core$Json_Decode$bool);
 var _elm_lang$html$Html_Events$targetValue = A2(
 	_elm_lang$core$Json_Decode$at,
-	_elm_lang$core$Native_List.fromArray(
-		['target', 'value']),
+	{
+		ctor: '::',
+		_0: 'target',
+		_1: {
+			ctor: '::',
+			_0: 'value',
+			_1: {ctor: '[]'}
+		}
+	},
 	_elm_lang$core$Json_Decode$string);
 var _elm_lang$html$Html_Events$defaultOptions = _elm_lang$virtual_dom$VirtualDom$defaultOptions;
 var _elm_lang$html$Html_Events$onWithOptions = _elm_lang$virtual_dom$VirtualDom$onWithOptions;
@@ -8528,6 +8858,367 @@ var _elm_lang$html$Html_Events$Options = F2(
 		return {stopPropagation: a, preventDefault: b};
 	});
 
+var _elm_lang$http$Native_Http = function() {
+
+
+// ENCODING AND DECODING
+
+function encodeUri(string)
+{
+	return encodeURIComponent(string);
+}
+
+function decodeUri(string)
+{
+	try
+	{
+		return _elm_lang$core$Maybe$Just(decodeURIComponent(string));
+	}
+	catch(e)
+	{
+		return _elm_lang$core$Maybe$Nothing;
+	}
+}
+
+
+// SEND REQUEST
+
+function toTask(request, maybeProgress)
+{
+	return _elm_lang$core$Native_Scheduler.nativeBinding(function(callback)
+	{
+		var xhr = new XMLHttpRequest();
+
+		configureProgress(xhr, maybeProgress);
+
+		xhr.addEventListener('error', function() {
+			callback(_elm_lang$core$Native_Scheduler.fail({ ctor: 'NetworkError' }));
+		});
+		xhr.addEventListener('timeout', function() {
+			callback(_elm_lang$core$Native_Scheduler.fail({ ctor: 'Timeout' }));
+		});
+		xhr.addEventListener('load', function() {
+			callback(handleResponse(xhr, request.expect.responseToResult));
+		});
+
+		try
+		{
+			xhr.open(request.method, request.url, true);
+		}
+		catch (e)
+		{
+			return callback(_elm_lang$core$Native_Scheduler.fail({ ctor: 'BadUrl', _0: request.url }));
+		}
+
+		configureRequest(xhr, request);
+		send(xhr, request.body);
+
+		return function() { xhr.abort(); };
+	});
+}
+
+function configureProgress(xhr, maybeProgress)
+{
+	if (maybeProgress.ctor === 'Nothing')
+	{
+		return;
+	}
+
+	xhr.addEventListener('progress', function(event) {
+		if (!event.lengthComputable)
+		{
+			return;
+		}
+		_elm_lang$core$Native_Scheduler.rawSpawn(maybeProgress._0({
+			bytes: event.loaded,
+			bytesExpected: event.total
+		}));
+	});
+}
+
+function configureRequest(xhr, request)
+{
+	function setHeader(pair)
+	{
+		xhr.setRequestHeader(pair._0, pair._1);
+	}
+
+	A2(_elm_lang$core$List$map, setHeader, request.headers);
+	xhr.responseType = request.expect.responseType;
+	xhr.withCredentials = request.withCredentials;
+
+	if (request.timeout.ctor === 'Just')
+	{
+		xhr.timeout = request.timeout._0;
+	}
+}
+
+function send(xhr, body)
+{
+	switch (body.ctor)
+	{
+		case 'EmptyBody':
+			xhr.send();
+			return;
+
+		case 'StringBody':
+			xhr.setRequestHeader('Content-Type', body._0);
+			xhr.send(body._1);
+			return;
+
+		case 'FormDataBody':
+			xhr.send(body._0);
+			return;
+	}
+}
+
+
+// RESPONSES
+
+function handleResponse(xhr, responseToResult)
+{
+	var response = toResponse(xhr);
+
+	if (xhr.status < 200 || 300 <= xhr.status)
+	{
+		response.body = xhr.responseText;
+		return _elm_lang$core$Native_Scheduler.fail({
+			ctor: 'BadStatus',
+			_0: response
+		});
+	}
+
+	var result = responseToResult(response);
+
+	if (result.ctor === 'Ok')
+	{
+		return _elm_lang$core$Native_Scheduler.succeed(result._0);
+	}
+	else
+	{
+		response.body = xhr.responseText;
+		return _elm_lang$core$Native_Scheduler.fail({
+			ctor: 'BadPayload',
+			_0: result._0,
+			_1: response
+		});
+	}
+}
+
+function toResponse(xhr)
+{
+	return {
+		status: { code: xhr.status, message: xhr.statusText },
+		headers: parseHeaders(xhr.getAllResponseHeaders()),
+		url: xhr.responseURL,
+		body: xhr.response
+	};
+}
+
+function parseHeaders(rawHeaders)
+{
+	var headers = _elm_lang$core$Dict$empty;
+
+	if (!rawHeaders)
+	{
+		return headers;
+	}
+
+	var headerPairs = rawHeaders.split('\u000d\u000a');
+	for (var i = headerPairs.length; i--; )
+	{
+		var headerPair = headerPairs[i];
+		var index = headerPair.indexOf('\u003a\u0020');
+		if (index > 0)
+		{
+			var key = headerPair.substring(0, index);
+			var value = headerPair.substring(index + 2);
+
+			headers = A3(_elm_lang$core$Dict$update, key, function(oldValue) {
+				if (oldValue.ctor === 'Just')
+				{
+					return _elm_lang$core$Maybe$Just(value + ', ' + oldValue._0);
+				}
+				return _elm_lang$core$Maybe$Just(value);
+			}, headers);
+		}
+	}
+
+	return headers;
+}
+
+
+// EXPECTORS
+
+function expectStringResponse(responseToResult)
+{
+	return {
+		responseType: 'text',
+		responseToResult: responseToResult
+	};
+}
+
+function mapExpect(func, expect)
+{
+	return {
+		responseType: expect.responseType,
+		responseToResult: function(response) {
+			var convertedResponse = expect.responseToResult(response);
+			return A2(_elm_lang$core$Result$map, func, convertedResponse);
+		}
+	};
+}
+
+
+// BODY
+
+function multipart(parts)
+{
+	var formData = new FormData();
+
+	while (parts.ctor !== '[]')
+	{
+		var part = parts._0;
+		formData.append(part._0, part._1);
+		parts = parts._1;
+	}
+
+	return { ctor: 'FormDataBody', _0: formData };
+}
+
+return {
+	toTask: F2(toTask),
+	expectStringResponse: expectStringResponse,
+	mapExpect: F2(mapExpect),
+	multipart: multipart,
+	encodeUri: encodeUri,
+	decodeUri: decodeUri
+};
+
+}();
+
+var _elm_lang$http$Http_Internal$map = F2(
+	function (func, request) {
+		return _elm_lang$core$Native_Utils.update(
+			request,
+			{
+				expect: A2(_elm_lang$http$Native_Http.mapExpect, func, request.expect)
+			});
+	});
+var _elm_lang$http$Http_Internal$RawRequest = F7(
+	function (a, b, c, d, e, f, g) {
+		return {method: a, headers: b, url: c, body: d, expect: e, timeout: f, withCredentials: g};
+	});
+var _elm_lang$http$Http_Internal$Request = function (a) {
+	return {ctor: 'Request', _0: a};
+};
+var _elm_lang$http$Http_Internal$Expect = {ctor: 'Expect'};
+var _elm_lang$http$Http_Internal$FormDataBody = {ctor: 'FormDataBody'};
+var _elm_lang$http$Http_Internal$StringBody = F2(
+	function (a, b) {
+		return {ctor: 'StringBody', _0: a, _1: b};
+	});
+var _elm_lang$http$Http_Internal$EmptyBody = {ctor: 'EmptyBody'};
+var _elm_lang$http$Http_Internal$Header = F2(
+	function (a, b) {
+		return {ctor: 'Header', _0: a, _1: b};
+	});
+
+var _elm_lang$http$Http$decodeUri = _elm_lang$http$Native_Http.decodeUri;
+var _elm_lang$http$Http$encodeUri = _elm_lang$http$Native_Http.encodeUri;
+var _elm_lang$http$Http$expectStringResponse = _elm_lang$http$Native_Http.expectStringResponse;
+var _elm_lang$http$Http$expectJson = function (decoder) {
+	return _elm_lang$http$Http$expectStringResponse(
+		function (response) {
+			return A2(_elm_lang$core$Json_Decode$decodeString, decoder, response.body);
+		});
+};
+var _elm_lang$http$Http$expectString = _elm_lang$http$Http$expectStringResponse(
+	function (response) {
+		return _elm_lang$core$Result$Ok(response.body);
+	});
+var _elm_lang$http$Http$multipartBody = _elm_lang$http$Native_Http.multipart;
+var _elm_lang$http$Http$stringBody = _elm_lang$http$Http_Internal$StringBody;
+var _elm_lang$http$Http$jsonBody = function (value) {
+	return A2(
+		_elm_lang$http$Http_Internal$StringBody,
+		'application/json',
+		A2(_elm_lang$core$Json_Encode$encode, 0, value));
+};
+var _elm_lang$http$Http$emptyBody = _elm_lang$http$Http_Internal$EmptyBody;
+var _elm_lang$http$Http$header = _elm_lang$http$Http_Internal$Header;
+var _elm_lang$http$Http$request = _elm_lang$http$Http_Internal$Request;
+var _elm_lang$http$Http$post = F3(
+	function (url, body, decoder) {
+		return _elm_lang$http$Http$request(
+			{
+				method: 'POST',
+				headers: {ctor: '[]'},
+				url: url,
+				body: body,
+				expect: _elm_lang$http$Http$expectJson(decoder),
+				timeout: _elm_lang$core$Maybe$Nothing,
+				withCredentials: false
+			});
+	});
+var _elm_lang$http$Http$get = F2(
+	function (url, decoder) {
+		return _elm_lang$http$Http$request(
+			{
+				method: 'GET',
+				headers: {ctor: '[]'},
+				url: url,
+				body: _elm_lang$http$Http$emptyBody,
+				expect: _elm_lang$http$Http$expectJson(decoder),
+				timeout: _elm_lang$core$Maybe$Nothing,
+				withCredentials: false
+			});
+	});
+var _elm_lang$http$Http$getString = function (url) {
+	return _elm_lang$http$Http$request(
+		{
+			method: 'GET',
+			headers: {ctor: '[]'},
+			url: url,
+			body: _elm_lang$http$Http$emptyBody,
+			expect: _elm_lang$http$Http$expectString,
+			timeout: _elm_lang$core$Maybe$Nothing,
+			withCredentials: false
+		});
+};
+var _elm_lang$http$Http$toTask = function (_p0) {
+	var _p1 = _p0;
+	return A2(_elm_lang$http$Native_Http.toTask, _p1._0, _elm_lang$core$Maybe$Nothing);
+};
+var _elm_lang$http$Http$send = F2(
+	function (resultToMessage, request) {
+		return A2(
+			_elm_lang$core$Task$attempt,
+			resultToMessage,
+			_elm_lang$http$Http$toTask(request));
+	});
+var _elm_lang$http$Http$Response = F4(
+	function (a, b, c, d) {
+		return {url: a, status: b, headers: c, body: d};
+	});
+var _elm_lang$http$Http$BadPayload = F2(
+	function (a, b) {
+		return {ctor: 'BadPayload', _0: a, _1: b};
+	});
+var _elm_lang$http$Http$BadStatus = function (a) {
+	return {ctor: 'BadStatus', _0: a};
+};
+var _elm_lang$http$Http$NetworkError = {ctor: 'NetworkError'};
+var _elm_lang$http$Http$Timeout = {ctor: 'Timeout'};
+var _elm_lang$http$Http$BadUrl = function (a) {
+	return {ctor: 'BadUrl', _0: a};
+};
+var _elm_lang$http$Http$StringPart = F2(
+	function (a, b) {
+		return {ctor: 'StringPart', _0: a, _1: b};
+	});
+var _elm_lang$http$Http$stringPart = _elm_lang$http$Http$StringPart;
+
 var _elm_lang$keyboard$Keyboard$onSelfMsg = F3(
 	function (router, _p0, state) {
 		var _p1 = _p0;
@@ -8543,22 +9234,22 @@ var _elm_lang$keyboard$Keyboard$onSelfMsg = F3(
 			};
 			return A2(
 				_elm_lang$core$Task$andThen,
-				_elm_lang$core$Task$sequence(
-					A2(_elm_lang$core$List$map, send, _p2._0.taggers)),
 				function (_p3) {
 					return _elm_lang$core$Task$succeed(state);
-				});
+				},
+				_elm_lang$core$Task$sequence(
+					A2(_elm_lang$core$List$map, send, _p2._0.taggers)));
 		}
 	});
 var _elm_lang$keyboard$Keyboard_ops = _elm_lang$keyboard$Keyboard_ops || {};
 _elm_lang$keyboard$Keyboard_ops['&>'] = F2(
-	function (t1, t2) {
+	function (task1, task2) {
 		return A2(
 			_elm_lang$core$Task$andThen,
-			t1,
 			function (_p4) {
-				return t2;
-			});
+				return task2;
+			},
+			task1);
 	});
 var _elm_lang$keyboard$Keyboard$init = _elm_lang$core$Task$succeed(_elm_lang$core$Dict$empty);
 var _elm_lang$keyboard$Keyboard$categorizeHelpHelp = F2(
@@ -8566,11 +9257,14 @@ var _elm_lang$keyboard$Keyboard$categorizeHelpHelp = F2(
 		var _p5 = maybeValues;
 		if (_p5.ctor === 'Nothing') {
 			return _elm_lang$core$Maybe$Just(
-				_elm_lang$core$Native_List.fromArray(
-					[value]));
+				{
+					ctor: '::',
+					_0: value,
+					_1: {ctor: '[]'}
+				});
 		} else {
 			return _elm_lang$core$Maybe$Just(
-				A2(_elm_lang$core$List_ops['::'], value, _p5._0));
+				{ctor: '::', _0: value, _1: _p5._0});
 		}
 	});
 var _elm_lang$keyboard$Keyboard$categorizeHelp = F2(
@@ -8596,7 +9290,7 @@ var _elm_lang$keyboard$Keyboard$categorizeHelp = F2(
 var _elm_lang$keyboard$Keyboard$categorize = function (subs) {
 	return A2(_elm_lang$keyboard$Keyboard$categorizeHelp, subs, _elm_lang$core$Dict$empty);
 };
-var _elm_lang$keyboard$Keyboard$keyCode = A2(_elm_lang$core$Json_Decode_ops[':='], 'keyCode', _elm_lang$core$Json_Decode$int);
+var _elm_lang$keyboard$Keyboard$keyCode = A2(_elm_lang$core$Json_Decode$field, 'keyCode', _elm_lang$core$Json_Decode$int);
 var _elm_lang$keyboard$Keyboard$subscription = _elm_lang$core$Native_Platform.leaf('Keyboard');
 var _elm_lang$keyboard$Keyboard$Watcher = F2(
 	function (a, b) {
@@ -8612,10 +9306,17 @@ var _elm_lang$keyboard$Keyboard$onEffects = F3(
 			function (category, taggers, task) {
 				return A2(
 					_elm_lang$core$Task$andThen,
-					task,
 					function (state) {
 						return A2(
 							_elm_lang$core$Task$andThen,
+							function (pid) {
+								return _elm_lang$core$Task$succeed(
+									A3(
+										_elm_lang$core$Dict$insert,
+										category,
+										A2(_elm_lang$keyboard$Keyboard$Watcher, taggers, pid),
+										state));
+							},
 							_elm_lang$core$Process$spawn(
 								A3(
 									_elm_lang$dom$Dom_LowLevel$onDocument,
@@ -8626,31 +9327,20 @@ var _elm_lang$keyboard$Keyboard$onEffects = F3(
 											_elm_lang$core$Platform$sendToSelf,
 											router,
 											A2(_elm_lang$keyboard$Keyboard$Msg, category, _p7));
-									})),
-							function (pid) {
-								return _elm_lang$core$Task$succeed(
-									A3(
-										_elm_lang$core$Dict$insert,
-										category,
-										A2(_elm_lang$keyboard$Keyboard$Watcher, taggers, pid),
-										state));
-							});
-					});
+									})));
+					},
+					task);
 			});
 		var bothStep = F4(
 			function (category, _p8, taggers, task) {
 				var _p9 = _p8;
 				return A2(
-					_elm_lang$core$Task$andThen,
-					task,
-					function (state) {
-						return _elm_lang$core$Task$succeed(
-							A3(
-								_elm_lang$core$Dict$insert,
-								category,
-								A2(_elm_lang$keyboard$Keyboard$Watcher, taggers, _p9.pid),
-								state));
-					});
+					_elm_lang$core$Task$map,
+					A2(
+						_elm_lang$core$Dict$insert,
+						category,
+						A2(_elm_lang$keyboard$Keyboard$Watcher, taggers, _p9.pid)),
+					task);
 			});
 		var leftStep = F3(
 			function (category, _p10, task) {
@@ -8698,48 +9388,272 @@ var _elm_lang$keyboard$Keyboard$subMap = F2(
 	});
 _elm_lang$core$Native_Platform.effectManagers['Keyboard'] = {pkg: 'elm-lang/keyboard', init: _elm_lang$keyboard$Keyboard$init, onEffects: _elm_lang$keyboard$Keyboard$onEffects, onSelfMsg: _elm_lang$keyboard$Keyboard$onSelfMsg, tag: 'sub', subMap: _elm_lang$keyboard$Keyboard$subMap};
 
-var _performance$hp12c$Main$empty_br_node = A2(
-	_elm_lang$html$Html$br,
-	_elm_lang$core$Native_List.fromArray(
-		[]),
-	_elm_lang$core$Native_List.fromArray(
-		[]));
-var _performance$hp12c$Main$stylesheet = function () {
-	var children = _elm_lang$core$Native_List.fromArray(
-		[]);
-	var attrs = _elm_lang$core$Native_List.fromArray(
-		[
-			A2(_elm_lang$html$Html_Attributes$attribute, 'rel', 'stylesheet'),
-			A2(_elm_lang$html$Html_Attributes$attribute, 'property', 'stylesheet'),
-			A2(_elm_lang$html$Html_Attributes$attribute, 'href', 'HP12c.css')
-		]);
-	var tag = 'link';
-	return A3(_elm_lang$html$Html$node, tag, attrs, children);
-}();
-var _performance$hp12c$Main$subtraction = F2(
-	function (x, y) {
-		return x - y;
+var _krisajenkins$formatting$Formatting$html = function (_p0) {
+	var _p1 = _p0;
+	return _p1._0(_elm_lang$html$Html$text);
+};
+var _krisajenkins$formatting$Formatting$print = function (_p2) {
+	var _p3 = _p2;
+	return _p3._0(_elm_lang$core$Basics$identity);
+};
+var _krisajenkins$formatting$Formatting$Format = function (a) {
+	return {ctor: 'Format', _0: a};
+};
+var _krisajenkins$formatting$Formatting$compose = F2(
+	function (_p5, _p4) {
+		var _p6 = _p5;
+		var _p7 = _p4;
+		return _krisajenkins$formatting$Formatting$Format(
+			function (callback) {
+				return _p6._0(
+					function (strF) {
+						return _p7._0(
+							function (strG) {
+								return callback(
+									A2(_elm_lang$core$Basics_ops['++'], strF, strG));
+							});
+					});
+			});
 	});
-var _performance$hp12c$Main$division = F2(
-	function (x, y) {
-		return x / y;
+var _krisajenkins$formatting$Formatting_ops = _krisajenkins$formatting$Formatting_ops || {};
+_krisajenkins$formatting$Formatting_ops['<>'] = _krisajenkins$formatting$Formatting$compose;
+var _krisajenkins$formatting$Formatting$map = F2(
+	function (f, _p8) {
+		var _p9 = _p8;
+		return _krisajenkins$formatting$Formatting$Format(
+			function (callback) {
+				return _p9._0(
+					function (_p10) {
+						return callback(
+							f(_p10));
+					});
+			});
 	});
-var _performance$hp12c$Main$multiply = F2(
-	function (x, y) {
-		return x * y;
+var _krisajenkins$formatting$Formatting$pad = F2(
+	function (n, $char) {
+		return _krisajenkins$formatting$Formatting$map(
+			A2(_elm_lang$core$String$pad, n, $char));
 	});
-var _performance$hp12c$Main$sum = F2(
-	function (x, y) {
-		return x + y;
+var _krisajenkins$formatting$Formatting$padLeft = F2(
+	function (n, $char) {
+		return _krisajenkins$formatting$Formatting$map(
+			A2(_elm_lang$core$String$padLeft, n, $char));
 	});
-var _performance$hp12c$Main$initializeProgramMemory = {
+var _krisajenkins$formatting$Formatting$padRight = F2(
+	function (n, $char) {
+		return _krisajenkins$formatting$Formatting$map(
+			A2(_elm_lang$core$String$padRight, n, $char));
+	});
+var _krisajenkins$formatting$Formatting$premap = F2(
+	function (f, _p11) {
+		var _p12 = _p11;
+		return _krisajenkins$formatting$Formatting$Format(
+			function (callback) {
+				return function (_p13) {
+					return A2(
+						_p12._0,
+						callback,
+						f(_p13));
+				};
+			});
+	});
+var _krisajenkins$formatting$Formatting$toFormatter = function (f) {
+	return _krisajenkins$formatting$Formatting$Format(
+		function (callback) {
+			return function (_p14) {
+				return callback(
+					f(_p14));
+			};
+		});
+};
+var _krisajenkins$formatting$Formatting$any = _krisajenkins$formatting$Formatting$toFormatter(_elm_lang$core$Basics$toString);
+var _krisajenkins$formatting$Formatting$int = _krisajenkins$formatting$Formatting$any;
+var _krisajenkins$formatting$Formatting$bool = _krisajenkins$formatting$Formatting$any;
+var _krisajenkins$formatting$Formatting$float = _krisajenkins$formatting$Formatting$any;
+var _krisajenkins$formatting$Formatting$apply = F2(
+	function (_p15, value) {
+		var _p16 = _p15;
+		return _krisajenkins$formatting$Formatting$Format(
+			function (callback) {
+				return A2(_p16._0, callback, value);
+			});
+	});
+var _krisajenkins$formatting$Formatting$s = function (str) {
+	return _krisajenkins$formatting$Formatting$Format(
+		function (c) {
+			return c(str);
+		});
+};
+var _krisajenkins$formatting$Formatting$wrap = F2(
+	function (wrapping, format) {
+		return A2(
+			_krisajenkins$formatting$Formatting_ops['<>'],
+			_krisajenkins$formatting$Formatting$s(wrapping),
+			A2(
+				_krisajenkins$formatting$Formatting_ops['<>'],
+				format,
+				_krisajenkins$formatting$Formatting$s(wrapping)));
+	});
+var _krisajenkins$formatting$Formatting$string = _krisajenkins$formatting$Formatting$Format(_elm_lang$core$Basics$identity);
+var _krisajenkins$formatting$Formatting$uriFragment = A2(_krisajenkins$formatting$Formatting$premap, _elm_lang$http$Http$encodeUri, _krisajenkins$formatting$Formatting$string);
+var _krisajenkins$formatting$Formatting$roundTo = function (n) {
+	return _krisajenkins$formatting$Formatting$Format(
+		F2(
+			function (callback, value) {
+				return callback(
+					function () {
+						if (_elm_lang$core$Native_Utils.eq(n, 0)) {
+							return _elm_lang$core$Basics$toString(
+								_elm_lang$core$Basics$round(value));
+						} else {
+							var finalFormat = A2(
+								_krisajenkins$formatting$Formatting_ops['<>'],
+								_krisajenkins$formatting$Formatting$string,
+								A2(
+									_krisajenkins$formatting$Formatting_ops['<>'],
+									_krisajenkins$formatting$Formatting$int,
+									A2(
+										_krisajenkins$formatting$Formatting_ops['<>'],
+										_krisajenkins$formatting$Formatting$s('.'),
+										A3(
+											_krisajenkins$formatting$Formatting$padLeft,
+											n,
+											_elm_lang$core$Native_Utils.chr('0'),
+											_krisajenkins$formatting$Formatting$int))));
+							var sign = (_elm_lang$core$Native_Utils.cmp(value, 0.0) < 0) ? '-' : '';
+							var exp = Math.pow(10, n);
+							var raised = _elm_lang$core$Basics$abs(
+								_elm_lang$core$Basics$round(
+									value * _elm_lang$core$Basics$toFloat(exp)));
+							return A4(
+								_krisajenkins$formatting$Formatting$print,
+								finalFormat,
+								sign,
+								(raised / exp) | 0,
+								A2(_elm_lang$core$Basics$rem, raised, exp));
+						}
+					}());
+			}));
+};
+var _krisajenkins$formatting$Formatting$dp = _krisajenkins$formatting$Formatting$roundTo;
+
+var _performance$hp12c$HP12c_KeyTypes$KeyMsg = function (a) {
+	return {ctor: 'KeyMsg', _0: a};
+};
+var _performance$hp12c$HP12c_KeyTypes$Last_X_Key = {ctor: 'Last_X_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Sum_Key = {ctor: 'Sum_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Sigma_Minus_Key = {ctor: 'Sigma_Minus_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Sigma_Plus_Key = {ctor: 'Sigma_Plus_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetDisplayScientific_Key = {ctor: 'SetDisplayScientific_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Std_Dev_Key = {ctor: 'Std_Dev_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Decimal_Point_Key = {ctor: 'Decimal_Point_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetPrecision_0_Key = {ctor: 'SetPrecision_0_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Mean_of_X_Key = {ctor: 'Mean_of_X_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Number_0_Key = {ctor: 'Number_0_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Right_Paren_Key = {ctor: 'Right_Paren_Key'};
+var _performance$hp12c$HP12c_KeyTypes$RCL_Key = {ctor: 'RCL_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Left_Paren_Key = {ctor: 'Left_Paren_Key'};
+var _performance$hp12c$HP12c_KeyTypes$STO_Key = {ctor: 'STO_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Blue_G_Key = {ctor: 'Blue_G_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Orange_F_Key = {ctor: 'Orange_F_Key'};
+var _performance$hp12c$HP12c_KeyTypes$OFF_Key = {ctor: 'OFF_Key'};
+var _performance$hp12c$HP12c_KeyTypes$ON_Key = {ctor: 'ON_Key'};
+var _performance$hp12c$HP12c_KeyTypes$BackSpace_Key = {ctor: 'BackSpace_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Subtract_Key = {ctor: 'Subtract_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetPrecision_3_Key = {ctor: 'SetPrecision_3_Key'};
+var _performance$hp12c$HP12c_KeyTypes$N_Factorial_Key = {ctor: 'N_Factorial_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Number_3_Key = {ctor: 'Number_3_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetPrecision_2_Key = {ctor: 'SetPrecision_2_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Linear_Estimate_Y_Key = {ctor: 'Linear_Estimate_Y_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Number_2_Key = {ctor: 'Number_2_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetPrecision_1_Key = {ctor: 'SetPrecision_1_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Linear_Estimate_X_Key = {ctor: 'Linear_Estimate_X_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Number_1_Key = {ctor: 'Number_1_Key'};
+var _performance$hp12c$HP12c_KeyTypes$CLEAR_PREFIX_Key = {ctor: 'CLEAR_PREFIX_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Equals_Key = {ctor: 'Equals_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Enter_Key = {ctor: 'Enter_Key'};
+var _performance$hp12c$HP12c_KeyTypes$CLEAR_REG_Key = {ctor: 'CLEAR_REG_Key'};
+var _performance$hp12c$HP12c_KeyTypes$X_eq_0_Key = {ctor: 'X_eq_0_Key'};
+var _performance$hp12c$HP12c_KeyTypes$CL_x_Key = {ctor: 'CL_x_Key'};
+var _performance$hp12c$HP12c_KeyTypes$CLEAR_FIN_Key = {ctor: 'CLEAR_FIN_Key'};
+var _performance$hp12c$HP12c_KeyTypes$X_lte_Y_Key = {ctor: 'X_lte_Y_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Exchange_X_Y_Key = {ctor: 'Exchange_X_Y_Key'};
+var _performance$hp12c$HP12c_KeyTypes$CLEAR_PRGM_Key = {ctor: 'CLEAR_PRGM_Key'};
+var _performance$hp12c$HP12c_KeyTypes$GTO_Key = {ctor: 'GTO_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Roll_Down_Key = {ctor: 'Roll_Down_Key'};
+var _performance$hp12c$HP12c_KeyTypes$CLEAR_Σ_Key = {ctor: 'CLEAR_Σ_Key'};
+var _performance$hp12c$HP12c_KeyTypes$BST_Key = {ctor: 'BST_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SST_Key = {ctor: 'SST_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Program_Mode_Key = {ctor: 'Program_Mode_Key'};
+var _performance$hp12c$HP12c_KeyTypes$PSE_Key = {ctor: 'PSE_Key'};
+var _performance$hp12c$HP12c_KeyTypes$RunMode_Key = {ctor: 'RunMode_Key'};
+var _performance$hp12c$HP12c_KeyTypes$X_Squared_Key = {ctor: 'X_Squared_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Multiply_Key = {ctor: 'Multiply_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetPrecision_6_Key = {ctor: 'SetPrecision_6_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Weighted_Mean_Key = {ctor: 'Weighted_Mean_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Number_6_Key = {ctor: 'Number_6_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetPrecision_5_Key = {ctor: 'SetPrecision_5_Key'};
+var _performance$hp12c$HP12c_KeyTypes$M_DY_Key = {ctor: 'M_DY_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Number_5_Key = {ctor: 'Number_5_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetPrecision_4_Key = {ctor: 'SetPrecision_4_Key'};
+var _performance$hp12c$HP12c_KeyTypes$D_MY_Key = {ctor: 'D_MY_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Number_4_Key = {ctor: 'Number_4_Key'};
+var _performance$hp12c$HP12c_KeyTypes$ALG_Key = {ctor: 'ALG_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Delta_Days_Key = {ctor: 'Delta_Days_Key'};
+var _performance$hp12c$HP12c_KeyTypes$EEX_Key = {ctor: 'EEX_Key'};
+var _performance$hp12c$HP12c_KeyTypes$DB_Key = {ctor: 'DB_Key'};
+var _performance$hp12c$HP12c_KeyTypes$INTG_Key = {ctor: 'INTG_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Percent_Key = {ctor: 'Percent_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SOYD_Key = {ctor: 'SOYD_Key'};
+var _performance$hp12c$HP12c_KeyTypes$FRAC_Key = {ctor: 'FRAC_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Delta_Percentage_Key = {ctor: 'Delta_Percentage_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SL_Key = {ctor: 'SL_Key'};
+var _performance$hp12c$HP12c_KeyTypes$LN_Key = {ctor: 'LN_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Percentage_T_Key = {ctor: 'Percentage_T_Key'};
+var _performance$hp12c$HP12c_KeyTypes$YTM_Key = {ctor: 'YTM_Key'};
+var _performance$hp12c$HP12c_KeyTypes$E_to_the_x_Key = {ctor: 'E_to_the_x_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Reciprocal_Key = {ctor: 'Reciprocal_Key'};
+var _performance$hp12c$HP12c_KeyTypes$PRICE_Key = {ctor: 'PRICE_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Square_Root_Key = {ctor: 'Square_Root_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Y_toThe_X_Key = {ctor: 'Y_toThe_X_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Undo_Key = {ctor: 'Undo_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Divide_Key = {ctor: 'Divide_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetPrecision_9_Key = {ctor: 'SetPrecision_9_Key'};
+var _performance$hp12c$HP12c_KeyTypes$MEM_Key = {ctor: 'MEM_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Number_9_Key = {ctor: 'Number_9_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetPrecision_8_Key = {ctor: 'SetPrecision_8_Key'};
+var _performance$hp12c$HP12c_KeyTypes$END_Key = {ctor: 'END_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Number_8_Key = {ctor: 'Number_8_Key'};
+var _performance$hp12c$HP12c_KeyTypes$SetPrecision_7_Key = {ctor: 'SetPrecision_7_Key'};
+var _performance$hp12c$HP12c_KeyTypes$BEG_Key = {ctor: 'BEG_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Number_7_Key = {ctor: 'Number_7_Key'};
+var _performance$hp12c$HP12c_KeyTypes$RPN_Key = {ctor: 'RPN_Key'};
+var _performance$hp12c$HP12c_KeyTypes$DATE_Key = {ctor: 'DATE_Key'};
+var _performance$hp12c$HP12c_KeyTypes$CHS_Key = {ctor: 'CHS_Key'};
+var _performance$hp12c$HP12c_KeyTypes$IRR_Key = {ctor: 'IRR_Key'};
+var _performance$hp12c$HP12c_KeyTypes$N_j_Key = {ctor: 'N_j_Key'};
+var _performance$hp12c$HP12c_KeyTypes$FV_Key = {ctor: 'FV_Key'};
+var _performance$hp12c$HP12c_KeyTypes$RND_Key = {ctor: 'RND_Key'};
+var _performance$hp12c$HP12c_KeyTypes$CF_j_Key = {ctor: 'CF_j_Key'};
+var _performance$hp12c$HP12c_KeyTypes$PMT_Key = {ctor: 'PMT_Key'};
+var _performance$hp12c$HP12c_KeyTypes$NPV_Key = {ctor: 'NPV_Key'};
+var _performance$hp12c$HP12c_KeyTypes$CF_0_Key = {ctor: 'CF_0_Key'};
+var _performance$hp12c$HP12c_KeyTypes$PV_Key = {ctor: 'PV_Key'};
+var _performance$hp12c$HP12c_KeyTypes$INT_Key = {ctor: 'INT_Key'};
+var _performance$hp12c$HP12c_KeyTypes$DIVIDE_BY_12_Key = {ctor: 'DIVIDE_BY_12_Key'};
+var _performance$hp12c$HP12c_KeyTypes$I_Key = {ctor: 'I_Key'};
+var _performance$hp12c$HP12c_KeyTypes$AMORT_Key = {ctor: 'AMORT_Key'};
+var _performance$hp12c$HP12c_KeyTypes$Times_12_Key = {ctor: 'Times_12_Key'};
+var _performance$hp12c$HP12c_KeyTypes$N_Key = {ctor: 'N_Key'};
+
+var _performance$hp12c$HP12c_Model$initializeProgramMemory = {
 	prog_mem: A2(
 		_elm_lang$core$Array$initialize,
 		400,
 		_elm_lang$core$Basics$always(0))
 };
-var _performance$hp12c$Main$initializeStatisticalRegisters = {reg_n: 0, reg_Σ_X: 0, reg_Σ_X_Squared: 0, reg_Σ_Y: 0, reg_Σ_Y_Squared: 0, reg_Σ_XY: 0};
-var _performance$hp12c$Main$initializeDataStorageRegisters = {
+var _performance$hp12c$HP12c_Model$initializeStatisticalRegisters = {reg_n: 0, reg_Σ_X: 0, reg_Σ_X_Squared: 0, reg_Σ_Y: 0, reg_Σ_Y_Squared: 0, reg_Σ_XY: 0};
+var _performance$hp12c$HP12c_Model$initializeDataStorageRegisters = {
 	reg_R: A2(
 		_elm_lang$core$Array$initialize,
 		10,
@@ -8749,7 +9663,8 @@ var _performance$hp12c$Main$initializeDataStorageRegisters = {
 		10,
 		_elm_lang$core$Basics$always(0))
 };
-var _performance$hp12c$Main$initializeFinancialRegisters = {
+var _performance$hp12c$HP12c_Model$initializeFinancialRegistersEntered = {reg_n_entered: false, reg_i_entered: false, reg_PV_entered: false, reg_PMT_entered: false, reg_FV_entered: false};
+var _performance$hp12c$HP12c_Model$initializeFinancialRegisters = {
 	reg_n: 0,
 	reg_i: 0,
 	reg_PV: 0,
@@ -8760,17 +9675,1494 @@ var _performance$hp12c$Main$initializeFinancialRegisters = {
 		80,
 		_elm_lang$core$Basics$always(0))
 };
-var _performance$hp12c$Main$initializeAutomaticMemoryStackRegisters = {reg_T: 0, reg_Z: 0, reg_Y: 0, reg_X: 0, reg_Last_X: 0};
-var _performance$hp12c$Main$numberOfFinacialRegisters_N = 80;
-var _performance$hp12c$Main$parseFloat = function (string) {
-	var _p0 = _elm_lang$core$String$toFloat(string);
-	if (_p0.ctor === 'Ok') {
-		return _p0._0;
+var _performance$hp12c$HP12c_Model$initializeAutomaticMemoryStackRegisters = {reg_T: 0, reg_Z: 0, reg_Y: 0, reg_X: 0, reg_Last_X: 0};
+var _performance$hp12c$HP12c_Model$numberOfFinacialRegisters_N = 80;
+var _performance$hp12c$HP12c_Model$AutomaticMemoryStackRegisters = F5(
+	function (a, b, c, d, e) {
+		return {reg_T: a, reg_Z: b, reg_Y: c, reg_X: d, reg_Last_X: e};
+	});
+var _performance$hp12c$HP12c_Model$ScratchRegisters = F6(
+	function (a, b, c, d, e, f) {
+		return {reg_X_is_Positive: a, integral_part_of_X: b, fractional_part_of_X: c, number_of_decimals: d, exponent_for_EEX: e, acceptNewDigitInto: f};
+	});
+var _performance$hp12c$HP12c_Model$FinancialRegistersEntered = F5(
+	function (a, b, c, d, e) {
+		return {reg_n_entered: a, reg_i_entered: b, reg_PV_entered: c, reg_PMT_entered: d, reg_FV_entered: e};
+	});
+var _performance$hp12c$HP12c_Model$FinancialRegisters = F6(
+	function (a, b, c, d, e, f) {
+		return {reg_n: a, reg_i: b, reg_PV: c, reg_PMT: d, reg_FV: e, regs_N: f};
+	});
+var _performance$hp12c$HP12c_Model$DataStorageRegisters = F2(
+	function (a, b) {
+		return {reg_R: a, reg_R_Decimal: b};
+	});
+var _performance$hp12c$HP12c_Model$StatisticalRegisters = F6(
+	function (a, b, c, d, e, f) {
+		return {reg_n: a, reg_Σ_X: b, reg_Σ_X_Squared: c, reg_Σ_Y: d, reg_Σ_Y_Squared: e, reg_Σ_XY: f};
+	});
+var _performance$hp12c$HP12c_Model$ProgramMemory = function (a) {
+	return {prog_mem: a};
+};
+var _performance$hp12c$HP12c_Model$Model = function (a) {
+	return function (b) {
+		return function (c) {
+			return function (d) {
+				return function (e) {
+					return function (f) {
+						return function (g) {
+							return function (h) {
+								return function (i) {
+									return function (j) {
+										return function (k) {
+											return function (l) {
+												return function (m) {
+													return function (n) {
+														return function (o) {
+															return function (p) {
+																return function (q) {
+																	return {inputQueue: a, addToInputQueue: b, inputMode: c, computationMode: d, scratchRegisters: e, automaticMemoryStackRegisters: f, financialRegisters: g, financialRegistersEntered: h, dataStorageRegisters: i, statisticalRegisters: j, programMemory: k, keyCode: l, shortcutVisible: m, message: n, displayString: o, displayPrecision: p, unimplemented: q};
+																};
+															};
+														};
+													};
+												};
+											};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var _performance$hp12c$HP12c_Model$GTO_Addrs = {ctor: 'GTO_Addrs'};
+var _performance$hp12c$HP12c_Model$RCL_Dot_Reg = {ctor: 'RCL_Dot_Reg'};
+var _performance$hp12c$HP12c_Model$RCL_Reg = {ctor: 'RCL_Reg'};
+var _performance$hp12c$HP12c_Model$STO_Dot_Reg = {ctor: 'STO_Dot_Reg'};
+var _performance$hp12c$HP12c_Model$STO_Reg = {ctor: 'STO_Reg'};
+var _performance$hp12c$HP12c_Model$ExponentForEEX = {ctor: 'ExponentForEEX'};
+var _performance$hp12c$HP12c_Model$FractionalPart = {ctor: 'FractionalPart'};
+var _performance$hp12c$HP12c_Model$IntegralPart = {ctor: 'IntegralPart'};
+var _performance$hp12c$HP12c_Model$initializeScratchRegisters = {reg_X_is_Positive: true, integral_part_of_X: 0, fractional_part_of_X: 0, number_of_decimals: 0, exponent_for_EEX: 0, acceptNewDigitInto: _performance$hp12c$HP12c_Model$IntegralPart};
+var _performance$hp12c$HP12c_Model$NewNumber = {ctor: 'NewNumber'};
+var _performance$hp12c$HP12c_Model$Blue = {ctor: 'Blue'};
+var _performance$hp12c$HP12c_Model$Orange = {ctor: 'Orange'};
+var _performance$hp12c$HP12c_Model$White = {ctor: 'White'};
+var _performance$hp12c$HP12c_Model$STO_Mode = {ctor: 'STO_Mode'};
+var _performance$hp12c$HP12c_Model$Blue_PrefixMode = {ctor: 'Blue_PrefixMode'};
+var _performance$hp12c$HP12c_Model$Orange_PrefixMode = {ctor: 'Orange_PrefixMode'};
+var _performance$hp12c$HP12c_Model$PrError = {ctor: 'PrError'};
+var _performance$hp12c$HP12c_Model$Error_9_Service = {ctor: 'Error_9_Service'};
+var _performance$hp12c$HP12c_Model$Error_8_Calendar = {ctor: 'Error_8_Calendar'};
+var _performance$hp12c$HP12c_Model$Error_7_IRR = {ctor: 'Error_7_IRR'};
+var _performance$hp12c$HP12c_Model$Error_6_Storage_Registers = {ctor: 'Error_6_Storage_Registers'};
+var _performance$hp12c$HP12c_Model$Error_5_Compound_Interest = {ctor: 'Error_5_Compound_Interest'};
+var _performance$hp12c$HP12c_Model$Error_4_Memory = {ctor: 'Error_4_Memory'};
+var _performance$hp12c$HP12c_Model$Error_3_IRR = {ctor: 'Error_3_IRR'};
+var _performance$hp12c$HP12c_Model$Error_2_Statistics = {ctor: 'Error_2_Statistics'};
+var _performance$hp12c$HP12c_Model$Error_1_Storage_Register_Overflow = {ctor: 'Error_1_Storage_Register_Overflow'};
+var _performance$hp12c$HP12c_Model$Error_0_Mathematics = {ctor: 'Error_0_Mathematics'};
+var _performance$hp12c$HP12c_Model$Error = function (a) {
+	return {ctor: 'Error', _0: a};
+};
+var _performance$hp12c$HP12c_Model$RunningProgram = {ctor: 'RunningProgram'};
+var _performance$hp12c$HP12c_Model$InPrefixMode = function (a) {
+	return {ctor: 'InPrefixMode', _0: a};
+};
+var _performance$hp12c$HP12c_Model$AcceptingOperationsOrNumbers = {ctor: 'AcceptingOperationsOrNumbers'};
+var _performance$hp12c$HP12c_Model$AcceptingNumericalInputOnly = {ctor: 'AcceptingNumericalInputOnly'};
+var _performance$hp12c$HP12c_Model$PRGM_MODE = {ctor: 'PRGM_MODE'};
+var _performance$hp12c$HP12c_Model$ALG_Mode = {ctor: 'ALG_Mode'};
+var _performance$hp12c$HP12c_Model$RPN_Mode = {ctor: 'RPN_Mode'};
+var _performance$hp12c$HP12c_Model$initialModel = {
+	inputQueue: {ctor: '[]'},
+	addToInputQueue: true,
+	inputMode: _performance$hp12c$HP12c_Model$White,
+	computationMode: _performance$hp12c$HP12c_Model$RPN_Mode,
+	scratchRegisters: _performance$hp12c$HP12c_Model$initializeScratchRegisters,
+	automaticMemoryStackRegisters: _performance$hp12c$HP12c_Model$initializeAutomaticMemoryStackRegisters,
+	financialRegisters: _performance$hp12c$HP12c_Model$initializeFinancialRegisters,
+	financialRegistersEntered: _performance$hp12c$HP12c_Model$initializeFinancialRegistersEntered,
+	dataStorageRegisters: _performance$hp12c$HP12c_Model$initializeDataStorageRegisters,
+	statisticalRegisters: _performance$hp12c$HP12c_Model$initializeStatisticalRegisters,
+	programMemory: _performance$hp12c$HP12c_Model$initializeProgramMemory,
+	keyCode: 0,
+	shortcutVisible: false,
+	message: 'No Keys',
+	displayString: '0.00',
+	displayPrecision: 2,
+	unimplemented: false
+};
+
+var _performance$hp12c$HP12c_KeyBoardInput$keyCodeToMsg = F2(
+	function (inputMode, code) {
+		var _p0 = code;
+		switch (_p0) {
+			case 78:
+				var _p1 = inputMode;
+				switch (_p1.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$N_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Times_12_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$AMORT_Key;
+				}
+			case 110:
+				var _p2 = inputMode;
+				switch (_p2.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$N_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Times_12_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$AMORT_Key;
+				}
+			case 73:
+				var _p3 = inputMode;
+				switch (_p3.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$I_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$DIVIDE_BY_12_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$INT_Key;
+				}
+			case 105:
+				var _p4 = inputMode;
+				switch (_p4.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$I_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$DIVIDE_BY_12_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$INT_Key;
+				}
+			case 80:
+				var _p5 = inputMode;
+				switch (_p5.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$PV_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$CF_0_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$NPV_Key;
+				}
+			case 112:
+				var _p6 = inputMode;
+				switch (_p6.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$PV_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$CF_0_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$NPV_Key;
+				}
+			case 77:
+				var _p7 = inputMode;
+				switch (_p7.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$PMT_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$CF_j_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$RND_Key;
+				}
+			case 109:
+				var _p8 = inputMode;
+				switch (_p8.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$PMT_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$CF_j_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$RND_Key;
+				}
+			case 86:
+				var _p9 = inputMode;
+				switch (_p9.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$FV_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$N_j_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$IRR_Key;
+				}
+			case 118:
+				var _p10 = inputMode;
+				switch (_p10.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$FV_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$N_j_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$IRR_Key;
+				}
+			case 72:
+				var _p11 = inputMode;
+				switch (_p11.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$CHS_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$DATE_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$RPN_Key;
+				}
+			case 104:
+				var _p12 = inputMode;
+				switch (_p12.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$CHS_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$DATE_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$RPN_Key;
+				}
+			case 55:
+				var _p13 = inputMode;
+				switch (_p13.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Number_7_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$BEG_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetPrecision_7_Key;
+				}
+			case 56:
+				var _p14 = inputMode;
+				switch (_p14.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Number_8_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$END_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetPrecision_8_Key;
+				}
+			case 57:
+				var _p15 = inputMode;
+				switch (_p15.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Number_9_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$MEM_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetPrecision_9_Key;
+				}
+			case 47:
+				var _p16 = inputMode;
+				switch (_p16.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Divide_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Undo_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Divide_Key;
+				}
+			case 33:
+				var _p17 = inputMode;
+				switch (_p17.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Y_toThe_X_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Square_Root_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$PRICE_Key;
+				}
+			case 92:
+				var _p18 = inputMode;
+				switch (_p18.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Reciprocal_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$E_to_the_x_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$YTM_Key;
+				}
+			case 84:
+				var _p19 = inputMode;
+				switch (_p19.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Percentage_T_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$LN_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SL_Key;
+				}
+			case 116:
+				var _p20 = inputMode;
+				switch (_p20.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Percentage_T_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$LN_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SL_Key;
+				}
+			case 36:
+				var _p21 = inputMode;
+				switch (_p21.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Delta_Percentage_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$FRAC_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SOYD_Key;
+				}
+			case 37:
+				var _p22 = inputMode;
+				switch (_p22.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Percent_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$INTG_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$DB_Key;
+				}
+			case 69:
+				var _p23 = inputMode;
+				switch (_p23.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$EEX_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Delta_Days_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$ALG_Key;
+				}
+			case 101:
+				var _p24 = inputMode;
+				switch (_p24.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$EEX_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Delta_Days_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$ALG_Key;
+				}
+			case 52:
+				var _p25 = inputMode;
+				switch (_p25.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Number_4_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$D_MY_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetPrecision_4_Key;
+				}
+			case 53:
+				var _p26 = inputMode;
+				switch (_p26.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Number_5_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$M_DY_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetPrecision_5_Key;
+				}
+			case 54:
+				var _p27 = inputMode;
+				switch (_p27.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Number_6_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Weighted_Mean_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetPrecision_6_Key;
+				}
+			case 42:
+				var _p28 = inputMode;
+				switch (_p28.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Multiply_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$X_Squared_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Multiply_Key;
+				}
+			case 91:
+				var _p29 = inputMode;
+				switch (_p29.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$RunMode_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$PSE_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Program_Mode_Key;
+				}
+			case 93:
+				var _p30 = inputMode;
+				switch (_p30.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$SST_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$BST_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$CLEAR_Σ_Key;
+				}
+			case 82:
+				var _p31 = inputMode;
+				switch (_p31.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Roll_Down_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$GTO_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$CLEAR_PRGM_Key;
+				}
+			case 114:
+				var _p32 = inputMode;
+				switch (_p32.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Roll_Down_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$GTO_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$CLEAR_PRGM_Key;
+				}
+			case 89:
+				var _p33 = inputMode;
+				switch (_p33.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Exchange_X_Y_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$X_lte_Y_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$CLEAR_FIN_Key;
+				}
+			case 121:
+				var _p34 = inputMode;
+				switch (_p34.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Exchange_X_Y_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$X_lte_Y_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$CLEAR_FIN_Key;
+				}
+			case 67:
+				var _p35 = inputMode;
+				switch (_p35.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$CL_x_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$X_eq_0_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$CLEAR_REG_Key;
+				}
+			case 99:
+				var _p36 = inputMode;
+				switch (_p36.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$CL_x_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$X_eq_0_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$CLEAR_REG_Key;
+				}
+			case 13:
+				var _p37 = inputMode;
+				switch (_p37.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Enter_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Equals_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$CLEAR_PREFIX_Key;
+				}
+			case 49:
+				var _p38 = inputMode;
+				switch (_p38.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Number_1_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Linear_Estimate_X_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetPrecision_1_Key;
+				}
+			case 50:
+				var _p39 = inputMode;
+				switch (_p39.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Number_2_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Linear_Estimate_Y_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetPrecision_2_Key;
+				}
+			case 51:
+				var _p40 = inputMode;
+				switch (_p40.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Number_3_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$N_Factorial_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetPrecision_3_Key;
+				}
+			case 45:
+				var _p41 = inputMode;
+				switch (_p41.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Subtract_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$BackSpace_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Subtract_Key;
+				}
+			case 79:
+				var _p42 = inputMode;
+				switch (_p42.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$ON_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$KeyMsg(code);
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$OFF_Key;
+				}
+			case 11:
+				var _p43 = inputMode;
+				switch (_p43.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$ON_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$KeyMsg(code);
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$OFF_Key;
+				}
+			case 70:
+				var _p44 = inputMode;
+				switch (_p44.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Orange_F_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Orange_F_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Orange_F_Key;
+				}
+			case 102:
+				var _p45 = inputMode;
+				switch (_p45.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Orange_F_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Orange_F_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Orange_F_Key;
+				}
+			case 71:
+				var _p46 = inputMode;
+				switch (_p46.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Blue_G_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Blue_G_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Blue_G_Key;
+				}
+			case 103:
+				var _p47 = inputMode;
+				switch (_p47.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Blue_G_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Blue_G_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Blue_G_Key;
+				}
+			case 83:
+				var _p48 = inputMode;
+				switch (_p48.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$STO_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Left_Paren_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$STO_Key;
+				}
+			case 115:
+				var _p49 = inputMode;
+				switch (_p49.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$STO_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Left_Paren_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$STO_Key;
+				}
+			case 76:
+				var _p50 = inputMode;
+				switch (_p50.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$RCL_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Right_Paren_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$RCL_Key;
+				}
+			case 108:
+				var _p51 = inputMode;
+				switch (_p51.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$RCL_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Right_Paren_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$RCL_Key;
+				}
+			case 48:
+				var _p52 = inputMode;
+				switch (_p52.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Number_0_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Mean_of_X_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetPrecision_0_Key;
+				}
+			case 46:
+				var _p53 = inputMode;
+				switch (_p53.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Decimal_Point_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Std_Dev_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$SetDisplayScientific_Key;
+				}
+			case 87:
+				var _p54 = inputMode;
+				switch (_p54.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Sigma_Plus_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Sigma_Minus_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Sigma_Plus_Key;
+				}
+			case 119:
+				var _p55 = inputMode;
+				switch (_p55.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Sigma_Plus_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Sigma_Minus_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Sigma_Plus_Key;
+				}
+			case 43:
+				var _p56 = inputMode;
+				switch (_p56.ctor) {
+					case 'White':
+						return _performance$hp12c$HP12c_KeyTypes$Sum_Key;
+					case 'Blue':
+						return _performance$hp12c$HP12c_KeyTypes$Last_X_Key;
+					default:
+						return _performance$hp12c$HP12c_KeyTypes$Sum_Key;
+				}
+			default:
+				return _performance$hp12c$HP12c_KeyTypes$KeyMsg(code);
+		}
+	});
+
+var _performance$hp12c$HP12c_Update_utils$defaultModelTransformer = function (model) {
+	return _elm_lang$core$Native_Utils.update(
+		model,
+		{unimplemented: true, addToInputQueue: true});
+};
+var _performance$hp12c$HP12c_Update_utils$handlePOWERONKey = function (model) {
+	return _performance$hp12c$HP12c_Model$initialModel;
+};
+var _performance$hp12c$HP12c_Update_utils$handleKeyCode = F2(
+	function (code, model) {
+		return _elm_lang$core$Native_Utils.eq(code, 32) ? _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				keyCode: code,
+				shortcutVisible: !model.shortcutVisible,
+				addToInputQueue: false,
+				message: A2(
+					_elm_lang$core$Basics_ops['++'],
+					'Space bar pressed : ',
+					_elm_lang$core$Basics$toString(model.shortcutVisible))
+			}) : _elm_lang$core$Native_Utils.update(
+			model,
+			{keyCode: code});
+	});
+var _performance$hp12c$HP12c_Update_utils$setPrefix = F2(
+	function (inputMode, model) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{inputMode: inputMode, addToInputQueue: false});
+	});
+var _performance$hp12c$HP12c_Update_utils$update_Display_to_Scientific = function (model) {
+	var stackRegs = model.automaticMemoryStackRegisters;
+	var reg_X = stackRegs.reg_X;
+	var decimal_place = A2(
+		_elm_lang$core$Basics$logBase,
+		10,
+		_elm_lang$core$Basics$abs(reg_X));
+	var sign_of_exponent = (_elm_lang$core$Native_Utils.cmp(decimal_place, 0) < 0) ? 1 : -1;
+	var newExponent = (_elm_lang$core$Native_Utils.cmp(reg_X, 1) < 0) ? _elm_lang$core$Basics$ceiling(decimal_place) : _elm_lang$core$Basics$floor(decimal_place);
+	var exp_display_part = A2(
+		_elm_lang$core$String$right,
+		2,
+		A2(
+			_krisajenkins$formatting$Formatting$print,
+			A3(
+				_krisajenkins$formatting$Formatting$padLeft,
+				2,
+				_elm_lang$core$Native_Utils.chr('0'),
+				_krisajenkins$formatting$Formatting$int),
+			newExponent));
+	var newNumber = reg_X * Math.pow(
+		10,
+		_elm_lang$core$Basics$toFloat(sign_of_exponent * newExponent));
+	var newDisplayString = A2(
+		_elm_lang$core$Basics_ops['++'],
+		A2(
+			_krisajenkins$formatting$Formatting$print,
+			_krisajenkins$formatting$Formatting$roundTo(6),
+			newNumber),
+		A2(_elm_lang$core$Basics_ops['++'], '  ', exp_display_part));
+	var displayPrecision = 10;
+	var newModel = _elm_lang$core$Native_Utils.update(
+		model,
+		{displayString: newDisplayString, displayPrecision: displayPrecision, inputMode: _performance$hp12c$HP12c_Model$White});
+	return newModel;
+};
+var _performance$hp12c$HP12c_Update_utils$update_Display_Precision_util = F2(
+	function (n, model) {
+		var stackRegs = model.automaticMemoryStackRegisters;
+		var reg_X = stackRegs.reg_X;
+		var displayPrecision = n;
+		var newDisplayString = A2(
+			_krisajenkins$formatting$Formatting$print,
+			_krisajenkins$formatting$Formatting$roundTo(displayPrecision),
+			reg_X);
+		var newModel = _elm_lang$core$Native_Utils.update(
+			model,
+			{displayString: newDisplayString, displayPrecision: displayPrecision, inputMode: _performance$hp12c$HP12c_Model$White});
+		return newModel;
+	});
+var _performance$hp12c$HP12c_Update_utils$update_Display_Precision = F2(
+	function (n, model) {
+		var newModel = (_elm_lang$core$Native_Utils.cmp(n, 10) < 0) ? A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision_util, n, model) : _performance$hp12c$HP12c_Update_utils$update_Display_to_Scientific(model);
+		return newModel;
+	});
+var _performance$hp12c$HP12c_Update_utils$clearXRegister = function (model) {
+	var stackRegs = model.automaticMemoryStackRegisters;
+	var newStackRegs = _elm_lang$core$Native_Utils.update(
+		stackRegs,
+		{reg_X: 0});
+	var cleared_model = _elm_lang$core$Native_Utils.update(
+		model,
+		{automaticMemoryStackRegisters: newStackRegs, addToInputQueue: true});
+	var newModel = A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision, model.displayPrecision, cleared_model);
+	return newModel;
+};
+var _performance$hp12c$HP12c_Update_utils$clearSigma = function (model) {
+	var cleared_model = _elm_lang$core$Native_Utils.update(
+		model,
+		{automaticMemoryStackRegisters: _performance$hp12c$HP12c_Model$initializeAutomaticMemoryStackRegisters, statisticalRegisters: _performance$hp12c$HP12c_Model$initializeStatisticalRegisters, scratchRegisters: _performance$hp12c$HP12c_Model$initializeScratchRegisters, addToInputQueue: true});
+	var newModel = A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision, model.displayPrecision, cleared_model);
+	return newModel;
+};
+var _performance$hp12c$HP12c_Update_utils$clearPrefix = function (model) {
+	return _elm_lang$core$Native_Utils.update(
+		model,
+		{inputMode: _performance$hp12c$HP12c_Model$White, addToInputQueue: true, message: 'DOES NOT YET HANDLE STO RCL AND GTO, and need to figure out how to display mantissa for one sec only '});
+};
+var _performance$hp12c$HP12c_Update_utils$clearProgramMemory = function (model) {
+	if (_elm_lang$core$Native_Utils.eq(model.computationMode, _performance$hp12c$HP12c_Model$PRGM_MODE)) {
+		var cleared_model = _elm_lang$core$Native_Utils.update(
+			model,
+			{programMemory: _performance$hp12c$HP12c_Model$initializeProgramMemory, addToInputQueue: true});
+		return cleared_model;
 	} else {
-		return 0;
+		return model;
 	}
 };
-var _performance$hp12c$Main$classNames = function (strings) {
+var _performance$hp12c$HP12c_Update_utils$clearFinancialRegisters = function (model) {
+	var cleared_model = _elm_lang$core$Native_Utils.update(
+		model,
+		{financialRegisters: _performance$hp12c$HP12c_Model$initializeFinancialRegisters, scratchRegisters: _performance$hp12c$HP12c_Model$initializeScratchRegisters, addToInputQueue: true});
+	var newModel = A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision, model.displayPrecision, cleared_model);
+	return newModel;
+};
+var _performance$hp12c$HP12c_Update_utils$clearAllRegisters = function (model) {
+	var cleared_model = _elm_lang$core$Native_Utils.update(
+		model,
+		{automaticMemoryStackRegisters: _performance$hp12c$HP12c_Model$initializeAutomaticMemoryStackRegisters, dataStorageRegisters: _performance$hp12c$HP12c_Model$initializeDataStorageRegisters, statisticalRegisters: _performance$hp12c$HP12c_Model$initializeStatisticalRegisters, financialRegisters: _performance$hp12c$HP12c_Model$initializeFinancialRegisters, scratchRegisters: _performance$hp12c$HP12c_Model$initializeScratchRegisters, addToInputQueue: true});
+	var newModel = A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision, model.displayPrecision, cleared_model);
+	return newModel;
+};
+var _performance$hp12c$HP12c_Update_utils$backSpaceReg_X = function (model) {
+	var stackRegs = model.automaticMemoryStackRegisters;
+	var newStackRegs = _elm_lang$core$Native_Utils.update(
+		stackRegs,
+		{
+			reg_X: _elm_lang$core$Basics$toFloat(
+				_elm_lang$core$Basics$floor(stackRegs.reg_X / 10))
+		});
+	var newModel = _elm_lang$core$Native_Utils.update(
+		model,
+		{automaticMemoryStackRegisters: newStackRegs, addToInputQueue: true});
+	return newModel;
+};
+var _performance$hp12c$HP12c_Update_utils$handleEEX_Key = function (model) {
+	var modelScratchRegs = model.scratchRegisters;
+	var newScratchRegs = _elm_lang$core$Native_Utils.update(
+		modelScratchRegs,
+		{acceptNewDigitInto: _performance$hp12c$HP12c_Model$ExponentForEEX});
+	var newModel = _elm_lang$core$Native_Utils.update(
+		model,
+		{scratchRegisters: newScratchRegs, addToInputQueue: true});
+	return newModel;
+};
+var _performance$hp12c$HP12c_Update_utils$handleDecimalPoint = function (model) {
+	var modelScratchRegs = model.scratchRegisters;
+	var newScratchRegs = _elm_lang$core$Native_Utils.update(
+		modelScratchRegs,
+		{acceptNewDigitInto: _performance$hp12c$HP12c_Model$FractionalPart});
+	var newModel = _elm_lang$core$Native_Utils.update(
+		model,
+		{scratchRegisters: newScratchRegs, addToInputQueue: true});
+	return newModel;
+};
+var _performance$hp12c$HP12c_Update_utils$until_evaluate_X_register = function (modelScratchRegs) {
+	var sign_of_X = modelScratchRegs.reg_X_is_Positive ? 1 : -1;
+	var decimal_place = Math.pow(10, modelScratchRegs.number_of_decimals + 1);
+	var newReg_X = (sign_of_X * _elm_lang$core$Basics$toFloat(modelScratchRegs.integral_part_of_X)) + (_elm_lang$core$Basics$toFloat(modelScratchRegs.fractional_part_of_X) / _elm_lang$core$Basics$toFloat(decimal_place));
+	var newReg_X_with_EEX = newReg_X * Math.pow(
+		10,
+		_elm_lang$core$Basics$toFloat(modelScratchRegs.exponent_for_EEX));
+	var reg_X_to_Use = _elm_lang$core$Native_Utils.eq(modelScratchRegs.acceptNewDigitInto, _performance$hp12c$HP12c_Model$ExponentForEEX) ? newReg_X_with_EEX : newReg_X;
+	return reg_X_to_Use;
+};
+var _performance$hp12c$HP12c_Update_utils$handle_CHS_Key = function (model) {
+	var modelStackRegs = model.automaticMemoryStackRegisters;
+	var modelScratchRegs = model.scratchRegisters;
+	var newScratchRegs = _elm_lang$core$Native_Utils.eq(modelScratchRegs.acceptNewDigitInto, _performance$hp12c$HP12c_Model$ExponentForEEX) ? _elm_lang$core$Native_Utils.update(
+		modelScratchRegs,
+		{exponent_for_EEX: -1 * modelScratchRegs.exponent_for_EEX}) : _elm_lang$core$Native_Utils.update(
+		modelScratchRegs,
+		{reg_X_is_Positive: !modelScratchRegs.reg_X_is_Positive});
+	var newReg_X = _performance$hp12c$HP12c_Update_utils$until_evaluate_X_register(newScratchRegs);
+	var revaluatedStackRegs = _elm_lang$core$Native_Utils.update(
+		modelStackRegs,
+		{reg_X: newReg_X});
+	var toggledModel = _elm_lang$core$Native_Utils.update(
+		model,
+		{
+			automaticMemoryStackRegisters: revaluatedStackRegs,
+			scratchRegisters: newScratchRegs,
+			addToInputQueue: true,
+			message: A2(
+				_elm_lang$core$Basics_ops['++'],
+				'[>>> out of CHS handler sign_of_X is ',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(newScratchRegs.reg_X_is_Positive),
+					' <<<] '))
+		});
+	var newModel = A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision, model.displayPrecision, toggledModel);
+	return newModel;
+};
+var _performance$hp12c$HP12c_Update_utils$setComputationMode = F2(
+	function (computationMode, model) {
+		return _elm_lang$core$Native_Utils.update(
+			model,
+			{computationMode: computationMode, addToInputQueue: false});
+	});
+var _performance$hp12c$HP12c_Update_utils$binaryOperator = F2(
+	function (op, model) {
+		var scratchRegs = model.scratchRegisters;
+		var stackRegs = model.automaticMemoryStackRegisters;
+		var result = A2(op, stackRegs.reg_Y, stackRegs.reg_X);
+		var reducedStack = _elm_lang$core$Native_Utils.update(
+			stackRegs,
+			{reg_T: stackRegs.reg_T, reg_Z: stackRegs.reg_T, reg_Y: stackRegs.reg_Z, reg_Last_X: stackRegs.reg_X, reg_X: result});
+		var promotedModel = _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				automaticMemoryStackRegisters: reducedStack,
+				inputMode: _performance$hp12c$HP12c_Model$White,
+				scratchRegisters: _elm_lang$core$Native_Utils.update(
+					scratchRegs,
+					{acceptNewDigitInto: _performance$hp12c$HP12c_Model$NewNumber, reg_X_is_Positive: true}),
+				addToInputQueue: true
+			});
+		var newModel = A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision, model.displayPrecision, promotedModel);
+		return newModel;
+	});
+var _performance$hp12c$HP12c_Update_utils$binaryOperator_No_Down_Shift = F2(
+	function (op, model) {
+		var stackRegs = model.automaticMemoryStackRegisters;
+		var result = A2(op, stackRegs.reg_Y, stackRegs.reg_X);
+		var unPromotedStack = _elm_lang$core$Native_Utils.update(
+			stackRegs,
+			{reg_Last_X: stackRegs.reg_X, reg_X: result});
+		var promotedModel = _elm_lang$core$Native_Utils.update(
+			model,
+			{automaticMemoryStackRegisters: unPromotedStack, inputMode: _performance$hp12c$HP12c_Model$White, addToInputQueue: true});
+		var newModel = A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision, model.displayPrecision, promotedModel);
+		return newModel;
+	});
+var _performance$hp12c$HP12c_Update_utils$percentage_of_total = F2(
+	function (y, x) {
+		return (100 * x) / y;
+	});
+var _performance$hp12c$HP12c_Update_utils$delta_percentage = F2(
+	function (y, x) {
+		return (100 * (x - y)) / y;
+	});
+var _performance$hp12c$HP12c_Update_utils$x_percent_of_y = F2(
+	function (y, x) {
+		return (y * x) / 100;
+	});
+var _performance$hp12c$HP12c_Update_utils$y_divided_by_x = F2(
+	function (y, x) {
+		return y / x;
+	});
+var _performance$hp12c$HP12c_Update_utils$y_times_x = F2(
+	function (y, x) {
+		return y * x;
+	});
+var _performance$hp12c$HP12c_Update_utils$y_minus_x = F2(
+	function (y, x) {
+		return y - x;
+	});
+var _performance$hp12c$HP12c_Update_utils$y_plus_x = F2(
+	function (y, x) {
+		return y + x;
+	});
+var _performance$hp12c$HP12c_Update_utils$y_to_the_x = F2(
+	function (y, x) {
+		return Math.pow(y, x);
+	});
+var _performance$hp12c$HP12c_Update_utils$unaryOperator = F2(
+	function (op, model) {
+		var scratchRegs = model.scratchRegisters;
+		var stackRegs = model.automaticMemoryStackRegisters;
+		var result = op(stackRegs.reg_X);
+		var unReducededStack = _elm_lang$core$Native_Utils.update(
+			stackRegs,
+			{reg_Last_X: stackRegs.reg_X, reg_X: result});
+		var unReducedModel = _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				automaticMemoryStackRegisters: unReducededStack,
+				inputMode: _performance$hp12c$HP12c_Model$White,
+				scratchRegisters: _elm_lang$core$Native_Utils.update(
+					scratchRegs,
+					{acceptNewDigitInto: _performance$hp12c$HP12c_Model$NewNumber}),
+				addToInputQueue: true
+			});
+		var newModel = A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision, model.displayPrecision, unReducedModel);
+		return newModel;
+	});
+var _performance$hp12c$HP12c_Update_utils$integral_part = function (x) {
+	return _elm_lang$core$Basics$toFloat(
+		_elm_lang$core$Basics$floor(x));
+};
+var _performance$hp12c$HP12c_Update_utils$fractional_part = function (x) {
+	return x - _performance$hp12c$HP12c_Update_utils$integral_part(x);
+};
+var _performance$hp12c$HP12c_Update_utils$round_function = F2(
+	function (n, x) {
+		var float_n = _elm_lang$core$Basics$toFloat(n);
+		return _elm_lang$core$Basics$toFloat(
+			_elm_lang$core$Basics$floor(
+				x * Math.pow(10, float_n))) / Math.pow(10, float_n);
+	});
+var _performance$hp12c$HP12c_Update_utils$n_factorial = function (x) {
+	var n = _elm_lang$core$Basics$floor(x);
+	return _elm_lang$core$Basics$toFloat(
+		_elm_lang$core$List$product(
+			A2(_elm_lang$core$List$range, 1, n)));
+};
+var _performance$hp12c$HP12c_Update_utils$e_to_the_x = function (x) {
+	return Math.pow(_elm_lang$core$Basics$e, x);
+};
+var _performance$hp12c$HP12c_Update_utils$natural_log = function (x) {
+	return A2(_elm_lang$core$Basics$logBase, _elm_lang$core$Basics$e, x);
+};
+var _performance$hp12c$HP12c_Update_utils$square_root = function (x) {
+	return _elm_lang$core$Basics$sqrt(x);
+};
+var _performance$hp12c$HP12c_Update_utils$x_squared = function (x) {
+	return x * x;
+};
+var _performance$hp12c$HP12c_Update_utils$reciprocal = function (x) {
+	return 1 / x;
+};
+var _performance$hp12c$HP12c_Update_utils$roll_Down_Stack = function (model) {
+	var stackRegs = model.automaticMemoryStackRegisters;
+	var tmp_X = stackRegs.reg_X;
+	var rolledStack = _elm_lang$core$Native_Utils.update(
+		stackRegs,
+		{reg_X: stackRegs.reg_Y, reg_Y: stackRegs.reg_Z, reg_Z: stackRegs.reg_T, reg_T: tmp_X});
+	var promotedModel = _elm_lang$core$Native_Utils.update(
+		model,
+		{automaticMemoryStackRegisters: rolledStack, addToInputQueue: true});
+	return promotedModel;
+};
+var _performance$hp12c$HP12c_Update_utils$exchange_X_Y_Regs = function (model) {
+	var stackRegs = model.automaticMemoryStackRegisters;
+	var tmp_Y = stackRegs.reg_Y;
+	var exchangedStack = _elm_lang$core$Native_Utils.update(
+		stackRegs,
+		{reg_Y: stackRegs.reg_X, reg_X: tmp_Y});
+	var promotedModel = _elm_lang$core$Native_Utils.update(
+		model,
+		{automaticMemoryStackRegisters: exchangedStack, addToInputQueue: true});
+	return promotedModel;
+};
+var _performance$hp12c$HP12c_Update_utils$liftAutomaticMemoryStack = function (currentStackRegs) {
+	var liftedStack = _elm_lang$core$Native_Utils.update(
+		currentStackRegs,
+		{reg_T: currentStackRegs.reg_Z, reg_Z: currentStackRegs.reg_Y, reg_Y: currentStackRegs.reg_X});
+	return liftedStack;
+};
+var _performance$hp12c$HP12c_Update_utils$liftStack = function (model) {
+	var stackRegs = model.automaticMemoryStackRegisters;
+	var liftedStack = _performance$hp12c$HP12c_Update_utils$liftAutomaticMemoryStack(stackRegs);
+	var liftedModel = _elm_lang$core$Native_Utils.update(
+		model,
+		{automaticMemoryStackRegisters: liftedStack});
+	return liftedModel;
+};
+var _performance$hp12c$HP12c_Update_utils$last_X = function (model) {
+	var last_key_input = _elm_lang$core$List$head(model.inputQueue);
+	var lift_blockers = {
+		ctor: '::',
+		_0: _performance$hp12c$HP12c_KeyTypes$Enter_Key,
+		_1: {
+			ctor: '::',
+			_0: _performance$hp12c$HP12c_KeyTypes$CL_x_Key,
+			_1: {
+				ctor: '::',
+				_0: _performance$hp12c$HP12c_KeyTypes$Sigma_Plus_Key,
+				_1: {
+					ctor: '::',
+					_0: _performance$hp12c$HP12c_KeyTypes$Sigma_Minus_Key,
+					_1: {
+						ctor: '::',
+						_0: _performance$hp12c$HP12c_KeyTypes$Times_12_Key,
+						_1: {
+							ctor: '::',
+							_0: _performance$hp12c$HP12c_KeyTypes$DIVIDE_BY_12_Key,
+							_1: {ctor: '[]'}
+						}
+					}
+				}
+			}
+		}
+	};
+	var _p0 = function () {
+		var _p1 = last_key_input;
+		if (_p1.ctor === 'Just') {
+			var _p2 = _p1._0;
+			var filtered_blockers = A2(
+				_elm_lang$core$List$filter,
+				function (x) {
+					return _elm_lang$core$Native_Utils.eq(x, _p2);
+				},
+				lift_blockers);
+			var flag = _elm_lang$core$List$isEmpty(filtered_blockers);
+			var msg = A2(
+				_elm_lang$core$Basics_ops['++'],
+				' TEST:---> ',
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_elm_lang$core$Basics$toString(_p2),
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(flag),
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							' <---:',
+							_elm_lang$core$Basics$toString(filtered_blockers)))));
+			return {ctor: '_Tuple2', _0: flag, _1: msg};
+		} else {
+			return {ctor: '_Tuple2', _0: false, _1: 'No Head '};
+		}
+	}();
+	var should_we_even_lift_bro = _p0._0;
+	var dbgmsg = _p0._1;
+	var maybeLiftedModel = should_we_even_lift_bro ? _performance$hp12c$HP12c_Update_utils$liftStack(model) : model;
+	var stackRegs = maybeLiftedModel.automaticMemoryStackRegisters;
+	var maybePromotedStack = _elm_lang$core$Native_Utils.update(
+		stackRegs,
+		{reg_X: stackRegs.reg_Last_X});
+	var maybePromotedModel = _elm_lang$core$Native_Utils.update(
+		maybeLiftedModel,
+		{automaticMemoryStackRegisters: maybePromotedStack, inputMode: _performance$hp12c$HP12c_Model$White, scratchRegisters: _performance$hp12c$HP12c_Model$initializeScratchRegisters, addToInputQueue: true, message: dbgmsg});
+	var newModel = A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision, model.displayPrecision, maybePromotedModel);
+	return newModel;
+};
+var _performance$hp12c$HP12c_Update_utils$numericalInputTerminated = function (model) {
+	var liftedModel = _performance$hp12c$HP12c_Update_utils$liftStack(model);
+	var stackRegs = liftedModel.automaticMemoryStackRegisters;
+	var lastXUpdatedStack = _elm_lang$core$Native_Utils.update(
+		stackRegs,
+		{reg_Last_X: stackRegs.reg_X});
+	return _elm_lang$core$Native_Utils.update(
+		liftedModel,
+		{scratchRegisters: _performance$hp12c$HP12c_Model$initializeScratchRegisters, automaticMemoryStackRegisters: lastXUpdatedStack});
+};
+var _performance$hp12c$HP12c_Update_utils$handleDigitInput = F2(
+	function (newDigit, model) {
+		var scratchRegs = model.scratchRegisters;
+		var decimal_place = Math.pow(10, scratchRegs.number_of_decimals + 1);
+		var sign_of_X = scratchRegs.reg_X_is_Positive ? 1 : -1;
+		var newPrecision = _elm_lang$core$Native_Utils.eq(scratchRegs.acceptNewDigitInto, _performance$hp12c$HP12c_Model$ExponentForEEX) ? 10 : model.displayPrecision;
+		var stackRegs = model.automaticMemoryStackRegisters;
+		var _p3 = function () {
+			var _p4 = scratchRegs.acceptNewDigitInto;
+			switch (_p4.ctor) {
+				case 'FractionalPart':
+					var newScratchRegs = _elm_lang$core$Native_Utils.update(
+						scratchRegs,
+						{fractional_part_of_X: (10 * scratchRegs.fractional_part_of_X) + newDigit, number_of_decimals: scratchRegs.number_of_decimals + 1});
+					var newReg_X = (sign_of_X * _elm_lang$core$Basics$toFloat(newScratchRegs.integral_part_of_X)) + (_elm_lang$core$Basics$toFloat(newScratchRegs.fractional_part_of_X) / _elm_lang$core$Basics$toFloat(decimal_place));
+					var newStackRegs = _elm_lang$core$Native_Utils.update(
+						stackRegs,
+						{reg_X: newReg_X});
+					return {ctor: '_Tuple2', _0: newScratchRegs, _1: newStackRegs};
+				case 'IntegralPart':
+					var newScratchRegs = _elm_lang$core$Native_Utils.update(
+						scratchRegs,
+						{fractional_part_of_X: 0, integral_part_of_X: (10 * scratchRegs.integral_part_of_X) + newDigit});
+					var newReg_X = (sign_of_X * _elm_lang$core$Basics$toFloat(newScratchRegs.integral_part_of_X)) + (_elm_lang$core$Basics$toFloat(newScratchRegs.fractional_part_of_X) / _elm_lang$core$Basics$toFloat(decimal_place));
+					var newStackRegs = _elm_lang$core$Native_Utils.update(
+						stackRegs,
+						{reg_X: newReg_X});
+					return {ctor: '_Tuple2', _0: newScratchRegs, _1: newStackRegs};
+				case 'NewNumber':
+					var liftedStack = _performance$hp12c$HP12c_Update_utils$liftAutomaticMemoryStack(stackRegs);
+					var newScratchRegs = _elm_lang$core$Native_Utils.update(
+						scratchRegs,
+						{fractional_part_of_X: 0, integral_part_of_X: newDigit, acceptNewDigitInto: _performance$hp12c$HP12c_Model$IntegralPart});
+					var newReg_X = _elm_lang$core$Basics$toFloat(newScratchRegs.integral_part_of_X);
+					var newStackRegs = _elm_lang$core$Native_Utils.update(
+						liftedStack,
+						{reg_X: newReg_X});
+					return {ctor: '_Tuple2', _0: newScratchRegs, _1: newStackRegs};
+				case 'ExponentForEEX':
+					var newScratchRegs = _elm_lang$core$Native_Utils.update(
+						scratchRegs,
+						{
+							exponent_for_EEX: A2(_elm_lang$core$Basics_ops['%'], (10 * scratchRegs.exponent_for_EEX) + newDigit, 100)
+						});
+					var newReg_X = (sign_of_X * _elm_lang$core$Basics$toFloat(newScratchRegs.integral_part_of_X)) + (_elm_lang$core$Basics$toFloat(newScratchRegs.fractional_part_of_X) / _elm_lang$core$Basics$toFloat(decimal_place));
+					var newReg_X_with_EEX = newReg_X * Math.pow(
+						10,
+						_elm_lang$core$Basics$toFloat(newScratchRegs.exponent_for_EEX));
+					var newStackRegs = _elm_lang$core$Native_Utils.update(
+						stackRegs,
+						{reg_X: newReg_X_with_EEX});
+					return {ctor: '_Tuple2', _0: newScratchRegs, _1: newStackRegs};
+				case 'STO_Reg':
+					return {ctor: '_Tuple2', _0: scratchRegs, _1: stackRegs};
+				case 'STO_Dot_Reg':
+					return {ctor: '_Tuple2', _0: scratchRegs, _1: stackRegs};
+				case 'RCL_Reg':
+					return {ctor: '_Tuple2', _0: scratchRegs, _1: stackRegs};
+				case 'RCL_Dot_Reg':
+					return {ctor: '_Tuple2', _0: scratchRegs, _1: stackRegs};
+				default:
+					return {ctor: '_Tuple2', _0: scratchRegs, _1: stackRegs};
+			}
+		}();
+		var newScratchRegs = _p3._0;
+		var newStackRegs = _p3._1;
+		var updatedModel = _elm_lang$core$Native_Utils.update(
+			model,
+			{
+				automaticMemoryStackRegisters: newStackRegs,
+				scratchRegisters: newScratchRegs,
+				addToInputQueue: true,
+				displayPrecision: newPrecision,
+				message: A2(
+					_elm_lang$core$Basics_ops['++'],
+					'[>>> sign_of_X is ',
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						_elm_lang$core$Basics$toString(sign_of_X),
+						' <<<] '))
+			});
+		var newModel = A2(_performance$hp12c$HP12c_Update_utils$update_Display_Precision, newPrecision, updatedModel);
+		return newModel;
+	});
+
+var _performance$hp12c$HP12c_Update$update = F2(
+	function (msg, model) {
+		var defaultMessage = F2(
+			function (u, msg) {
+				return A2(
+					_elm_lang$core$Basics_ops['++'],
+					u ? 'UNIMPLEMENTED!!!' : '',
+					_elm_lang$core$Basics$toString(msg));
+			});
+		var handler = function () {
+			var _p0 = msg;
+			switch (_p0.ctor) {
+				case 'KeyMsg':
+					return _performance$hp12c$HP12c_Update_utils$handleKeyCode(_p0._0);
+				case 'N_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'I_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'PV_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'PMT_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'FV_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Times_12_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'DIVIDE_BY_12_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'CF_0_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'CF_j_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'N_j_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'AMORT_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'INT_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'NPV_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'IRR_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'DATE_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'BEG_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'END_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Delta_Days_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'D_MY_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'M_DY_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'RunMode_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'GTO_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'PSE_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'BST_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'SST_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Program_Mode_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'CL_x_Key':
+					return _performance$hp12c$HP12c_Update_utils$clearXRegister;
+				case 'CLEAR_Σ_Key':
+					return _performance$hp12c$HP12c_Update_utils$clearSigma;
+				case 'CLEAR_PRGM_Key':
+					return _performance$hp12c$HP12c_Update_utils$clearProgramMemory;
+				case 'CLEAR_FIN_Key':
+					return _performance$hp12c$HP12c_Update_utils$clearFinancialRegisters;
+				case 'CLEAR_REG_Key':
+					return _performance$hp12c$HP12c_Update_utils$clearAllRegisters;
+				case 'CLEAR_PREFIX_Key':
+					return _performance$hp12c$HP12c_Update_utils$clearPrefix;
+				case 'STO_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'RCL_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'MEM_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Divide_Key':
+					return _performance$hp12c$HP12c_Update_utils$binaryOperator(_performance$hp12c$HP12c_Update_utils$y_divided_by_x);
+				case 'Y_toThe_X_Key':
+					return _performance$hp12c$HP12c_Update_utils$binaryOperator(_performance$hp12c$HP12c_Update_utils$y_to_the_x);
+				case 'Multiply_Key':
+					return _performance$hp12c$HP12c_Update_utils$binaryOperator(_performance$hp12c$HP12c_Update_utils$y_times_x);
+				case 'Subtract_Key':
+					return _performance$hp12c$HP12c_Update_utils$binaryOperator(_performance$hp12c$HP12c_Update_utils$y_minus_x);
+				case 'Sum_Key':
+					return _performance$hp12c$HP12c_Update_utils$binaryOperator(_performance$hp12c$HP12c_Update_utils$y_plus_x);
+				case 'LN_Key':
+					return _performance$hp12c$HP12c_Update_utils$unaryOperator(_performance$hp12c$HP12c_Update_utils$natural_log);
+				case 'Square_Root_Key':
+					return _performance$hp12c$HP12c_Update_utils$unaryOperator(_performance$hp12c$HP12c_Update_utils$square_root);
+				case 'Reciprocal_Key':
+					return _performance$hp12c$HP12c_Update_utils$unaryOperator(_performance$hp12c$HP12c_Update_utils$reciprocal);
+				case 'E_to_the_x_Key':
+					return _performance$hp12c$HP12c_Update_utils$unaryOperator(_performance$hp12c$HP12c_Update_utils$e_to_the_x);
+				case 'FRAC_Key':
+					return _performance$hp12c$HP12c_Update_utils$unaryOperator(_performance$hp12c$HP12c_Update_utils$fractional_part);
+				case 'INTG_Key':
+					return _performance$hp12c$HP12c_Update_utils$unaryOperator(_performance$hp12c$HP12c_Update_utils$integral_part);
+				case 'X_Squared_Key':
+					return _performance$hp12c$HP12c_Update_utils$unaryOperator(_performance$hp12c$HP12c_Update_utils$x_squared);
+				case 'N_Factorial_Key':
+					return _performance$hp12c$HP12c_Update_utils$unaryOperator(_performance$hp12c$HP12c_Update_utils$n_factorial);
+				case 'RND_Key':
+					return _performance$hp12c$HP12c_Update_utils$unaryOperator(
+						_performance$hp12c$HP12c_Update_utils$round_function(model.displayPrecision));
+				case 'PRICE_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'YTM_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'SL_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'SOYD_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'DB_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Weighted_Mean_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Mean_of_X_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Std_Dev_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Sigma_Plus_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Sigma_Minus_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'X_lte_Y_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'X_eq_0_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Linear_Estimate_X_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Linear_Estimate_Y_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'RPN_Key':
+					return _performance$hp12c$HP12c_Update_utils$setComputationMode(_performance$hp12c$HP12c_Model$RPN_Mode);
+				case 'ALG_Key':
+					return _performance$hp12c$HP12c_Update_utils$setComputationMode(_performance$hp12c$HP12c_Model$ALG_Mode);
+				case 'Equals_Key':
+					return _performance$hp12c$HP12c_Update_utils$numericalInputTerminated;
+				case 'Enter_Key':
+					return _performance$hp12c$HP12c_Update_utils$numericalInputTerminated;
+				case 'BackSpace_Key':
+					return _performance$hp12c$HP12c_Update_utils$backSpaceReg_X;
+				case 'Roll_Down_Key':
+					return _performance$hp12c$HP12c_Update_utils$roll_Down_Stack;
+				case 'Exchange_X_Y_Key':
+					return _performance$hp12c$HP12c_Update_utils$exchange_X_Y_Regs;
+				case 'Last_X_Key':
+					return _performance$hp12c$HP12c_Update_utils$last_X;
+				case 'Left_Paren_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Right_Paren_Key':
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+				case 'Number_1_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDigitInput(1);
+				case 'Number_2_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDigitInput(2);
+				case 'Number_3_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDigitInput(3);
+				case 'Number_4_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDigitInput(4);
+				case 'Number_5_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDigitInput(5);
+				case 'Number_6_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDigitInput(6);
+				case 'Number_7_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDigitInput(7);
+				case 'Number_8_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDigitInput(8);
+				case 'Number_9_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDigitInput(9);
+				case 'Number_0_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDigitInput(0);
+				case 'Decimal_Point_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleDecimalPoint;
+				case 'EEX_Key':
+					return _performance$hp12c$HP12c_Update_utils$handleEEX_Key;
+				case 'CHS_Key':
+					return _performance$hp12c$HP12c_Update_utils$handle_CHS_Key;
+				case 'ON_Key':
+					return _performance$hp12c$HP12c_Update_utils$handlePOWERONKey;
+				case 'OFF_Key':
+					return _performance$hp12c$HP12c_Update_utils$handlePOWERONKey;
+				case 'Percentage_T_Key':
+					return _performance$hp12c$HP12c_Update_utils$binaryOperator_No_Down_Shift(_performance$hp12c$HP12c_Update_utils$percentage_of_total);
+				case 'Delta_Percentage_Key':
+					return _performance$hp12c$HP12c_Update_utils$binaryOperator_No_Down_Shift(_performance$hp12c$HP12c_Update_utils$delta_percentage);
+				case 'Percent_Key':
+					return _performance$hp12c$HP12c_Update_utils$binaryOperator_No_Down_Shift(_performance$hp12c$HP12c_Update_utils$x_percent_of_y);
+				case 'SetPrecision_0_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(0);
+				case 'SetPrecision_1_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(1);
+				case 'SetPrecision_2_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(2);
+				case 'SetPrecision_3_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(3);
+				case 'SetPrecision_4_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(4);
+				case 'SetPrecision_5_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(5);
+				case 'SetPrecision_6_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(6);
+				case 'SetPrecision_7_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(7);
+				case 'SetPrecision_8_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(8);
+				case 'SetPrecision_9_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(9);
+				case 'SetDisplayScientific_Key':
+					return _performance$hp12c$HP12c_Update_utils$update_Display_Precision(10);
+				case 'Orange_F_Key':
+					return _performance$hp12c$HP12c_Update_utils$setPrefix(_performance$hp12c$HP12c_Model$Orange);
+				case 'Blue_G_Key':
+					return _performance$hp12c$HP12c_Update_utils$setPrefix(_performance$hp12c$HP12c_Model$Blue);
+				default:
+					return _performance$hp12c$HP12c_Update_utils$defaultModelTransformer;
+			}
+		}();
+		var newModel = handler(model);
+		return {
+			ctor: '_Tuple2',
+			_0: _elm_lang$core$Native_Utils.update(
+				newModel,
+				{
+					message: A2(defaultMessage, newModel.unimplemented, msg),
+					unimplemented: false,
+					inputQueue: newModel.addToInputQueue ? {ctor: '::', _0: msg, _1: newModel.inputQueue} : newModel.inputQueue
+				}),
+			_1: _elm_lang$core$Platform_Cmd$none
+		};
+	});
+
+var _performance$hp12c$HP12c_View$empty_br_node = A2(
+	_elm_lang$html$Html$br,
+	{ctor: '[]'},
+	{ctor: '[]'});
+var _performance$hp12c$HP12c_View$stylesheet = function () {
+	var children = {ctor: '[]'};
+	var attrs = {
+		ctor: '::',
+		_0: A2(_elm_lang$html$Html_Attributes$attribute, 'rel', 'stylesheet'),
+		_1: {
+			ctor: '::',
+			_0: A2(_elm_lang$html$Html_Attributes$attribute, 'property', 'stylesheet'),
+			_1: {
+				ctor: '::',
+				_0: A2(_elm_lang$html$Html_Attributes$attribute, 'href', 'HP12c.css'),
+				_1: {ctor: '[]'}
+			}
+		}
+	};
+	var tag = 'link';
+	return A3(_elm_lang$html$Html$node, tag, attrs, children);
+}();
+var _performance$hp12c$HP12c_View$classNames = function (strings) {
 	return _elm_lang$html$Html_Attributes$classList(
 		A2(
 			_elm_lang$core$List$map,
@@ -8779,1903 +11171,837 @@ var _performance$hp12c$Main$classNames = function (strings) {
 			},
 			strings));
 };
-var _performance$hp12c$Main$transparent_box = F3(
-	function (left, top, msg) {
+var _performance$hp12c$HP12c_View$transparent_box = F4(
+	function (model, left, top, keyChar) {
+		var opacity = {
+			ctor: '_Tuple2',
+			_0: 'opacity',
+			_1: _elm_lang$core$Basics$toString(
+				_elm_lang$core$Native_Utils.eq(true, model.shortcutVisible) ? 0.851 : 0)
+		};
+		var msg = A2(
+			_performance$hp12c$HP12c_KeyBoardInput$keyCodeToMsg,
+			model.inputMode,
+			_elm_lang$core$Char$toCode(keyChar));
 		return A2(
 			_elm_lang$html$Html$div,
-			_elm_lang$core$Native_List.fromArray(
-				[
-					_elm_lang$html$Html_Events$onClick(msg),
-					_performance$hp12c$Main$classNames(
-					_elm_lang$core$Native_List.fromArray(
-						['transparent_box'])),
-					_elm_lang$html$Html_Attributes$style(
-					_elm_lang$core$Native_List.fromArray(
-						[
-							{
-							ctor: '_Tuple2',
-							_0: 'left',
-							_1: A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(left),
-								'px')
-						},
-							{
-							ctor: '_Tuple2',
-							_0: 'top',
-							_1: A2(
-								_elm_lang$core$Basics_ops['++'],
-								_elm_lang$core$Basics$toString(top),
-								'px')
-						}
-						]))
-				]),
-			_elm_lang$core$Native_List.fromArray(
-				[]));
-	});
-var _performance$hp12c$Main$stack_registers_div = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_performance$hp12c$Main$classNames(
-				_elm_lang$core$Native_List.fromArray(
-					['calc_model'])),
-				_elm_lang$html$Html_Attributes$style(
-				_elm_lang$core$Native_List.fromArray(
-					[
-						{ctor: '_Tuple2', _0: 'left', _1: '0px'},
-						{ctor: '_Tuple2', _0: 'top', _1: '574px'},
-						{ctor: '_Tuple2', _0: 'position', _1: 'absolute'}
-					]))
-			]),
-		A2(
-			_elm_lang$core$List$intersperse,
-			_performance$hp12c$Main$empty_br_node,
-			A2(
-				_elm_lang$core$List$map,
-				_elm_lang$html$Html$text,
-				A2(
-					_elm_lang$core$String$split,
-					',',
-					_elm_lang$core$Basics$toString(model.automaticMemoryStackRegisters)))));
-};
-var _performance$hp12c$Main$modelinfodiv = function (model) {
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_performance$hp12c$Main$classNames(
-				_elm_lang$core$Native_List.fromArray(
-					['calc_model'])),
-				_elm_lang$html$Html_Attributes$style(
-				_elm_lang$core$Native_List.fromArray(
-					[
-						{ctor: '_Tuple2', _0: 'left', _1: '0px'},
-						{ctor: '_Tuple2', _0: 'top', _1: '434px'},
-						{ctor: '_Tuple2', _0: 'position', _1: 'absolute'}
-					]))
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html$text(
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_elm_lang$core$Basics$toString(model.inputMode),
-					A2(
-						_elm_lang$core$Basics_ops['++'],
-						'[ code = ',
-						A2(
-							_elm_lang$core$Basics_ops['++'],
-							_elm_lang$core$String$fromChar(
-								_elm_lang$core$Char$fromCode(model.keyCode)),
-							A2(_elm_lang$core$Basics_ops['++'], '  ] ', model.message)))))
-			]));
-};
-var _performance$hp12c$Main$AutomaticMemoryStackRegisters = F5(
-	function (a, b, c, d, e) {
-		return {reg_T: a, reg_Z: b, reg_Y: c, reg_X: d, reg_Last_X: e};
-	});
-var _performance$hp12c$Main$FinancialRegisters = F6(
-	function (a, b, c, d, e, f) {
-		return {reg_n: a, reg_i: b, reg_PV: c, reg_PMT: d, reg_FV: e, regs_N: f};
-	});
-var _performance$hp12c$Main$DataStorageRegisters = F2(
-	function (a, b) {
-		return {reg_R: a, reg_R_Decimal: b};
-	});
-var _performance$hp12c$Main$StatisticalRegisters = F6(
-	function (a, b, c, d, e, f) {
-		return {reg_n: a, reg_Σ_X: b, reg_Σ_X_Squared: c, reg_Σ_Y: d, reg_Σ_Y_Squared: e, reg_Σ_XY: f};
-	});
-var _performance$hp12c$Main$ProgramMemory = function (a) {
-	return {prog_mem: a};
-};
-var _performance$hp12c$Main$Model = F8(
-	function (a, b, c, d, e, f, g, h) {
-		return {inputMode: a, automaticMemoryStackRegisters: b, financialRegisters: c, dataStorageRegisters: d, statisticalRegisters: e, programMemory: f, keyCode: g, message: h};
-	});
-var _performance$hp12c$Main$Blue = {ctor: 'Blue'};
-var _performance$hp12c$Main$Orange = {ctor: 'Orange'};
-var _performance$hp12c$Main$White = {ctor: 'White'};
-var _performance$hp12c$Main$initialModel = {inputMode: _performance$hp12c$Main$White, automaticMemoryStackRegisters: _performance$hp12c$Main$initializeAutomaticMemoryStackRegisters, financialRegisters: _performance$hp12c$Main$initializeFinancialRegisters, dataStorageRegisters: _performance$hp12c$Main$initializeDataStorageRegisters, statisticalRegisters: _performance$hp12c$Main$initializeStatisticalRegisters, programMemory: _performance$hp12c$Main$initializeProgramMemory, keyCode: 0, message: 'Initialized to all zeros'};
-var _performance$hp12c$Main$init = {ctor: '_Tuple2', _0: _performance$hp12c$Main$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
-var _performance$hp12c$Main$update = F2(
-	function (msg, model) {
-		var _p1 = msg;
-		switch (_p1.ctor) {
-			case 'KeyMsg':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{keyCode: _p1._0}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'N_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' N_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Times_12_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Times_12_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'AMORT_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' AMORT_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'I_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' I_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'DIVIDE_BY_12_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' DIVIDE_BY_12_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'INT_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' INT_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'PV_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' PV_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'CF_0_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' CF_0_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'NPV_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' NPV_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'PMT_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' PMT_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'CF_j_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' CF_j_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'RND_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' RND_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'FV_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' FV_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'N_j_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' N_j_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'IRR_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' IRR_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'CHS_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' CHS_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'DATE_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' DATE_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'RPN_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' RPN_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Number_7_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Number_7_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'BEG_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' BEG_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Number_8_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Number_8_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'END_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' END_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Number_9_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Number_9_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'MEM_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' MEM_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Divide_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Divide_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Undo_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Undo_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Y_toThe_X_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Y_toThe_X_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Square_Root_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Square_Root_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'PRICE_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' PRICE_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Reciprocal_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Reciprocal_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'E_to_the_x_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' E_to_the_x_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'YTM_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' YTM_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Percentage_T_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Percentage_T_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'LN_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' LN_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'SL_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' SL_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Delta_Percentage_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Delta_Percentage_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'FRAC_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' FRAC_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'SOYD_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' SOYD_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Percent_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Percent_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'INTG_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' INTG_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'DB_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' DB_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'EEX_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' EEX_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Delta_Days_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Delta_Days_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'ALG_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' ALG_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Number_4_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Number_4_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'D_MY_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' D_MY_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Number_5_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Number_5_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'M_DY_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' M_DY_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Number_6_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Number_6_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Weighted_Mean_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Weighted_Mean_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Multiply_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Multiply_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'X_Squared_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' X_Squared_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'RunMode_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' RunMode_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'PSE_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' PSE_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Program_Mode_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Program_Mode_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'SST_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' SST_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'BST_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' BST_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'CLEAR_Σ_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' CLEAR_Σ_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Roll_Down_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Roll_Down_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'GTO_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' GTO_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'CLEAR_PRGM_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' CLEAR_PRGM_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Exchange_X_Y_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Exchange_X_Y_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'X_lte_Y_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' X_lte_Y_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'CLEAR_FIN_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' CLEAR_FIN_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'CL_x_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' CL_x_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'X_eq_0_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' X_eq_0_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'CLEAR_REG_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' CLEAR_REG_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Enter_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Enter_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Equals_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Equals_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'CLEAR_PREFIX_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' CLEAR_PREFIX_Key pressed ', inputMode: _performance$hp12c$Main$White}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Number_1_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Number_1_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Linear_Estimate_X_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Linear_Estimate_X_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Number_2_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Number_2_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Linear_Estimate_Y_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Linear_Estimate_Y_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Number_3_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Number_3_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'N_Factorial_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' N_Factorial_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Subtract_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Subtract_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'BackSpace_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' BackSpace_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'ON_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						_performance$hp12c$Main$initialModel,
-						{message: ' ON_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'OFF_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' OFF_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Orange_F_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Orange_F_Key pressed ', inputMode: _performance$hp12c$Main$Orange}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Blue_G_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Blue_G_Key pressed ', inputMode: _performance$hp12c$Main$Blue}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'STO_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' STO_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Left_Paren_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Left_Paren_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'RCL_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' RCL_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Right_Paren_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Right_Paren_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Number_0_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Number_0_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Mean_of_X_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Mean_of_X_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Decimal_Point_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Decimal_Point_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Std_Dev_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Std_Dev_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Sigma_Plus_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Sigma_Plus_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Sigma_Minus_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Sigma_Minus_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			case 'Sum_Key':
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Sum_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-			default:
-				return {
-					ctor: '_Tuple2',
-					_0: _elm_lang$core$Native_Utils.update(
-						model,
-						{message: ' Last_X_Key pressed '}),
-					_1: _elm_lang$core$Platform_Cmd$none
-				};
-		}
-	});
-var _performance$hp12c$Main$STO_Mode = {ctor: 'STO_Mode'};
-var _performance$hp12c$Main$Blue_PrefixMode = {ctor: 'Blue_PrefixMode'};
-var _performance$hp12c$Main$Orange_PrefixMode = {ctor: 'Orange_PrefixMode'};
-var _performance$hp12c$Main$RunningProgram = {ctor: 'RunningProgram'};
-var _performance$hp12c$Main$InPrefixMode = function (a) {
-	return {ctor: 'InPrefixMode', _0: a};
-};
-var _performance$hp12c$Main$AcceptingNumericalInput = {ctor: 'AcceptingNumericalInput'};
-var _performance$hp12c$Main$KeyMsg = function (a) {
-	return {ctor: 'KeyMsg', _0: a};
-};
-var _performance$hp12c$Main$Last_X_Key = {ctor: 'Last_X_Key'};
-var _performance$hp12c$Main$Sum_Key = {ctor: 'Sum_Key'};
-var _performance$hp12c$Main$Sigma_Minus_Key = {ctor: 'Sigma_Minus_Key'};
-var _performance$hp12c$Main$Sigma_Plus_Key = {ctor: 'Sigma_Plus_Key'};
-var _performance$hp12c$Main$Std_Dev_Key = {ctor: 'Std_Dev_Key'};
-var _performance$hp12c$Main$Decimal_Point_Key = {ctor: 'Decimal_Point_Key'};
-var _performance$hp12c$Main$Mean_of_X_Key = {ctor: 'Mean_of_X_Key'};
-var _performance$hp12c$Main$Number_0_Key = {ctor: 'Number_0_Key'};
-var _performance$hp12c$Main$Right_Paren_Key = {ctor: 'Right_Paren_Key'};
-var _performance$hp12c$Main$RCL_Key = {ctor: 'RCL_Key'};
-var _performance$hp12c$Main$Left_Paren_Key = {ctor: 'Left_Paren_Key'};
-var _performance$hp12c$Main$STO_Key = {ctor: 'STO_Key'};
-var _performance$hp12c$Main$Blue_G_Key = {ctor: 'Blue_G_Key'};
-var _performance$hp12c$Main$Orange_F_Key = {ctor: 'Orange_F_Key'};
-var _performance$hp12c$Main$OFF_Key = {ctor: 'OFF_Key'};
-var _performance$hp12c$Main$ON_Key = {ctor: 'ON_Key'};
-var _performance$hp12c$Main$BackSpace_Key = {ctor: 'BackSpace_Key'};
-var _performance$hp12c$Main$Subtract_Key = {ctor: 'Subtract_Key'};
-var _performance$hp12c$Main$N_Factorial_Key = {ctor: 'N_Factorial_Key'};
-var _performance$hp12c$Main$Number_3_Key = {ctor: 'Number_3_Key'};
-var _performance$hp12c$Main$Linear_Estimate_Y_Key = {ctor: 'Linear_Estimate_Y_Key'};
-var _performance$hp12c$Main$Number_2_Key = {ctor: 'Number_2_Key'};
-var _performance$hp12c$Main$Linear_Estimate_X_Key = {ctor: 'Linear_Estimate_X_Key'};
-var _performance$hp12c$Main$Number_1_Key = {ctor: 'Number_1_Key'};
-var _performance$hp12c$Main$CLEAR_PREFIX_Key = {ctor: 'CLEAR_PREFIX_Key'};
-var _performance$hp12c$Main$Equals_Key = {ctor: 'Equals_Key'};
-var _performance$hp12c$Main$Enter_Key = {ctor: 'Enter_Key'};
-var _performance$hp12c$Main$CLEAR_REG_Key = {ctor: 'CLEAR_REG_Key'};
-var _performance$hp12c$Main$X_eq_0_Key = {ctor: 'X_eq_0_Key'};
-var _performance$hp12c$Main$CL_x_Key = {ctor: 'CL_x_Key'};
-var _performance$hp12c$Main$CLEAR_FIN_Key = {ctor: 'CLEAR_FIN_Key'};
-var _performance$hp12c$Main$X_lte_Y_Key = {ctor: 'X_lte_Y_Key'};
-var _performance$hp12c$Main$Exchange_X_Y_Key = {ctor: 'Exchange_X_Y_Key'};
-var _performance$hp12c$Main$CLEAR_PRGM_Key = {ctor: 'CLEAR_PRGM_Key'};
-var _performance$hp12c$Main$GTO_Key = {ctor: 'GTO_Key'};
-var _performance$hp12c$Main$Roll_Down_Key = {ctor: 'Roll_Down_Key'};
-var _performance$hp12c$Main$CLEAR_Σ_Key = {ctor: 'CLEAR_Σ_Key'};
-var _performance$hp12c$Main$BST_Key = {ctor: 'BST_Key'};
-var _performance$hp12c$Main$SST_Key = {ctor: 'SST_Key'};
-var _performance$hp12c$Main$Program_Mode_Key = {ctor: 'Program_Mode_Key'};
-var _performance$hp12c$Main$PSE_Key = {ctor: 'PSE_Key'};
-var _performance$hp12c$Main$RunMode_Key = {ctor: 'RunMode_Key'};
-var _performance$hp12c$Main$X_Squared_Key = {ctor: 'X_Squared_Key'};
-var _performance$hp12c$Main$Multiply_Key = {ctor: 'Multiply_Key'};
-var _performance$hp12c$Main$Weighted_Mean_Key = {ctor: 'Weighted_Mean_Key'};
-var _performance$hp12c$Main$Number_6_Key = {ctor: 'Number_6_Key'};
-var _performance$hp12c$Main$M_DY_Key = {ctor: 'M_DY_Key'};
-var _performance$hp12c$Main$Number_5_Key = {ctor: 'Number_5_Key'};
-var _performance$hp12c$Main$D_MY_Key = {ctor: 'D_MY_Key'};
-var _performance$hp12c$Main$Number_4_Key = {ctor: 'Number_4_Key'};
-var _performance$hp12c$Main$ALG_Key = {ctor: 'ALG_Key'};
-var _performance$hp12c$Main$Delta_Days_Key = {ctor: 'Delta_Days_Key'};
-var _performance$hp12c$Main$EEX_Key = {ctor: 'EEX_Key'};
-var _performance$hp12c$Main$DB_Key = {ctor: 'DB_Key'};
-var _performance$hp12c$Main$INTG_Key = {ctor: 'INTG_Key'};
-var _performance$hp12c$Main$Percent_Key = {ctor: 'Percent_Key'};
-var _performance$hp12c$Main$SOYD_Key = {ctor: 'SOYD_Key'};
-var _performance$hp12c$Main$FRAC_Key = {ctor: 'FRAC_Key'};
-var _performance$hp12c$Main$Delta_Percentage_Key = {ctor: 'Delta_Percentage_Key'};
-var _performance$hp12c$Main$SL_Key = {ctor: 'SL_Key'};
-var _performance$hp12c$Main$LN_Key = {ctor: 'LN_Key'};
-var _performance$hp12c$Main$Percentage_T_Key = {ctor: 'Percentage_T_Key'};
-var _performance$hp12c$Main$YTM_Key = {ctor: 'YTM_Key'};
-var _performance$hp12c$Main$E_to_the_x_Key = {ctor: 'E_to_the_x_Key'};
-var _performance$hp12c$Main$Reciprocal_Key = {ctor: 'Reciprocal_Key'};
-var _performance$hp12c$Main$PRICE_Key = {ctor: 'PRICE_Key'};
-var _performance$hp12c$Main$Square_Root_Key = {ctor: 'Square_Root_Key'};
-var _performance$hp12c$Main$Y_toThe_X_Key = {ctor: 'Y_toThe_X_Key'};
-var _performance$hp12c$Main$Undo_Key = {ctor: 'Undo_Key'};
-var _performance$hp12c$Main$Divide_Key = {ctor: 'Divide_Key'};
-var _performance$hp12c$Main$MEM_Key = {ctor: 'MEM_Key'};
-var _performance$hp12c$Main$Number_9_Key = {ctor: 'Number_9_Key'};
-var _performance$hp12c$Main$END_Key = {ctor: 'END_Key'};
-var _performance$hp12c$Main$Number_8_Key = {ctor: 'Number_8_Key'};
-var _performance$hp12c$Main$BEG_Key = {ctor: 'BEG_Key'};
-var _performance$hp12c$Main$Number_7_Key = {ctor: 'Number_7_Key'};
-var _performance$hp12c$Main$RPN_Key = {ctor: 'RPN_Key'};
-var _performance$hp12c$Main$DATE_Key = {ctor: 'DATE_Key'};
-var _performance$hp12c$Main$CHS_Key = {ctor: 'CHS_Key'};
-var _performance$hp12c$Main$IRR_Key = {ctor: 'IRR_Key'};
-var _performance$hp12c$Main$N_j_Key = {ctor: 'N_j_Key'};
-var _performance$hp12c$Main$FV_Key = {ctor: 'FV_Key'};
-var _performance$hp12c$Main$RND_Key = {ctor: 'RND_Key'};
-var _performance$hp12c$Main$CF_j_Key = {ctor: 'CF_j_Key'};
-var _performance$hp12c$Main$PMT_Key = {ctor: 'PMT_Key'};
-var _performance$hp12c$Main$NPV_Key = {ctor: 'NPV_Key'};
-var _performance$hp12c$Main$CF_0_Key = {ctor: 'CF_0_Key'};
-var _performance$hp12c$Main$PV_Key = {ctor: 'PV_Key'};
-var _performance$hp12c$Main$INT_Key = {ctor: 'INT_Key'};
-var _performance$hp12c$Main$DIVIDE_BY_12_Key = {ctor: 'DIVIDE_BY_12_Key'};
-var _performance$hp12c$Main$I_Key = {ctor: 'I_Key'};
-var _performance$hp12c$Main$AMORT_Key = {ctor: 'AMORT_Key'};
-var _performance$hp12c$Main$Times_12_Key = {ctor: 'Times_12_Key'};
-var _performance$hp12c$Main$N_Key = {ctor: 'N_Key'};
-var _performance$hp12c$Main$keyCodeToMsg = F2(
-	function (inputMode, code) {
-		var _p2 = code;
-		switch (_p2) {
-			case 78:
-				var _p3 = inputMode;
-				switch (_p3.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$N_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Times_12_Key;
-					default:
-						return _performance$hp12c$Main$AMORT_Key;
-				}
-			case 110:
-				var _p4 = inputMode;
-				switch (_p4.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$N_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Times_12_Key;
-					default:
-						return _performance$hp12c$Main$AMORT_Key;
-				}
-			case 73:
-				var _p5 = inputMode;
-				switch (_p5.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$I_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$DIVIDE_BY_12_Key;
-					default:
-						return _performance$hp12c$Main$INT_Key;
-				}
-			case 105:
-				var _p6 = inputMode;
-				switch (_p6.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$I_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$DIVIDE_BY_12_Key;
-					default:
-						return _performance$hp12c$Main$INT_Key;
-				}
-			case 80:
-				var _p7 = inputMode;
-				switch (_p7.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$PV_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$CF_0_Key;
-					default:
-						return _performance$hp12c$Main$NPV_Key;
-				}
-			case 112:
-				var _p8 = inputMode;
-				switch (_p8.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$PV_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$CF_0_Key;
-					default:
-						return _performance$hp12c$Main$NPV_Key;
-				}
-			case 77:
-				var _p9 = inputMode;
-				switch (_p9.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$PMT_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$CF_j_Key;
-					default:
-						return _performance$hp12c$Main$RND_Key;
-				}
-			case 109:
-				var _p10 = inputMode;
-				switch (_p10.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$PMT_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$CF_j_Key;
-					default:
-						return _performance$hp12c$Main$RND_Key;
-				}
-			case 86:
-				var _p11 = inputMode;
-				switch (_p11.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$FV_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$N_j_Key;
-					default:
-						return _performance$hp12c$Main$IRR_Key;
-				}
-			case 118:
-				var _p12 = inputMode;
-				switch (_p12.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$FV_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$N_j_Key;
-					default:
-						return _performance$hp12c$Main$IRR_Key;
-				}
-			case 72:
-				var _p13 = inputMode;
-				switch (_p13.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$CHS_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$DATE_Key;
-					default:
-						return _performance$hp12c$Main$RPN_Key;
-				}
-			case 104:
-				var _p14 = inputMode;
-				switch (_p14.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$CHS_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$DATE_Key;
-					default:
-						return _performance$hp12c$Main$RPN_Key;
-				}
-			case 55:
-				var _p15 = inputMode;
-				switch (_p15.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Number_7_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$BEG_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 56:
-				var _p16 = inputMode;
-				switch (_p16.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Number_8_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$END_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 57:
-				var _p17 = inputMode;
-				switch (_p17.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Number_9_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$MEM_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 47:
-				var _p18 = inputMode;
-				switch (_p18.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Divide_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Undo_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 33:
-				var _p19 = inputMode;
-				switch (_p19.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Y_toThe_X_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Square_Root_Key;
-					default:
-						return _performance$hp12c$Main$PRICE_Key;
-				}
-			case 92:
-				var _p20 = inputMode;
-				switch (_p20.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Reciprocal_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$E_to_the_x_Key;
-					default:
-						return _performance$hp12c$Main$YTM_Key;
-				}
-			case 84:
-				var _p21 = inputMode;
-				switch (_p21.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Percentage_T_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$LN_Key;
-					default:
-						return _performance$hp12c$Main$SL_Key;
-				}
-			case 116:
-				var _p22 = inputMode;
-				switch (_p22.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Percentage_T_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$LN_Key;
-					default:
-						return _performance$hp12c$Main$SL_Key;
-				}
-			case 36:
-				var _p23 = inputMode;
-				switch (_p23.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Delta_Percentage_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$FRAC_Key;
-					default:
-						return _performance$hp12c$Main$SOYD_Key;
-				}
-			case 37:
-				var _p24 = inputMode;
-				switch (_p24.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Percent_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$INTG_Key;
-					default:
-						return _performance$hp12c$Main$DB_Key;
-				}
-			case 69:
-				var _p25 = inputMode;
-				switch (_p25.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$EEX_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Delta_Days_Key;
-					default:
-						return _performance$hp12c$Main$ALG_Key;
-				}
-			case 101:
-				var _p26 = inputMode;
-				switch (_p26.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$EEX_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Delta_Days_Key;
-					default:
-						return _performance$hp12c$Main$ALG_Key;
-				}
-			case 52:
-				var _p27 = inputMode;
-				switch (_p27.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Number_4_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$D_MY_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 53:
-				var _p28 = inputMode;
-				switch (_p28.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Number_5_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$M_DY_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 54:
-				var _p29 = inputMode;
-				switch (_p29.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Number_6_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Weighted_Mean_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 42:
-				var _p30 = inputMode;
-				switch (_p30.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Multiply_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$X_Squared_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 91:
-				var _p31 = inputMode;
-				switch (_p31.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$RunMode_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$PSE_Key;
-					default:
-						return _performance$hp12c$Main$Program_Mode_Key;
-				}
-			case 93:
-				var _p32 = inputMode;
-				switch (_p32.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$SST_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$BST_Key;
-					default:
-						return _performance$hp12c$Main$CLEAR_Σ_Key;
-				}
-			case 81:
-				var _p33 = inputMode;
-				switch (_p33.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Roll_Down_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$GTO_Key;
-					default:
-						return _performance$hp12c$Main$CLEAR_PRGM_Key;
-				}
-			case 114:
-				var _p34 = inputMode;
-				switch (_p34.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Roll_Down_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$GTO_Key;
-					default:
-						return _performance$hp12c$Main$CLEAR_PRGM_Key;
-				}
-			case 89:
-				var _p35 = inputMode;
-				switch (_p35.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Exchange_X_Y_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$X_lte_Y_Key;
-					default:
-						return _performance$hp12c$Main$CLEAR_FIN_Key;
-				}
-			case 121:
-				var _p36 = inputMode;
-				switch (_p36.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Exchange_X_Y_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$X_lte_Y_Key;
-					default:
-						return _performance$hp12c$Main$CLEAR_FIN_Key;
-				}
-			case 67:
-				var _p37 = inputMode;
-				switch (_p37.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$CL_x_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$X_eq_0_Key;
-					default:
-						return _performance$hp12c$Main$CLEAR_REG_Key;
-				}
-			case 99:
-				var _p38 = inputMode;
-				switch (_p38.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$CL_x_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$X_eq_0_Key;
-					default:
-						return _performance$hp12c$Main$CLEAR_REG_Key;
-				}
-			case 13:
-				var _p39 = inputMode;
-				switch (_p39.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Enter_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Equals_Key;
-					default:
-						return _performance$hp12c$Main$CLEAR_PREFIX_Key;
-				}
-			case 49:
-				var _p40 = inputMode;
-				switch (_p40.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Number_1_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Linear_Estimate_X_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 50:
-				var _p41 = inputMode;
-				switch (_p41.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Number_2_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Linear_Estimate_Y_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 51:
-				var _p42 = inputMode;
-				switch (_p42.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Number_3_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$N_Factorial_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 45:
-				var _p43 = inputMode;
-				switch (_p43.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Subtract_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$BackSpace_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 79:
-				var _p44 = inputMode;
-				switch (_p44.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$ON_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$KeyMsg(code);
-					default:
-						return _performance$hp12c$Main$OFF_Key;
-				}
-			case 11:
-				var _p45 = inputMode;
-				switch (_p45.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$ON_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$KeyMsg(code);
-					default:
-						return _performance$hp12c$Main$OFF_Key;
-				}
-			case 70:
-				var _p46 = inputMode;
-				switch (_p46.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Orange_F_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Orange_F_Key;
-					default:
-						return _performance$hp12c$Main$Orange_F_Key;
-				}
-			case 102:
-				var _p47 = inputMode;
-				switch (_p47.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Orange_F_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Orange_F_Key;
-					default:
-						return _performance$hp12c$Main$Orange_F_Key;
-				}
-			case 71:
-				var _p48 = inputMode;
-				switch (_p48.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Blue_G_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Blue_G_Key;
-					default:
-						return _performance$hp12c$Main$Blue_G_Key;
-				}
-			case 103:
-				var _p49 = inputMode;
-				switch (_p49.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Blue_G_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Blue_G_Key;
-					default:
-						return _performance$hp12c$Main$Blue_G_Key;
-				}
-			case 83:
-				var _p50 = inputMode;
-				switch (_p50.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$STO_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Left_Paren_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 115:
-				var _p51 = inputMode;
-				switch (_p51.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$STO_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Left_Paren_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 76:
-				var _p52 = inputMode;
-				switch (_p52.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$RCL_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Right_Paren_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 108:
-				var _p53 = inputMode;
-				switch (_p53.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$RCL_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Right_Paren_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 48:
-				var _p54 = inputMode;
-				switch (_p54.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Number_0_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Mean_of_X_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 46:
-				var _p55 = inputMode;
-				switch (_p55.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Decimal_Point_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Std_Dev_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 87:
-				var _p56 = inputMode;
-				switch (_p56.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Sigma_Plus_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Sigma_Minus_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 119:
-				var _p57 = inputMode;
-				switch (_p57.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Sigma_Plus_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Sigma_Minus_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			case 43:
-				var _p58 = inputMode;
-				switch (_p58.ctor) {
-					case 'White':
-						return _performance$hp12c$Main$Sum_Key;
-					case 'Blue':
-						return _performance$hp12c$Main$Last_X_Key;
-					default:
-						return _performance$hp12c$Main$KeyMsg(code);
-				}
-			default:
-				return _performance$hp12c$Main$KeyMsg(code);
-		}
-	});
-var _performance$hp12c$Main$subscriptions = function (model) {
-	return _elm_lang$keyboard$Keyboard$presses(
-		function (code) {
-			return A2(_performance$hp12c$Main$keyCodeToMsg, model.inputMode, code);
-		});
-};
-var _performance$hp12c$Main$enter_button_div = function (model) {
-	var enter_style = _elm_lang$html$Html_Attributes$style(
-		_elm_lang$core$Native_List.fromArray(
-			[
-				{ctor: '_Tuple2', _0: 'left', _1: '305px'},
-				{ctor: '_Tuple2', _0: 'top', _1: '250px'},
-				{ctor: '_Tuple2', _0: 'height', _1: '64'},
-				{ctor: '_Tuple2', _0: 'position', _1: 'absolute'},
-				{ctor: '_Tuple2', _0: 'opacity', _1: '0.9'},
-				{ctor: '_Tuple2', _0: 'height', _1: '92px'},
-				{ctor: '_Tuple2', _0: 'width', _1: '34px'},
-				{ctor: '_Tuple2', _0: 'background-color', _1: 'lightBlue'},
-				{ctor: '_Tuple2', _0: 'z-index', _1: '1'}
-			]));
-	var msg = A2(_performance$hp12c$Main$keyCodeToMsg, model.inputMode, 13);
-	return A2(
-		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_elm_lang$html$Html_Events$onClick(msg),
-				enter_style
-			]),
-		_elm_lang$core$Native_List.fromArray(
-			[]));
-};
-var _performance$hp12c$Main$mktdiv = F3(
-	function (inputMode, y_loc, _p59) {
-		var _p60 = _p59;
-		return A3(
-			_performance$hp12c$Main$transparent_box,
-			_p60._1,
-			y_loc,
-			A2(
-				_performance$hp12c$Main$keyCodeToMsg,
-				inputMode,
-				_elm_lang$core$Char$toCode(_p60._0)));
-	});
-var _performance$hp12c$Main$first_row_divs = function (model) {
-	var y_loc = 134;
-	var x_locs = _elm_lang$core$Native_List.fromArray(
-		[
 			{
+				ctor: '::',
+				_0: _elm_lang$html$Html_Events$onClick(msg),
+				_1: {
+					ctor: '::',
+					_0: _performance$hp12c$HP12c_View$classNames(
+						{
+							ctor: '::',
+							_0: 'transparent_box',
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple2',
+									_0: 'left',
+									_1: A2(
+										_elm_lang$core$Basics_ops['++'],
+										_elm_lang$core$Basics$toString(left),
+										'px')
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: 'top',
+										_1: A2(
+											_elm_lang$core$Basics_ops['++'],
+											_elm_lang$core$Basics$toString(top),
+											'px')
+									},
+									_1: {
+										ctor: '::',
+										_0: opacity,
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'lightBlue'},
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			},
+			{
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$span,
+					{
+						ctor: '::',
+						_0: _performance$hp12c$HP12c_View$classNames(
+							{
+								ctor: '::',
+								_0: 'hint_key',
+								_1: {ctor: '[]'}
+							}),
+						_1: {
+							ctor: '::',
+							_0: _elm_lang$html$Html_Attributes$style(
+								{
+									ctor: '::',
+									_0: opacity,
+									_1: {ctor: '[]'}
+								}),
+							_1: {ctor: '[]'}
+						}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text(
+							_elm_lang$core$String$fromChar(keyChar)),
+						_1: {ctor: '[]'}
+					}),
+				_1: {ctor: '[]'}
+			});
+	});
+var _performance$hp12c$HP12c_View$mktdiv = F3(
+	function (model, y_loc, _p0) {
+		var _p1 = _p0;
+		return A4(_performance$hp12c$HP12c_View$transparent_box, model, _p1._1, y_loc, _p1._0);
+	});
+var _performance$hp12c$HP12c_View$first_row_divs = function (model) {
+	var y_loc = 134;
+	var x_locs = {
+		ctor: '::',
+		_0: {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$Native_Utils.chr('N'),
 			_1: 40
 		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('I'),
-			_1: 95
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('P'),
-			_1: 145
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('M'),
-			_1: 200
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('V'),
-			_1: 252
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('H'),
-			_1: 305
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('7'),
-			_1: 358
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('8'),
-			_1: 410
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('9'),
-			_1: 464
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('/'),
-			_1: 515
+		_1: {
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.chr('I'),
+				_1: 95
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.chr('P'),
+					_1: 145
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.chr('M'),
+						_1: 200
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.chr('V'),
+							_1: 252
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Native_Utils.chr('H'),
+								_1: 305
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple2',
+									_0: _elm_lang$core$Native_Utils.chr('7'),
+									_1: 358
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: _elm_lang$core$Native_Utils.chr('8'),
+										_1: 410
+									},
+									_1: {
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: _elm_lang$core$Native_Utils.chr('9'),
+											_1: 464
+										},
+										_1: {
+											ctor: '::',
+											_0: {
+												ctor: '_Tuple2',
+												_0: _elm_lang$core$Native_Utils.chr('/'),
+												_1: 515
+											},
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
-		]);
+	};
 	return A2(
 		_elm_lang$core$List$map,
 		function (kxlpair) {
-			return A3(_performance$hp12c$Main$mktdiv, model.inputMode, y_loc, kxlpair);
+			return A3(_performance$hp12c$HP12c_View$mktdiv, model, y_loc, kxlpair);
 		},
 		x_locs);
 };
-var _performance$hp12c$Main$second_row_divs = function (model) {
+var _performance$hp12c$HP12c_View$second_row_divs = function (model) {
 	var y_loc = 192;
-	var x_locs = _elm_lang$core$Native_List.fromArray(
-		[
-			{
+	var x_locs = {
+		ctor: '::',
+		_0: {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$Native_Utils.chr('!'),
 			_1: 40
 		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('\\'),
-			_1: 95
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('T'),
-			_1: 145
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('$'),
-			_1: 200
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('%'),
-			_1: 252
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('E'),
-			_1: 305
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('4'),
-			_1: 358
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('5'),
-			_1: 410
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('6'),
-			_1: 464
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('*'),
-			_1: 515
+		_1: {
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.chr('\\'),
+				_1: 95
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.chr('T'),
+					_1: 145
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.chr('$'),
+						_1: 200
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.chr('%'),
+							_1: 252
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Native_Utils.chr('E'),
+								_1: 305
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple2',
+									_0: _elm_lang$core$Native_Utils.chr('4'),
+									_1: 358
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: _elm_lang$core$Native_Utils.chr('5'),
+										_1: 410
+									},
+									_1: {
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: _elm_lang$core$Native_Utils.chr('6'),
+											_1: 464
+										},
+										_1: {
+											ctor: '::',
+											_0: {
+												ctor: '_Tuple2',
+												_0: _elm_lang$core$Native_Utils.chr('*'),
+												_1: 515
+											},
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
-		]);
+	};
 	return A2(
 		_elm_lang$core$List$map,
 		function (kxlpair) {
-			return A3(_performance$hp12c$Main$mktdiv, model.inputMode, y_loc, kxlpair);
+			return A3(_performance$hp12c$HP12c_View$mktdiv, model, y_loc, kxlpair);
 		},
 		x_locs);
 };
-var _performance$hp12c$Main$third_row_divs = function (model) {
+var _performance$hp12c$HP12c_View$third_row_divs = function (model) {
 	var y_loc = 250;
-	var x_locs = _elm_lang$core$Native_List.fromArray(
-		[
-			{
+	var x_locs = {
+		ctor: '::',
+		_0: {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$Native_Utils.chr('['),
 			_1: 40
 		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr(']'),
-			_1: 95
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('R'),
-			_1: 145
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('Y'),
-			_1: 200
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('C'),
-			_1: 252
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('1'),
-			_1: 358
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('2'),
-			_1: 410
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('3'),
-			_1: 464
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('-'),
-			_1: 515
+		_1: {
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.chr(']'),
+				_1: 95
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.chr('R'),
+					_1: 145
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.chr('Y'),
+						_1: 200
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.chr('C'),
+							_1: 252
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Native_Utils.chr('1'),
+								_1: 358
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple2',
+									_0: _elm_lang$core$Native_Utils.chr('2'),
+									_1: 410
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: _elm_lang$core$Native_Utils.chr('3'),
+										_1: 464
+									},
+									_1: {
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: _elm_lang$core$Native_Utils.chr('-'),
+											_1: 515
+										},
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
-		]);
+	};
 	return A2(
 		_elm_lang$core$List$map,
 		function (kxlpair) {
-			return A3(_performance$hp12c$Main$mktdiv, model.inputMode, y_loc, kxlpair);
+			return A3(_performance$hp12c$HP12c_View$mktdiv, model, y_loc, kxlpair);
 		},
 		x_locs);
 };
-var _performance$hp12c$Main$fourth_row_divs = function (model) {
+var _performance$hp12c$HP12c_View$fourth_row_divs = function (model) {
 	var y_loc = 310;
-	var x_locs = _elm_lang$core$Native_List.fromArray(
-		[
-			{
+	var x_locs = {
+		ctor: '::',
+		_0: {
 			ctor: '_Tuple2',
 			_0: _elm_lang$core$Native_Utils.chr('O'),
 			_1: 40
 		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('F'),
-			_1: 95
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('G'),
-			_1: 145
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('S'),
-			_1: 200
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('L'),
-			_1: 252
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('0'),
-			_1: 358
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('.'),
-			_1: 410
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('W'),
-			_1: 464
-		},
-			{
-			ctor: '_Tuple2',
-			_0: _elm_lang$core$Native_Utils.chr('+'),
-			_1: 515
+		_1: {
+			ctor: '::',
+			_0: {
+				ctor: '_Tuple2',
+				_0: _elm_lang$core$Native_Utils.chr('F'),
+				_1: 95
+			},
+			_1: {
+				ctor: '::',
+				_0: {
+					ctor: '_Tuple2',
+					_0: _elm_lang$core$Native_Utils.chr('G'),
+					_1: 145
+				},
+				_1: {
+					ctor: '::',
+					_0: {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Native_Utils.chr('S'),
+						_1: 200
+					},
+					_1: {
+						ctor: '::',
+						_0: {
+							ctor: '_Tuple2',
+							_0: _elm_lang$core$Native_Utils.chr('L'),
+							_1: 252
+						},
+						_1: {
+							ctor: '::',
+							_0: {
+								ctor: '_Tuple2',
+								_0: _elm_lang$core$Native_Utils.chr('0'),
+								_1: 358
+							},
+							_1: {
+								ctor: '::',
+								_0: {
+									ctor: '_Tuple2',
+									_0: _elm_lang$core$Native_Utils.chr('.'),
+									_1: 410
+								},
+								_1: {
+									ctor: '::',
+									_0: {
+										ctor: '_Tuple2',
+										_0: _elm_lang$core$Native_Utils.chr('W'),
+										_1: 464
+									},
+									_1: {
+										ctor: '::',
+										_0: {
+											ctor: '_Tuple2',
+											_0: _elm_lang$core$Native_Utils.chr('+'),
+											_1: 515
+										},
+										_1: {ctor: '[]'}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
 		}
-		]);
+	};
 	return A2(
 		_elm_lang$core$List$map,
 		function (kxlpair) {
-			return A3(_performance$hp12c$Main$mktdiv, model.inputMode, y_loc, kxlpair);
+			return A3(_performance$hp12c$HP12c_View$mktdiv, model, y_loc, kxlpair);
 		},
 		x_locs);
 };
-var _performance$hp12c$Main$button_divs = function (model) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		_performance$hp12c$Main$first_row_divs(model),
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			_performance$hp12c$Main$second_row_divs(model),
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				_performance$hp12c$Main$third_row_divs(model),
-				A2(
-					_elm_lang$core$Basics_ops['++'],
-					_performance$hp12c$Main$fourth_row_divs(model),
-					_elm_lang$core$Native_List.fromArray(
-						[
-							_performance$hp12c$Main$enter_button_div(model)
-						])))));
-};
-var _performance$hp12c$Main$divs_to_show = function (model) {
-	return A2(
-		_elm_lang$core$Basics_ops['++'],
-		_elm_lang$core$Native_List.fromArray(
-			[_performance$hp12c$Main$stylesheet]),
-		A2(
-			_elm_lang$core$Basics_ops['++'],
-			_performance$hp12c$Main$button_divs(model),
-			A2(
-				_elm_lang$core$Basics_ops['++'],
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_performance$hp12c$Main$modelinfodiv(model)
-					]),
-				_elm_lang$core$Native_List.fromArray(
-					[
-						_performance$hp12c$Main$stack_registers_div(model)
-					]))));
-};
-var _performance$hp12c$Main$view = function (model) {
+var _performance$hp12c$HP12c_View$enter_button_div = function (model) {
+	var opacity = {
+		ctor: '_Tuple2',
+		_0: 'opacity',
+		_1: _elm_lang$core$Basics$toString(
+			_elm_lang$core$Native_Utils.eq(true, model.shortcutVisible) ? 0.851 : 0)
+	};
+	var enter_style = _elm_lang$html$Html_Attributes$style(
+		{
+			ctor: '::',
+			_0: {ctor: '_Tuple2', _0: 'left', _1: '305px'},
+			_1: {
+				ctor: '::',
+				_0: {ctor: '_Tuple2', _0: 'top', _1: '250px'},
+				_1: {
+					ctor: '::',
+					_0: {ctor: '_Tuple2', _0: 'height', _1: '64'},
+					_1: {
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'position', _1: 'absolute'},
+						_1: {
+							ctor: '::',
+							_0: opacity,
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'height', _1: '92px'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'width', _1: '34px'},
+									_1: {
+										ctor: '::',
+										_0: {ctor: '_Tuple2', _0: 'background-color', _1: 'lightBlue'},
+										_1: {
+											ctor: '::',
+											_0: {ctor: '_Tuple2', _0: 'z-index', _1: '1'},
+											_1: {ctor: '[]'}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		});
+	var msg = A2(_performance$hp12c$HP12c_KeyBoardInput$keyCodeToMsg, model.inputMode, 13);
 	return A2(
 		_elm_lang$html$Html$div,
-		_elm_lang$core$Native_List.fromArray(
-			[
-				_performance$hp12c$Main$classNames(
-				_elm_lang$core$Native_List.fromArray(
-					['calculator']))
-			]),
-		_performance$hp12c$Main$divs_to_show(model));
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html_Events$onClick(msg),
+			_1: {
+				ctor: '::',
+				_0: enter_style,
+				_1: {ctor: '[]'}
+			}
+		},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$span,
+				{
+					ctor: '::',
+					_0: _performance$hp12c$HP12c_View$classNames(
+						{
+							ctor: '::',
+							_0: 'hint_key',
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: _elm_lang$html$Html_Attributes$style(
+							{
+								ctor: '::',
+								_0: opacity,
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'font-size', _1: '10px'},
+									_1: {ctor: '[]'}
+								}
+							}),
+						_1: {ctor: '[]'}
+					}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						_elm_lang$core$Basics$toString('Enter')),
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		});
 };
-var _performance$hp12c$Main$main = {
-	main: _elm_lang$html$Html_App$program(
-		{init: _performance$hp12c$Main$init, view: _performance$hp12c$Main$view, update: _performance$hp12c$Main$update, subscriptions: _performance$hp12c$Main$subscriptions})
+var _performance$hp12c$HP12c_View$all_rows_divs = function (model) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		_performance$hp12c$HP12c_View$first_row_divs(model),
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			_performance$hp12c$HP12c_View$second_row_divs(model),
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				_performance$hp12c$HP12c_View$third_row_divs(model),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					_performance$hp12c$HP12c_View$fourth_row_divs(model),
+					{
+						ctor: '::',
+						_0: _performance$hp12c$HP12c_View$enter_button_div(model),
+						_1: {ctor: '[]'}
+					}))));
 };
+var _performance$hp12c$HP12c_View$button_divs = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _performance$hp12c$HP12c_View$classNames(
+				{
+					ctor: '::',
+					_0: 'calculator',
+					_1: {ctor: '[]'}
+				}),
+			_1: {ctor: '[]'}
+		},
+		_performance$hp12c$HP12c_View$all_rows_divs(model));
+};
+var _performance$hp12c$HP12c_View$stack_registers_div = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _performance$hp12c$HP12c_View$classNames(
+				{
+					ctor: '::',
+					_0: 'calc_model',
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'left', _1: '0px'},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'top', _1: '574px'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'position', _1: 'absolute'},
+								_1: {ctor: '[]'}
+							}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		},
+		A2(
+			_elm_lang$core$List$intersperse,
+			_performance$hp12c$HP12c_View$empty_br_node,
+			A2(
+				_elm_lang$core$List$map,
+				_elm_lang$html$Html$text,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					A2(
+						_elm_lang$core$String$split,
+						',',
+						_elm_lang$core$Basics$toString(model.automaticMemoryStackRegisters)),
+					{
+						ctor: '::',
+						_0: A2(_elm_lang$core$Basics_ops['++'], 'display: ', model.displayString),
+						_1: {ctor: '[]'}
+					}))));
+};
+var _performance$hp12c$HP12c_View$input_queue_div = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _performance$hp12c$HP12c_View$classNames(
+				{
+					ctor: '::',
+					_0: 'calc_model',
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'left', _1: '610px'},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'top', _1: '0px'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'position', _1: 'absolute'},
+								_1: {ctor: '[]'}
+							}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		},
+		A2(
+			_elm_lang$core$List$intersperse,
+			_performance$hp12c$HP12c_View$empty_br_node,
+			A2(
+				_elm_lang$core$List$map,
+				_elm_lang$html$Html$text,
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					{
+						ctor: '::',
+						_0: A2(_elm_lang$core$Basics_ops['++'], 'display: ', model.displayString),
+						_1: {ctor: '[]'}
+					},
+					A2(
+						_elm_lang$core$String$split,
+						',',
+						_elm_lang$core$Basics$toString(model.inputQueue))))));
+};
+var _performance$hp12c$HP12c_View$financial_registers_div = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _performance$hp12c$HP12c_View$classNames(
+				{
+					ctor: '::',
+					_0: 'calc_model',
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'left', _1: '400px'},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'top', _1: '574px'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'width', _1: '400'},
+								_1: {
+									ctor: '::',
+									_0: {ctor: '_Tuple2', _0: 'position', _1: 'absolute'},
+									_1: {ctor: '[]'}
+								}
+							}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		},
+		A2(
+			_elm_lang$core$List$intersperse,
+			_performance$hp12c$HP12c_View$empty_br_node,
+			A2(
+				_elm_lang$core$List$map,
+				_elm_lang$html$Html$text,
+				A2(
+					_elm_lang$core$List$take,
+					5,
+					A2(
+						_elm_lang$core$String$split,
+						',',
+						_elm_lang$core$Basics$toString(model.financialRegisters))))));
+};
+var _performance$hp12c$HP12c_View$modelinfodiv = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{
+			ctor: '::',
+			_0: _performance$hp12c$HP12c_View$classNames(
+				{
+					ctor: '::',
+					_0: 'calc_model',
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: _elm_lang$html$Html_Attributes$style(
+					{
+						ctor: '::',
+						_0: {ctor: '_Tuple2', _0: 'left', _1: '0px'},
+						_1: {
+							ctor: '::',
+							_0: {ctor: '_Tuple2', _0: 'top', _1: '434px'},
+							_1: {
+								ctor: '::',
+								_0: {ctor: '_Tuple2', _0: 'position', _1: 'absolute'},
+								_1: {ctor: '[]'}
+							}
+						}
+					}),
+				_1: {ctor: '[]'}
+			}
+		},
+		{
+			ctor: '::',
+			_0: _elm_lang$html$Html$text(
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					' Current Key       : ',
+					A2(_elm_lang$core$Basics_ops['++'], model.message, ' pressed '))),
+			_1: {
+				ctor: '::',
+				_0: _performance$hp12c$HP12c_View$empty_br_node,
+				_1: {
+					ctor: '::',
+					_0: _elm_lang$html$Html$text(
+						A2(
+							_elm_lang$core$Basics_ops['++'],
+							' Mode for next key : ',
+							_elm_lang$core$Basics$toString(model.inputMode))),
+					_1: {ctor: '[]'}
+				}
+			}
+		});
+};
+var _performance$hp12c$HP12c_View$divs_to_show = function (model) {
+	return A2(
+		_elm_lang$core$Basics_ops['++'],
+		{
+			ctor: '::',
+			_0: _performance$hp12c$HP12c_View$stylesheet,
+			_1: {ctor: '[]'}
+		},
+		A2(
+			_elm_lang$core$Basics_ops['++'],
+			{
+				ctor: '::',
+				_0: _performance$hp12c$HP12c_View$button_divs(model),
+				_1: {ctor: '[]'}
+			},
+			A2(
+				_elm_lang$core$Basics_ops['++'],
+				{
+					ctor: '::',
+					_0: _performance$hp12c$HP12c_View$modelinfodiv(model),
+					_1: {ctor: '[]'}
+				},
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					{
+						ctor: '::',
+						_0: _performance$hp12c$HP12c_View$stack_registers_div(model),
+						_1: {ctor: '[]'}
+					},
+					A2(
+						_elm_lang$core$Basics_ops['++'],
+						{
+							ctor: '::',
+							_0: _performance$hp12c$HP12c_View$financial_registers_div(model),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _performance$hp12c$HP12c_View$input_queue_div(model),
+							_1: {ctor: '[]'}
+						})))));
+};
+var _performance$hp12c$HP12c_View$view = function (model) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		_performance$hp12c$HP12c_View$divs_to_show(model));
+};
+
+var _performance$hp12c$Main$init = {ctor: '_Tuple2', _0: _performance$hp12c$HP12c_Model$initialModel, _1: _elm_lang$core$Platform_Cmd$none};
+var _performance$hp12c$Main$subscriptions = function (model) {
+	return _elm_lang$keyboard$Keyboard$presses(
+		function (code) {
+			return A2(_performance$hp12c$HP12c_KeyBoardInput$keyCodeToMsg, model.inputMode, code);
+		});
+};
+var _performance$hp12c$Main$main = _elm_lang$html$Html$program(
+	{init: _performance$hp12c$Main$init, view: _performance$hp12c$HP12c_View$view, update: _performance$hp12c$HP12c_Update$update, subscriptions: _performance$hp12c$Main$subscriptions})();
 
 var Elm = {};
 Elm['Main'] = Elm['Main'] || {};
-_elm_lang$core$Native_Platform.addPublicModule(Elm['Main'], 'Main', typeof _performance$hp12c$Main$main === 'undefined' ? null : _performance$hp12c$Main$main);
+if (typeof _performance$hp12c$Main$main !== 'undefined') {
+    _performance$hp12c$Main$main(Elm['Main'], 'Main', undefined);
+}
 
 if (typeof define === "function" && define['amd'])
 {
