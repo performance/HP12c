@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Hp12C Emulator written in elm</title>
+    
+    <link rel="stylesheet" href="HP12c.css">
+  </head>
+  <body>
+    <h1 class="title">Hp12C Emulator written in elm</h1>
+    <div id="js-elm" class="cintainer" ></div>
+    <script type="text/javascript" src="HP12c.js"></script>
+    <script type="text/javascript">
+      var elmTarget = document.getElementById('js-elm');
+      var app = Elm.Main.embed( elmTarget );
+    </script>
+  </body>
+</html>
