@@ -42,20 +42,22 @@ transparent_box model left top keyChar =
         msg =
             (keyCodeToMsg model.inputMode (Char.toCode keyChar))
 
-        opacity =
-            ( "opacity"
-            , toString
-                (if True == model.shortcutVisible then
-                    0.851
-                 else
-                    0
-                )
-            )
+        -- Opacity and background-color removed for CSS debugging
+        -- Original opacity logic for shortcutVisible can be restored later if needed.
     in
         div
-            [ onClick msg, classNames [ "transparent_box" ], Html.Attributes.style [ ( "left", (toString left) ++ "px" ), ( "top", (toString top) ++ "px" ), opacity, ( "background-color", "lightBlue" ) ] ]
+            [ onClick msg
+            , classNames [ "transparent_box" ]
+            , Html.Attributes.style 
+                [ ( "left", (toString left) ++ "px" )
+                , ( "top", (toString top) ++ "px" ) 
+                -- Removed: opacity, ( "background-color", "lightBlue" )
+                ] 
+            ]
             [ span
-                [ classNames [ "hint_key" ], Html.Attributes.style [ opacity ] ]
+                [ classNames [ "hint_key" ] 
+                -- Removed: Html.Attributes.style [ opacity ]
+                ]
                 [ Html.text (String.fromChar keyChar) ]
             ]
 
@@ -66,34 +68,30 @@ enter_button_div model =
         msg =
             (keyCodeToMsg model.inputMode (13))
 
-        opacity =
-            ( "opacity"
-            , toString
-                (if True == model.shortcutVisible then
-                    0.851
-                 else
-                    0
-                )
-            )
-
+        -- Opacity and background-color removed for CSS debugging
         enter_style =
             Html.Attributes.style
                 [ ( "left", "305px" )
                 , ( "top", "250px" )
-                , ( "height", "64" )
-                , ( "position", "absolute" )
-                , opacity
-                  -- ("opacity",  "0.9" )
-                , ( "height", "92px" )
+                , ( "height", "92px" ) -- Using the larger height consistently
                 , ( "width", "34px" )
-                , ( "background-color", "lightBlue" )
-                , ( "z-index", "1" )
+                , ( "position", "absolute" )
+                -- Removed: opacity, ( "background-color", "lightBlue" )
+                -- z-index is handled by CSS for .transparent_box (assuming enter_button_div uses it or similar)
+                -- For consistency, this div should also have class "transparent_box" or a similar one.
+                -- Let's add "transparent_box" class for now, assuming its CSS is appropriate.
                 ]
     in
         div
-            [ onClick msg, enter_style ]
+            [ onClick msg
+            , classNames ["transparent_box"] -- Added class for consistency
+            , enter_style 
+            ]
             [ span
-                [ classNames [ "hint_key" ], Html.Attributes.style [ opacity, ( "font-size", "10px" ) ] ]
+                [ classNames [ "hint_key" ] 
+                -- Removed: Html.Attributes.style [ opacity, ( "font-size", "10px" ) ]
+                -- Font size for hint_key is now controlled by CSS
+                ]
                 [ Html.text (toString "Enter") ]
             ]
 

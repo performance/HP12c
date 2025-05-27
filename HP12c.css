@@ -4,64 +4,71 @@ html, body {
     font-family: Arial, sans-serif;
 }
 
-/* Main application container styling (optional, can be added in View.elm if needed) */
-/* #elm-app-container { padding: 20px; text-align: center; } */
+div#js-elm {
+    text-align: center; /* Helps if Elm root is inline-block or has auto margins */
+}
 
 div.calc_model { /* For existing debug divs */
-    background-color: lightgray;
-    color: red; /* Was red, maybe change to black for better readability */
+    background-color: #e6e6fa; /* Lavender - For debugging bounds */
+    color: black; /* Changed from red for better readability */
     border: 1px solid black;
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
-    font-size: 14px; /* Smaller for debug info */
+    font-size: 14px; 
     padding: 10px;
-    margin: 10px auto; /* Centered, with space */
-    width: 590px; /* Match calculator width */
+    margin: 10px auto; 
+    width: 590px; 
     box-sizing: border-box;
-    /* position: static; by default for divs, remove absolute positioning from inline styles */
 }
 
-.nlp-section, .nlp-display-section { /* For NLP related divs */
+.nlp-section {
+    background-color: #f0f8ff; /* AliceBlue - For debugging bounds */
     margin: 10px auto;
     padding: 10px;
     border: 1px solid #ddd;
-    width: 590px; /* Match calculator width */
+    width: 590px; 
     box-sizing: border-box;
-    /* position: static; by default for divs, remove absolute positioning from inline styles */
+}
+.nlp-display-section { 
+    background-color: #faebd7; /* AntiqueWhite - For debugging bounds */
+    margin: 10px auto;
+    padding: 10px;
+    border: 1px solid #ddd;
+    width: 590px; 
+    box-sizing: border-box;
 }
 
 .lcd-display {
     position: absolute; 
-    top: 40px;  /* Adjust as needed based on calculator image */
-    left: 70px; /* Adjust as needed based on calculator image */
-    width: 450px; /* Adjust as needed based on calculator image */
-    height: 50px; /* Adjust as needed based on calculator image */
+    top: 40px;
+    left: 70px; 
+    width: 450px; 
+    height: 50px; 
     background-color: #C0C0C0; 
     color: #333333; 
-    font-family: "Courier New", Courier, monospace; /* Monospaced for LCD feel */
-    font-size: 38px; /* Large font for display */
-    text-align: right; /* Numbers are typically right-aligned */
-    padding-right: 10px; /* Padding for the main text */
-    border: 1px solid #888888; /* LCD border */
+    font-family: "Courier New", Courier, monospace; 
+    font-size: 38px; 
+    text-align: right; 
+    padding-right: 10px; 
+    border: 1px solid #888888; 
     overflow: hidden; 
     white-space: nowrap; 
     box-sizing: border-box; 
-    z-index: 2; /* Above calculator background, below very top elements like hints if any */
-
-    display: flex; /* For internal alignment of modifiers and text */
-    align-items: center; /* Vertically center items */
-    justify-content: space-between; /* Modifiers on left, text on right */
+    z-index: 2; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
 }
 
 .modifier-indicators {
     display: flex;
-    gap: 5px; /* Space between f and g */
-    padding-left: 5px; /* Padding from the left edge of LCD */
+    gap: 5px; 
+    padding-left: 5px; 
 }
 
 .f-indicator, .g-indicator {
     font-size: 16px; 
-    font-family: Arial, sans-serif; /* Or another clear, small font */
+    font-family: Arial, sans-serif; 
     font-weight: bold;
 }
 
@@ -74,39 +81,37 @@ div.calc_model { /* For existing debug divs */
 }
 
 .main-lcd-text {
-    flex-grow: 1; /* Takes up remaining space */
-    text-align: right; /* Ensures the number itself is right-aligned */
+    flex-grow: 1; 
+    text-align: right; 
 }
 
 div.calculator {
-    position: relative; /* Container for absolutely positioned LCD and hitboxes */
-    width:590px; /* Intrinsic width of the background image */
-    height:370px; /* Intrinsic height of the background image */
+    position: relative; 
+    width:590px; 
+    height:370px; 
     background-repeat:no-repeat;
-    background-size: cover; /* Or contain, depending on desired fit */
-    background-image: url(DSR_hp12cp.png); /* Ensure correct path if CSS is moved */
-    margin: 20px auto; /* Center the calculator on the page */
-    z-index: 1; /* Base for stacking context */
+    background-size: cover; 
+    background-image: url(DSR_hp12cp.png); 
+    margin: 20px auto; 
+    z-index: 1; 
 }
 
 div.transparent_box {
     position: absolute;
-    /* opacity: 0.9; -- Opacity can make it look faded, remove if not desired for hitboxes */
-    /* background-color: green; -- For debugging, make transparent in production */
-    background-color: rgba(0, 255, 0, 0.0); /* Transparent green for debugging, set alpha to 0 for production */
+    background-color: rgba(0, 255, 0, 0.2); /* Light green overlay for debugging */
+    width: 34px;  /* Ensure width/height are applied */
+    height: 32px; /* Ensure width/height are applied */
     cursor: pointer;
-    z-index: 3; /* Above LCD to ensure clickability */
+    z-index: 3; 
 }
 
-span.hint_key { /* These are children of transparent_box */
+span.hint_key { 
     padding: 0;
     margin: 0;
-    color: black; /* Or a color that's visible for debugging but hidden for production */
-    /* opacity: 1; -- Controlled by parent or remove if hints always visible */
+    color: black; 
     font-family: "Courier New", Courier, monospace;
     font-weight: bold;
-    font-size: 10px; /* Smaller for hints */
-    position: absolute; /* Position within the transparent_box if needed */
-    top: 0; left: 0;
-    /* visibility: hidden; -- Make hints hidden in production, visible for debug */
+    font-size: 12px; /* Temporarily larger and always black for visibility */
+    position: absolute; 
+    top: 1px; left: 1px; /* Adjust for better visibility within box */
 }
