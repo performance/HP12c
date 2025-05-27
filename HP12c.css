@@ -9,6 +9,58 @@ div.calc_model {
     font-size: 30px;
 }
 
+.lcd-display {
+    position: relative; /* Changed from absolute to relative for indicator positioning */
+    top: 40px; 
+    left: 70px; 
+    width: 450px; 
+    height: 50px; 
+    z-index: 1; 
+    background-color: #C0C0C0; 
+    color: #333333; 
+    font-family: "Courier New", Courier, monospace;
+    font-size: 38px; 
+    text-align: right;
+    padding-right: 10px; /* Padding for main text */
+    padding-left: 30px; /* Add padding for indicators if they are on the left */
+    border: 1px solid #888888;
+    overflow: hidden; 
+    white-space: nowrap; 
+    box-sizing: border-box; 
+    display: flex; /* Use flex to align items */
+    align-items: center; /* Vertically center items */
+    justify-content: space-between; /* Space between indicators and main text */
+}
+
+.modifier-indicators {
+    /* position: absolute; -- No longer needed if lcd-display is flex container */
+    /* top: 2px; */
+    /* left: 5px; */
+    display: flex;
+    gap: 5px;
+    /* padding-left: 5px; -- If not using space-between on parent */
+}
+
+.f-indicator, .g-indicator {
+    font-size: 16px; /* Smaller, as annunciators */
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+    /* color: #555; -- Base color if not using specific orange/blue */
+}
+
+.f-indicator {
+    color: orange;
+}
+
+.g-indicator {
+    color: blue;
+}
+
+.main-lcd-text {
+    flex-grow: 1; /* Allow main text to take available space */
+    text-align: right; /* Ensure main numbers stay right-aligned */
+}
+
 div.calculator {
     position: absolute;
     width:590px;

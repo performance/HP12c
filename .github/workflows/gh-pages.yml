@@ -1,0 +1,46 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main # Or master, or your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18' # Or a recent LTS version
+
+      - name: Install npm dependencies (including Elm and elm-test if in package.json)
+        run: npm install
+
+      - name: Set up Elm
+        uses: jorelali/setup-elm-action@v3 # Uses the Elm version from elm.json
+        with:
+          elm-version: ${{ fromJson(readFile('elm.json')).elm-version }} # Reads from elm.json
+
+      - name: Build Elm application
+        run: ./node_modules/.bin/elm make src/Main.elm --output=elm.js --optimize
+        # If elm was installed globally in the setup-elm-action, this could be:
+        # elm make src/Main.elm --output=elm.js --optimize
+
+      - name: Prepare deployment directory
+        run: |
+          mkdir dist
+          cp index.html dist/
+          cp elm.js dist/
+          cp HP12c.css dist/
+          cp DSR_hp12cp.png dist/
+          cp hp12cp.png dist/
+
+      - name: Deploy to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist

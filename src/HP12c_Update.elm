@@ -396,18 +396,42 @@ update msg model =
                 _ ->
                     -- Original handler logic for all other messages
                     let
-                        newModel = handler model
-                        defaultMessageText =
-                            (if newModel.unimplemented then "UNIMPLEMENTED!!! " else "") ++ Basics.toString msg
+                        -- The 'handler model' call executes the specific function for the message,
+                        -- which might now return a model already in an error state (with displayString="Error"
+                        -- and a specific message set by setErrorState or defaultModelTransformer).
+                        processedModelByHandler = handler model
+                        
+                        -- If the handler did not set a specific error message,
+                        -- and it's not an NLP message (which have their own message/result fields),
+                        -- then we might set a default message based on the action.
+                        -- However, setErrorState and defaultModelTransformer now handle their own messages.
+                        -- So, we mostly preserve the message from the handler.
+                        -- The previous logic for 'unimplemented' is removed as the field is gone.
+                        finalMessage =
+                            case processedModelByHandler.calculatorOperationalState of
+                                Error _ ->
+                                    processedModelByHandler.message -- Preserve message from setErrorState
+                                _ ->
+                                    -- For non-error states, a generic message based on the key pressed can be used,
+                                    -- or specific handlers can set more descriptive messages.
+                                    -- For now, let's keep it simple or use what handler provided.
+                                    -- If handler didn't change message, it's original model.message.
+                                    -- If it did, it's processedModelByHandler.message.
+                                    -- Let's assume specific handlers or setErrorState set messages appropriately.
+                                    -- If no specific message was set by a simple defaultModelTransformer,
+                                    -- it's now "Unimplemented Op".
+                                    if processedModelByHandler.message == model.message then
+                                        "Key: " ++ Basics.toString msg -- Generic message if not changed by handler
+                                    else
+                                        processedModelByHandler.message -- Use message from handler
                     in
-                    ( { newModel
-                        | message = defaultMessageText
-                        , unimplemented = False
+                    ( { processedModelByHandler
+                        | message = finalMessage -- Ensure message is correctly propagated
                         , inputQueue =
-                            if newModel.addToInputQueue then
-                                msg :: newModel.inputQueue
+                            if processedModelByHandler.addToInputQueue then
+                                msg :: processedModelByHandler.inputQueue
                             else
-                                newModel.inputQueue
+                                processedModelByHandler.inputQueue
                       }
                     , Cmd.none
                     )
