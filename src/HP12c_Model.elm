@@ -162,6 +162,10 @@ type alias Model =
     , displayString : String
     , displayPrecision : Int
     , unimplemented : Bool
+    -- NLP related fields
+    , nlpInputString : String
+    , nlpRpnCommands : String -- Changed from List String to String
+    , nlpResultString : String
     }
 
 
@@ -252,4 +256,8 @@ initialModel =
     , displayString = "0.00"
     , displayPrecision = 2
     , unimplemented = False
+    -- NLP related fields
+    , nlpInputString = ""
+    , nlpRpnCommands = "" -- Changed from [] to ""
+    , nlpResultString = ""
     }
