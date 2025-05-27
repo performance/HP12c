@@ -195,7 +195,7 @@ stack_registers_div : Model -> Html Msg
 stack_registers_div model =
     div
         [ classNames [ "calc_model" ]
-        , Html.Attributes.style [ ( "left", "0px" ), ( "top", "574px" ), ( "position", "absolute" ) ]
+        -- Removed inline style for absolute positioning
         ]
         -- Removed "display: " ++ model.displayString
         (List.intersperse empty_br_node (List.map text (String.split "," (toString model.automaticMemoryStackRegisters))))
@@ -205,7 +205,7 @@ input_queue_div : Model -> Html Msg
 input_queue_div model =
     div
         [ classNames [ "calc_model" ]
-        , Html.Attributes.style [ ( "left", "610px" ), ( "top", "0px" ), ( "position", "absolute" ) ]
+        -- Removed inline style for absolute positioning
         ]
         -- Removed "display: " ++ model.displayString
         (List.intersperse empty_br_node (List.map text (String.split "," (toString model.inputQueue))))
@@ -215,7 +215,7 @@ financial_registers_div : Model -> Html Msg
 financial_registers_div model =
     div
         [ classNames [ "calc_model" ]
-        , Html.Attributes.style [ ( "left", "400px" ), ( "top", "574px" ), ( "width", "400" ), ( "position", "absolute" ) ]
+        -- Removed inline style for absolute positioning, width can be handled by CSS if needed
         ]
         (model.financialRegisters
             |> Basics.toString
@@ -235,7 +235,7 @@ modelinfodiv : Model -> Html Msg
 modelinfodiv model =
     div
         [ classNames [ "calc_model" ]
-        , Html.Attributes.style [ ( "left", "0px" ), ( "top", "434px" ), ( "position", "absolute" ) ]
+        -- Removed inline style for absolute positioning
         ]
         [ Html.text (" Current Key       : " ++ model.message ++ " pressed ")
         , empty_br_node
