@@ -146,9 +146,8 @@ type alias Model =
     { inputQueue : List Msg
     , addToInputQueue : Bool
     , inputMode : InputMode
-    , computationMode :
-        ComputationMode
-        --, calculatorOperationalState    : CalculatorOperationalState
+    , computationMode : ComputationMode
+    , calculatorOperationalState : CalculatorOperationalState -- Uncommented
     , scratchRegisters : ScratchRegisters
     , automaticMemoryStackRegisters : AutomaticMemoryStackRegisters
     , financialRegisters : FinancialRegisters
@@ -161,7 +160,6 @@ type alias Model =
     , message : String
     , displayString : String
     , displayPrecision : Int
-    , unimplemented : Bool
     -- NLP related fields
     , nlpInputString : String
     , nlpRpnCommands : String -- Changed from List String to String
@@ -240,9 +238,8 @@ initialModel =
     { inputQueue = []
     , addToInputQueue = True
     , inputMode = White
-    , computationMode =
-        RPN_Mode
-        --, calculatorOperationalState    = AcceptingOperationsOrNumbers
+    , computationMode = RPN_Mode
+    , calculatorOperationalState = AcceptingOperationsOrNumbers -- Initialized
     , scratchRegisters = initializeScratchRegisters
     , automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters
     , financialRegisters = initializeFinancialRegisters
@@ -255,7 +252,6 @@ initialModel =
     , message = "No Keys"
     , displayString = "0.00"
     , displayPrecision = 2
-    , unimplemented = False
     -- NLP related fields
     , nlpInputString = ""
     , nlpRpnCommands = "" -- Changed from [] to ""

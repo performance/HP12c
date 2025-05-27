@@ -152,6 +152,24 @@ fourth_row_divs model =
 
 
 all_rows_divs : Model -> List (Html Msg)
+-- LCD Display Div
+lcdDisplayDiv : Model -> Html Msg
+lcdDisplayDiv model =
+    div [ classNames [ "lcd-display" ] ]
+        [ Html.div [ classNames ["modifier-indicators"] ]
+            [ if model.inputMode == Orange then
+                Html.span [ classNames ["f-indicator"] ] [ Html.text "f" ]
+              else
+                Html.span [] [] -- Empty span to maintain structure if needed, or Html.text ""
+            , if model.inputMode == Blue then
+                Html.span [ classNames ["g-indicator"] ] [ Html.text "g" ]
+              else
+                Html.span [] [] -- Empty span
+            ]
+        , Html.span [ classNames ["main-lcd-text"] ] [ Html.text model.displayString ]
+        ]
+
+all_rows_divs : Model -> List (Html Msg)
 all_rows_divs model =
     (first_row_divs model) ++ (second_row_divs model) ++ (third_row_divs model) ++ (fourth_row_divs model) ++ [ enter_button_div model ]
 
@@ -159,9 +177,9 @@ all_rows_divs model =
 button_divs : Model -> Html Msg
 button_divs model =
     div
-        [ classNames [ "calculator" ]
+        [ classNames [ "calculator" ] 
         ]
-        (all_rows_divs model)
+        (lcdDisplayDiv model :: all_rows_divs model) -- Prepend LCD display to other calculator elements
 
 
 empty_br_node : Html Msg
@@ -179,7 +197,8 @@ stack_registers_div model =
         [ classNames [ "calc_model" ]
         , Html.Attributes.style [ ( "left", "0px" ), ( "top", "574px" ), ( "position", "absolute" ) ]
         ]
-        (List.intersperse empty_br_node (List.map text ((String.split "," (toString model.automaticMemoryStackRegisters)) ++ [ "display: " ++ model.displayString ])))
+        -- Removed "display: " ++ model.displayString
+        (List.intersperse empty_br_node (List.map text (String.split "," (toString model.automaticMemoryStackRegisters))))
 
 
 input_queue_div : Model -> Html Msg
@@ -188,7 +207,8 @@ input_queue_div model =
         [ classNames [ "calc_model" ]
         , Html.Attributes.style [ ( "left", "610px" ), ( "top", "0px" ), ( "position", "absolute" ) ]
         ]
-        (List.intersperse empty_br_node (List.map text ([ "display: " ++ model.displayString ] ++ (String.split "," (toString model.inputQueue)))))
+        -- Removed "display: " ++ model.displayString
+        (List.intersperse empty_br_node (List.map text (String.split "," (toString model.inputQueue))))
 
 
 financial_registers_div : Model -> Html Msg

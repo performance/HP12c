@@ -148,208 +148,245 @@ last_X model =
 ---------- unaryOperators
 
 
-reciprocal : Float -> Float
+reciprocal : Float -> Result String Float
 reciprocal x =
-    1 / x
+    if x == 0 then
+        Err "DIV BY ZERO" -- Specific error message for model.message
+    else
+        Ok (1 / x)
 
-
-x_squared : number -> number
+x_squared : Float -> Result String Float
 x_squared x =
-    x * x
+    Ok (x * x) -- Squaring typically doesn't error for real numbers unless overflow is considered
 
-
-square_root : Float -> Float
+square_root : Float -> Result String Float
 square_root x =
-    Basics.sqrt x
+    if x < 0 then
+        Err "SQRT OF NEG"
+    else
+        Ok (Basics.sqrt x)
 
-
-natural_log : Float -> Float
+natural_log : Float -> Result String Float
 natural_log x =
-    Basics.logBase e x
+    if x <= 0 then
+        Err "LOG OF NON-POS"
+    else
+        Ok (Basics.logBase e x)
 
-
-e_to_the_x : Float -> Float
+e_to_the_x : Float -> Result String Float
 e_to_the_x x =
-    e ^ x
+    Ok (e ^ x) -- e^x is defined for all real x, typically doesn't error unless overflow
 
+-- Internal helper for n_factorial and integral_part checks
+fractional_part_internal_check : Float -> Float
+fractional_part_internal_check x = x - (Basics.toFloat (Basics.truncate x))
 
-n_factorial : Float -> Float
+n_factorial : Float -> Result String Float
 n_factorial x =
-    let
-        n =
-            Basics.floor x
-    in
-        List.product (List.range 1 n) |> Basics.toFloat
+    if x < 0 || fractional_part_internal_check x /= 0 then
+        Err "FACTORIAL DOMAIN"
+    else if x > 170 then -- Approximation: 170! is around max float64
+        Err "FACTORIAL OVERFLOW"
+    else
+        let
+            n = Basics.floor x
+        in
+        Ok (List.product (List.range 1 n) |> Basics.toFloat)
 
+-- Helper function to set the calculator into an error state
+setErrorState : ErrorState -> String -> Model -> Model
+setErrorState errorType errorMsg model =
+    { model
+        | calculatorOperationalState = Error errorType
+        , displayString = "Error" -- Set displayString to "Error"
+        , message = errorMsg -- Keep detailed message in model.message
+        , inputMode = White -- Typically reset input mode on error
+        , scratchRegisters = initializeScratchRegisters -- Clear scratch/entry on error
+    }
 
 
 -- in the hp12c platinum, the round function rounds the number to
 -- the number of decimals sepcified in the display precision
 
 
-round_function : Int -> Float -> Float
+round_function : Int -> Float -> Result String Float
 round_function n x =
-    let
-        float_n =
-            Basics.toFloat n
-    in
-        Basics.toFloat (Basics.floor (x * (10 ^ float_n))) / (10 ^ float_n)
+    -- Elm's rounding is well-behaved. Errors would typically be for NaN/Infinity inputs,
+    -- which should ideally be caught before this or result from previous errors.
+    if isNaN x || isInfinite x then
+        Err "INVALID INPUT"
+    else
+        let
+            scaler = 10 ^ Basics.toFloat n
+        in
+        Ok (Basics.toFloat (Basics.round (x * scaler)) / scaler)
 
 
-
--- TODO: check if the calc rounds it by adding 0.5
-
-
-integral_part : Float -> Float
+integral_part : Float -> Result String Float
 integral_part x =
-    Basics.toFloat (Basics.floor x)
+    if isNaN x || isInfinite x then
+        Err "INVALID INPUT"
+    else
+        Ok (Basics.toFloat (Basics.truncate x))
 
-
-fractional_part : Float -> Float
+fractional_part : Float -> Result String Float
 fractional_part x =
-    x - (integral_part x)
+    if isNaN x || isInfinite x then
+        Err "INVALID INPUT"
+    else
+        Ok (x - Basics.toFloat (Basics.truncate x))
 
 
-unaryOperator : (Float -> Float) -> Model -> Model
+unaryOperator : (Float -> Result String Float) -> Model -> Model
 unaryOperator op model =
-    let
-        stackRegs =
-            model.automaticMemoryStackRegisters
+    -- First, check if the calculator is already in an error state.
+    -- If so, most operations should not proceed or should clear error first.
+    -- For now, let's assume operations are blocked if in error state.
+    case model.calculatorOperationalState of
+        Error _ ->
+            model -- Do nothing if already in error state (or clear error, TBD)
 
-        result =
-            (op stackRegs.reg_X)
+        _ ->
+            let
+                stackRegs = model.automaticMemoryStackRegisters
+                opResult = op stackRegs.reg_X
+            in
+            case opResult of
+                Ok result ->
+                    let
+                        unReducededStack =
+                            { stackRegs
+                                | reg_Last_X = stackRegs.reg_X
+                                , reg_X = result
+                            }
+                        scratchRegs = model.scratchRegisters
+                        unReducedModel =
+                            { model
+                                | automaticMemoryStackRegisters = unReducededStack
+                                , inputMode = White
+                                , scratchRegisters = { scratchRegs | acceptNewDigitInto = NewNumber }
+                                , addToInputQueue = True
+                                , calculatorOperationalState = AcceptingOperationsOrNumbers -- Ensure state is normal
+                            }
+                    in
+                    update_Display_Precision model.displayPrecision unReducedModel
 
-        unReducededStack =
-            { stackRegs
-                | reg_Last_X = stackRegs.reg_X
-                , reg_X = result
-            }
-
-        scratchRegs =
-            model.scratchRegisters
-
-        unReducedModel =
-            { model
-                | automaticMemoryStackRegisters = unReducededStack
-                , inputMode = White
-                , scratchRegisters = { scratchRegs | acceptNewDigitInto = NewNumber }
-                , addToInputQueue = True
-            }
-
-        newModel =
-            update_Display_Precision model.displayPrecision unReducedModel
-    in
-        newModel
-
+                Err errorMsg ->
+                    -- Use Error_0_Mathematics for general math errors from unary ops
+                    setErrorState Error_0_Mathematics ("Error 0 " ++ errorMsg) model
 
 
 ---------- unaryOperators
 -----------  Binary operators lhs is reg_y, rhs is reg_x
 
 
-y_to_the_x : number -> number -> number
+y_to_the_x : Float -> Float -> Result String Float
 y_to_the_x y x =
-    y ^ x
+    -- Could add checks for 0^0 (conventionally 1 or error) or x^y resulting in complex if y is non-integer and x is negative.
+    -- For HP12c, y^x typically works for positive y. If y is negative, x must be integer.
+    -- Elm's (^) operator handles negative bases if exponent is integer, otherwise NaN.
+    let
+        result = y ^ x
+    in
+    if isNaN result then Err "DOMAIN ERROR Y^X" else Ok result
 
+y_plus_x : Float -> Float -> Result String Float
+y_plus_x y x = Ok (y + x)
 
-y_plus_x : number -> number -> number
-y_plus_x y x =
-    y + x
+y_minus_x : Float -> Float -> Result String Float
+y_minus_x y x = Ok (y - x)
 
+y_times_x : Float -> Float -> Result String Float
+y_times_x y x = Ok (y * x)
 
-y_minus_x : number -> number -> number
-y_minus_x y x =
-    y - x
-
-
-y_times_x : number -> number -> number
-y_times_x y x =
-    y * x
-
-
-y_divided_by_x : Float -> Float -> Float
+y_divided_by_x : Float -> Float -> Result String Float
 y_divided_by_x y x =
-    y / x
+    if x == 0 then
+        Err "DIV BY ZERO"
+    else
+        Ok (y / x)
 
+x_percent_of_y : Float -> Float -> Result String Float
+x_percent_of_y y x = Ok (y * x / 100) -- Standard percentage, unlikely to error unless inputs are non-finite
 
-x_percent_of_y : Float -> Float -> Float
-x_percent_of_y y x =
-    y * x / 100
-
-
-delta_percentage : Float -> Float -> Float
+delta_percentage : Float -> Float -> Result String Float
 delta_percentage y x =
-    100 * (x - y) / y
+    if y == 0 then
+        Err "DIV BY ZERO IN %Δ"
+    else
+        Ok (100 * (x - y) / y)
 
-
-percentage_of_total : Float -> Float -> Float
+percentage_of_total : Float -> Float -> Result String Float
 percentage_of_total y x =
-    100 * x / y
+    if y == 0 then
+        Err "DIV BY ZERO IN %T"
+    else
+        Ok (100 * x / y)
 
 
-binaryOperator_No_Down_Shift : (Float -> Float -> Float) -> Model -> Model
+binaryOperator_No_Down_Shift : (Float -> Float -> Result String Float) -> Model -> Model
 binaryOperator_No_Down_Shift op model =
-    let
-        stackRegs =
-            model.automaticMemoryStackRegisters
+    case model.calculatorOperationalState of
+        Error _ -> model 
+        _ ->
+            let
+                stackRegs = model.automaticMemoryStackRegisters
+                opResult = op stackRegs.reg_Y stackRegs.reg_X
+            in
+            case opResult of
+                Ok result ->
+                    let
+                        unPromotedStack =
+                            { stackRegs
+                                | reg_Last_X = stackRegs.reg_X
+                                , reg_X = result
+                            }
+                        promotedModel =
+                            { model
+                                | automaticMemoryStackRegisters = unPromotedStack
+                                , inputMode = White
+                                , addToInputQueue = True
+                                , calculatorOperationalState = AcceptingOperationsOrNumbers
+                            }
+                    in
+                    update_Display_Precision model.displayPrecision promotedModel
+                Err errorMsg ->
+                    setErrorState Error_0_Mathematics ("Error 0 " ++ errorMsg) model
 
-        result =
-            (op stackRegs.reg_Y stackRegs.reg_X)
 
-        unPromotedStack =
-            { stackRegs
-                | reg_Last_X = stackRegs.reg_X
-                , reg_X = result
-            }
-
-        promotedModel =
-            { model
-                | automaticMemoryStackRegisters = unPromotedStack
-                , inputMode = White
-                , addToInputQueue = True
-            }
-
-        newModel =
-            update_Display_Precision model.displayPrecision promotedModel
-    in
-        newModel
-
-
-binaryOperator : (Float -> Float -> Float) -> Model -> Model
+binaryOperator : (Float -> Float -> Result String Float) -> Model -> Model
 binaryOperator op model =
-    let
-        stackRegs =
-            model.automaticMemoryStackRegisters
-
-        result =
-            (op stackRegs.reg_Y stackRegs.reg_X)
-
-        reducedStack =
-            { stackRegs
-                | reg_T = stackRegs.reg_T
-                , reg_Z = stackRegs.reg_T
-                , reg_Y = stackRegs.reg_Z
-                , reg_Last_X = stackRegs.reg_X
-                , reg_X = result
-            }
-
-        scratchRegs =
-            model.scratchRegisters
-
-        promotedModel =
-            { model
-                | automaticMemoryStackRegisters = reducedStack
-                , inputMode = White
-                , scratchRegisters = { scratchRegs | acceptNewDigitInto = NewNumber, reg_X_is_Positive = True }
-                , addToInputQueue = True
-            }
-
-        newModel =
-            update_Display_Precision model.displayPrecision promotedModel
-    in
-        newModel
-
-
+    case model.calculatorOperationalState of
+        Error _ -> model
+        _ ->
+            let
+                stackRegs = model.automaticMemoryStackRegisters
+                opResult = op stackRegs.reg_Y stackRegs.reg_X
+            in
+            case opResult of
+                Ok result ->
+                    let
+                        reducedStack =
+                            { stackRegs
+                                | reg_T = stackRegs.reg_T
+                                , reg_Z = stackRegs.reg_T
+                                , reg_Y = stackRegs.reg_Z
+                                , reg_Last_X = stackRegs.reg_X
+                                , reg_X = result
+                            }
+                        scratchRegs = model.scratchRegisters
+                        promotedModel =
+                            { model
+                                | automaticMemoryStackRegisters = reducedStack
+                                , inputMode = White
+                                , scratchRegisters = { scratchRegs | acceptNewDigitInto = NewNumber, reg_X_is_Positive = True }
+                                , addToInputQueue = True
+                                , calculatorOperationalState = AcceptingOperationsOrNumbers
+                            }
+                    in
+                    update_Display_Precision model.displayPrecision promotedModel
+                Err errorMsg ->
+                    setErrorState Error_0_Mathematics ("Error 0 " ++ errorMsg) model
 
 -----------  Binary operators lhs is reg_y, rhs is reg_x
 
@@ -642,119 +679,126 @@ backSpaceReg_X model =
 clearAllRegisters : Model -> Model
 clearAllRegisters model =
     let
-        cleared_model =
+        -- Clearing all registers should also clear any error state and reset display.
+        cleared_model_state =
             { model
                 | automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters
                 , dataStorageRegisters = initializeDataStorageRegisters
                 , statisticalRegisters = initializeStatisticalRegisters
                 , financialRegisters = initializeFinancialRegisters
                 , scratchRegisters = initializeScratchRegisters
+                , calculatorOperationalState = AcceptingOperationsOrNumbers -- Reset error state
+                , message = "All Clear" 
+                , inputMode = White
                 , addToInputQueue = True
             }
-
-        newModel =
-            update_Display_Precision model.displayPrecision cleared_model
+        -- Set displayString to "0.00" (or based on current precision) after clearing.
+        -- Need to ensure reg_X is 0 in initializeAutomaticMemoryStackRegisters for this to be correct.
+        -- initializeAutomaticMemoryStackRegisters sets reg_X = 0.
     in
-        newModel
+    update_Display_Precision model.displayPrecision { cleared_model_state | displayString = "0.00" } -- Tentatively set displayString, update_Display_Precision will format based on new reg_X
 
 
 clearFinancialRegisters : Model -> Model
 clearFinancialRegisters model =
     let
-        cleared_model =
+        cleared_model_state =
             { model
                 | financialRegisters = initializeFinancialRegisters
                 , scratchRegisters = initializeScratchRegisters
+                , calculatorOperationalState = AcceptingOperationsOrNumbers
+                , message = "Financial Clear"
+                , inputMode = White
                 , addToInputQueue = True
             }
-
-        newModel =
-            update_Display_Precision model.displayPrecision cleared_model
     in
-        newModel
+    update_Display_Precision model.displayPrecision { cleared_model_state | displayString = "0.00" }
 
 
 clearProgramMemory : Model -> Model
 clearProgramMemory model =
     if (model.computationMode == PRGM_MODE) then
-        let
-            cleared_model =
-                { model
-                    | programMemory = initializeProgramMemory
-                    , addToInputQueue = True
-                }
-        in
-            cleared_model
+        { model
+            | programMemory = initializeProgramMemory
+            , calculatorOperationalState = AcceptingOperationsOrNumbers -- Clear error if in PRGM mode
+            , message = "Program Memory Cleared"
+            , inputMode = White
+            , addToInputQueue = True
+        }
+        -- displayString should probably remain unchanged or show 0.00 if PRGM clear also clears X
+        -- For now, assume it doesn't affect displayString directly, but clears error state.
     else
         model
 
 
-
---CLEAR PREFIX after f, g, STO, RCL or GTO cancels that key (page 18).
---f CLEAR PREFIX also displays mantissa of number in the displayed X-register
-
-
 clearPrefix : Model -> Model
 clearPrefix model =
-    { model
-        | inputMode = White
-        , addToInputQueue = True
-        , message = "DOES NOT YET HANDLE STO RCL AND GTO, and need to figure out how to display mantissa for one sec only "
-    }
+    -- Clearing a prefix (f, g, STO) should not affect an existing error message on display.
+    -- It should only reset the inputMode.
+    if model.calculatorOperationalState == Error Error_9_Service && model.message == "Unimplemented Op" then
+        -- If the error was due to an unimplemented prefixed key, clearing prefix might make sense to clear this specific error.
+        -- However, general rule: clearPrefix itself does not clear general errors.
+        { model | inputMode = White, addToInputQueue = True, message = "Prefix Cleared" }
+    else
+        { model | inputMode = White, addToInputQueue = True }
 
 
 clearSigma : Model -> Model
 clearSigma model =
     let
-        cleared_model =
+        cleared_model_state =
             { model
-                | automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters
+                | automaticMemoryStackRegisters = initializeAutomaticMemoryStackRegisters -- As per HP manual, CLΣ clears stack
                 , statisticalRegisters = initializeStatisticalRegisters
                 , scratchRegisters = initializeScratchRegisters
+                , calculatorOperationalState = AcceptingOperationsOrNumbers
+                , message = "Sigma Cleared"
+                , inputMode = White
                 , addToInputQueue = True
             }
-
-        newModel =
-            update_Display_Precision model.displayPrecision cleared_model
     in
-        newModel
+    update_Display_Precision model.displayPrecision { cleared_model_state | displayString = "0.00" }
 
 
 clearXRegister : Model -> Model
 clearXRegister model =
     let
-        stackRegs =
-            model.automaticMemoryStackRegisters
-
-        newStackRegs =
-            { stackRegs | reg_X = 0 }
-
-        cleared_model =
+        stackRegs = model.automaticMemoryStackRegisters
+        newStackRegs = { stackRegs | reg_X = 0 }
+        cleared_model_state =
             { model
                 | automaticMemoryStackRegisters = newStackRegs
+                , scratchRegisters = initializeScratchRegisters -- CLx also initializes scratch for new number entry
+                , calculatorOperationalState = AcceptingOperationsOrNumbers -- Clearing X register clears error state
+                , message = "X Cleared"
+                , inputMode = White
                 , addToInputQueue = True
             }
-
-        newModel =
-            update_Display_Precision model.displayPrecision cleared_model
     in
-        newModel
+    update_Display_Precision model.displayPrecision { cleared_model_state | displayString = "0.00" }
 
 
 update_Display_Precision : Int -> Model -> Model
 update_Display_Precision n model =
-    let
-        newModel =
+    case model.calculatorOperationalState of
+        Error _ ->
+            model -- Do not change displayString if already in error state
+
+        _ ->
             if (n < 10) then
                 update_Display_Precision_util n model
             else
                 update_Display_to_Scientific model
-    in
-        newModel
 
 
 update_Display_Precision_util : Int -> Model -> Model
 update_Display_Precision_util n model =
+    -- This function should not be called if model is in Error state,
+    -- but as a safeguard, or if called directly:
+    case model.calculatorOperationalState of
+        Error _ ->
+            model
+        _ ->
     let
         displayPrecision =
             n
@@ -768,18 +812,26 @@ update_Display_Precision_util n model =
         newDisplayString =
             (print (Formatting.roundTo displayPrecision) reg_X)
 
-        newModel =
+            let
+                displayPrecision = n
+                stackRegs = model.automaticMemoryStackRegisters
+                reg_X = stackRegs.reg_X
+                newDisplayString = print (Formatting.roundTo displayPrecision) reg_X
+            in
             { model
                 | displayString = newDisplayString
                 , displayPrecision = displayPrecision
                 , inputMode = White
+                , calculatorOperationalState = AcceptingOperationsOrNumbers -- Ensure normal state
             }
-    in
-        newModel
 
 
 update_Display_to_Scientific : Model -> Model
 update_Display_to_Scientific model =
+    case model.calculatorOperationalState of
+        Error _ ->
+            model
+        _ ->
     let
         displayPrecision =
             10
@@ -814,14 +866,44 @@ update_Display_to_Scientific model =
         newDisplayString =
             (print (Formatting.roundTo 6) newNumber) ++ "  " ++ (exp_display_part)
 
-        newModel =
+            let
+                displayPrecisionSetting = 10 -- Indicates scientific mode
+                stackRegs = model.automaticMemoryStackRegisters
+                reg_X = stackRegs.reg_X
+                -- Simplified scientific string representation
+                newDisplayString =
+                    if reg_X == 0.0 then
+                        "0.000000  00" -- HP12c representation of 0 in sci mode
+                    else
+                        -- This is a simplified representation. Real HP12c scientific format is specific.
+                        -- Elm's default toString for small/large numbers might be scientific.
+                        -- For now, let's use a placeholder or a basic scientific format.
+                        -- Example: Basics.toString reg_X might already be "1.23456e+7"
+                        -- We need to format it like "1.234567 07" (mantissa and exponent)
+                        -- This requires more complex string manipulation than available directly.
+                        -- Using a simplified version for now.
+                        -- Using the existing logic which was an attempt at custom scientific formatting:
+                        let
+                            absRegX = Basics.abs reg_X
+                            (mantissa, exponent) = 
+                                if absRegX == 0.0 then (0.0, 0)
+                                else 
+                                    let exp = Basics.floor (Basics.logBase 10 absRegX)
+                                    in (reg_X / (10 ^ Basics.toFloat exp), Basics.round exp)
+                            
+                            formattedMantissa = print (Formatting.roundTo 6) mantissa -- Display 6 decimal places for mantissa
+                            formattedExponent = print (padLeft 2 '0' int) (Basics.abs exponent) |> String.right 2
+                            sign = if reg_X < 0.0 then "-" else "" -- Mantissa sign handled by print
+                            expSign = if exponent < 0 then "-" else " " -- Exponent sign often space or minus
+                        in
+                        formattedMantissa ++ expSign ++ formattedExponent
+            in
             { model
                 | displayString = newDisplayString
-                , displayPrecision = displayPrecision
+                , displayPrecision = displayPrecisionSetting 
                 , inputMode = White
+                , calculatorOperationalState = AcceptingOperationsOrNumbers -- Ensure normal state
             }
-    in
-        newModel
 
 
 setPrefix : InputMode -> Model -> Model
@@ -848,12 +930,14 @@ handleKeyCode code model =
 
 handlePOWERONKey : Model -> Model
 handlePOWERONKey model =
-    initialModel
+    -- ON key always resets the calculator to its initial state, clearing errors.
+    { initialModel | nlpInputString = model.nlpInputString, nlpRpnCommands = model.nlpRpnCommands, nlpResultString = model.nlpResultString }
+    -- Preserve NLP state across ON key, as it's external to calculator core state
 
 
 defaultModelTransformer : Model -> Model
 defaultModelTransformer model =
-    { model
-        | unimplemented = True
-        , addToInputQueue = True
-    }
+    -- For unimplemented operations, use a specific error type, e.g., Error_9_Service
+    -- This function will now also set displayString = "Error" via setErrorState
+    setErrorState Error_9_Service "Unimplemented Op" model
+    |> \m -> { m | addToInputQueue = True } -- Ensure addToInputQueue is handled as before
