@@ -3,6 +3,7 @@ module HP12c_Update exposing (..)
 import HP12c_KeyTypes exposing (..)
 import HP12c_Model exposing (..)
 import HP12c_Update_utils exposing (..)
+import NaturalLanguageParser exposing (parse, beautifyRpnCommands) -- Updated import
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -10,6 +11,30 @@ update msg model =
     let
         handler =
             case msg of
+                NLPInput newString ->
+                    \m -> { m | nlpInputString = newString }
+
+                ProcessNLP ->
+                    \m ->
+                        let
+                            parsedCmdsList = parse m.nlpInputString
+                            rpnCommandsAsString = List.map Basics.toString parsedCmdsList
+                        in
+                        ( { m | nlpRpnCommands = rpnCommandsAsString, nlpResultString = "Executing..." }, Cmd.msg (ExecuteNLPCommands parsedCmdsList) )
+
+                ExecuteNLPCommands cmdsList ->
+                    \m ->
+                        let
+                            -- Apply each command in the list to the model sequentially
+                            -- Note: update returns (Model, Cmd Msg). We'll ignore Cmds from individual steps for now.
+                            processedModel =
+                                List.foldl
+                                    (\cmd currentModel -> Tuple.first (update cmd currentModel))
+                                    m -- Start with the current model
+                                    cmdsList
+                        in
+                        { processedModel | nlpResultString = processedModel.displayString }
+
                 KeyMsg code ->
                     handleKeyCode code
 
@@ -329,26 +354,62 @@ update msg model =
                 Undo_Key ->
                     defaultModelTransformer
 
-        newModel =
-            handler model
+        (updatedModelFromHandler, cmdFromHandler) =
+            -- Special handling for ProcessNLP as it returns a command directly
+            if msg == ProcessNLP then
+                case handler model of
+                    ( m, cmd ) -> ( m, cmd ) -- This pattern is a bit off for ProcessNLP's lambda
+                    _ -> (model, Cmd.none) -- Should not happen if handler for ProcessNLP is correct
+            else if case msg of ExecuteNLPCommands _ -> True; _ -> False then
+                 (handler model, Cmd.none) -- ExecuteNLPCommands lambda returns Model directly
+            else if case msg of NLPInput _ -> True; _ -> False then
+                 (handler model, Cmd.none) -- NLPInput lambda returns Model directly
+            else
+                (handler model, Cmd.none) -- Default for simple model transformers
 
-        defaultMessage u msg =
-            (if (u) then
-                "UNIMPLEMENTED!!!"
-             else
-                ""
-             -- newModel.message
-            )
-                ++ Basics.toString msg
+        -- Refactored logic for ProcessNLP to fit the structure
+        finalModelAndCmd =
+            case msg of
+                ProcessNLP ->
+                    let
+                        parsedCmdsList = parse model.nlpInputString
+                        -- Use the new beautifyRpnCommands function
+                        beautifiedRpnString = beautifyRpnCommands parsedCmdsList
+                    in
+                    ( { model | nlpRpnCommands = beautifiedRpnString, nlpResultString = "Executing..." }
+                    , Cmd.msg (ExecuteNLPCommands parsedCmdsList)
+                    )
+
+                ExecuteNLPCommands cmdsList ->
+                    let
+                        processedModel =
+                            List.foldl
+                                (\cmd currentModel -> Tuple.first (update cmd currentModel))
+                                model
+                                cmdsList
+                    in
+                    ( { processedModel | nlpResultString = processedModel.displayString }, Cmd.none )
+                
+                NLPInput newString ->
+                    ( { model | nlpInputString = newString }, Cmd.none )
+
+                _ ->
+                    -- Original handler logic for all other messages
+                    let
+                        newModel = handler model
+                        defaultMessageText =
+                            (if newModel.unimplemented then "UNIMPLEMENTED!!! " else "") ++ Basics.toString msg
+                    in
+                    ( { newModel
+                        | message = defaultMessageText
+                        , unimplemented = False
+                        , inputQueue =
+                            if newModel.addToInputQueue then
+                                msg :: newModel.inputQueue
+                            else
+                                newModel.inputQueue
+                      }
+                    , Cmd.none
+                    )
     in
-        ( { newModel
-            | message = defaultMessage newModel.unimplemented msg
-            , unimplemented = False
-            , inputQueue =
-                if (newModel.addToInputQueue) then
-                    msg :: newModel.inputQueue
-                else
-                    newModel.inputQueue
-          }
-        , Cmd.none
-        )
+    finalModelAndCmd

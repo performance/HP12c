@@ -223,9 +223,54 @@ modelinfodiv model =
         ]
 
 
+-- NLP View Components
+
+nlpInputSection : Model -> Html Msg
+nlpInputSection model =
+    div [ classNames [ "nlp-section" ], style [ ( "margin-bottom", "20px" ) ] ]
+        [ Html.input
+            [ type_ "text"
+            , id "nlp-input" -- Corresponds to index.html
+            , placeholder "e.g., 2 plus 2"
+            , value model.nlpInputString
+            , onInput NLPInput -- Sends the current value of the input field
+            , style [ ( "margin-right", "10px" ), ( "padding", "5px" ) ]
+            ]
+            []
+        , button
+            [ id "nlp-execute" -- Corresponds to index.html
+            , onClick ProcessNLP
+            , style [ ( "padding", "5px" ) ]
+            ]
+            [ text "Translate & Execute" ]
+        ]
+
+nlpDisplaySection : Model -> Html Msg
+nlpDisplaySection model =
+    div [ classNames [ "nlp-display-section" ] ]
+        [ div
+            [ id "rpn-commands-display" -- Corresponds to index.html
+            , style [ ( "margin-top", "20px" ), ( "padding", "10px" ), ( "border", "1px solid #ccc" ), ( "min-height", "30px" ) ]
+            ]
+            [ text model.nlpRpnCommands ] -- Changed from String.join to direct use of model.nlpRpnCommands
+        , div
+            [ id "rpn-result-display" -- Corresponds to index.html
+            , style [ ( "margin-top", "10px" ), ( "padding", "10px" ), ( "border", "1px solid #ccc" ), ( "font-weight", "bold" ), ( "min-height", "30px" ) ]
+            ]
+            [ text model.nlpResultString ]
+        ]
+
+
 divs_to_show : Model -> List (Html Msg)
 divs_to_show model =
-    [ stylesheet ] ++ [ button_divs model ] ++ [ modelinfodiv model ] ++ [ stack_registers_div model ] ++ [ financial_registers_div model ] ++ [ input_queue_div model ]
+    [ stylesheet ] 
+    ++ [ nlpInputSection model ] -- NLP input fields
+    ++ [ button_divs model ] 
+    ++ [ nlpDisplaySection model ] -- NLP display areas
+    ++ [ modelinfodiv model ] 
+    ++ [ stack_registers_div model ] 
+    ++ [ financial_registers_div model ] 
+    ++ [ input_queue_div model ]
 
 
 view : Model -> Html Msg
