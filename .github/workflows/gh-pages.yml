@@ -3,7 +3,7 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - master # Or master, or your default branch
+      - master # Or main, or your default branch
 
 jobs:
   deploy:
@@ -21,9 +21,8 @@ jobs:
         run: npm install
 
       - name: Set up Elm
-        uses: jorelali/setup-elm-action@v3 # Uses the Elm version from elm.json
-        with:
-          elm-version: ${{ fromJson(readFile('elm.json')).elm-version }} # Reads from elm.json
+        uses: jorelali/setup-elm-action@v3
+        # elm-version will be automatically picked up from elm.json at the root
 
       - name: Build Elm application
         run: ./node_modules/.bin/elm make src/Main.elm --output=elm.js --optimize
