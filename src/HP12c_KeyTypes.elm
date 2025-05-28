@@ -47,3 +47,8 @@ type Msg -- Cal_C_Keys                    Blue                         Orange
   | Sigma_Plus_Key                    | Sigma_Minus_Key
   | Sum_Key                           | Last_X_Key
   | KeyMsg Keyboard.KeyCode -- for any key not on the calc
+  -- NLP specific messages
+  | NLPInput String
+  | ProcessNLP
+  | ExecuteNLPCommands (List Msg)
+  | UnrecognizedToken_Key String -- For reporting unrecognized tokens
