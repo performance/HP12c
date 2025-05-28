@@ -21,8 +21,9 @@ jobs:
         run: npm install
 
       - name: Set up Elm
-        uses: jorelali/setup-elm-action@v3
-        # elm-version will be automatically picked up from elm.json at the root
+        uses: jorelali/setup-elm@v6
+        with:
+          elm-version: 0.19.1
 
       - name: Build Elm application
         run: ./node_modules/.bin/elm make src/Main.elm --output=elm.js --optimize
